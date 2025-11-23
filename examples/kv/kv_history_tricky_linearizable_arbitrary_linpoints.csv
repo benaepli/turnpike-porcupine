@@ -1,621 +1,621 @@
-UniqueID,ClientID,Kind,Action,Payload1,Payload2,Payload3
-0,0,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k2""}","{""type"":""VString"",""value"":""kiwi""}"
-0,0,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-1,1,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k3""}","{""type"":""VString"",""value"":""straw""}"
-1,1,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-2,2,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k1""}","{""type"":""VString"",""value"":""lemon""}"
-2,2,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-3,3,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k1""}","{""type"":""VString"",""value"":""peach""}"
-3,3,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-4,4,Invocation,ClientInterface.Delete,,"{""type"":""VString"",""value"":""k1""}",
-4,4,Response,ClientInterface.Delete,"{""type"":""VTuple"",""value"":[]}",,
-5,5,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k5""}","{""type"":""VString"",""value"":""banana""}"
-5,5,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-6,6,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k3""}",
-6,6,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""straw""}}",,
-7,3,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k2""}",
-7,3,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""kiwi""}}",,
-8,7,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k4""}","{""type"":""VString"",""value"":""raisin""}"
-8,7,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-9,8,Invocation,ClientInterface.Delete,,"{""type"":""VString"",""value"":""k1""}",
-9,8,Response,ClientInterface.Delete,"{""type"":""VTuple"",""value"":[]}",,
-10,9,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k3""}",
-10,9,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""apple""}}",,
-11,10,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k3""}","{""type"":""VString"",""value"":""apple""}"
-11,10,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-12,11,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k5""}","{""type"":""VString"",""value"":""banana""}"
-12,11,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-13,12,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k2""}","{""type"":""VString"",""value"":""banana""}"
-13,12,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-14,13,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k3""}","{""type"":""VString"",""value"":""jam""}"
-14,13,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-15,0,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k8""}","{""type"":""VString"",""value"":""fig""}"
-15,0,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-16,1,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k7""}","{""type"":""VString"",""value"":""peach""}"
-16,1,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-17,14,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k9""}",
-17,14,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":null}",,
-18,4,Invocation,ClientInterface.Delete,,"{""type"":""VString"",""value"":""k4""}",
-18,4,Response,ClientInterface.Delete,"{""type"":""VTuple"",""value"":[]}",,
-19,15,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k6""}","{""type"":""VString"",""value"":""elder""}"
-19,15,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-20,16,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k1""}","{""type"":""VString"",""value"":""cherry""}"
-20,16,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-21,7,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k9""}","{""type"":""VString"",""value"":""cherry""}"
-21,7,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-22,17,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k1""}",
-22,17,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""cherry""}}",,
-23,18,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k7""}",
-23,18,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""peach""}}",,
-24,19,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k5""}","{""type"":""VString"",""value"":""apple""}"
-24,19,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-25,3,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k2""}",
-25,3,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""kiwi""}}",,
-26,20,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k4""}","{""type"":""VString"",""value"":""peach""}"
-26,20,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-27,21,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k9""}",
-27,21,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""cherry""}}",,
-28,22,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k5""}","{""type"":""VString"",""value"":""elder""}"
-28,22,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-29,23,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k2""}","{""type"":""VString"",""value"":""straw""}"
-29,23,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-30,6,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k2""}","{""type"":""VString"",""value"":""date""}"
-30,6,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-31,5,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k6""}",
-31,5,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""elder""}}",,
-32,24,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k7""}",
-32,24,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""peach""}}",,
-33,25,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k6""}",
-33,25,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""elder""}}",,
-34,2,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k2""}",
-34,2,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""banana""}}",,
-35,12,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k4""}",
-35,12,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""peach""}}",,
-36,20,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k8""}","{""type"":""VString"",""value"":""olive""}"
-36,20,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-37,26,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k10""}","{""type"":""VString"",""value"":""mango""}"
-37,26,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-38,27,Invocation,ClientInterface.Delete,,"{""type"":""VString"",""value"":""k5""}",
-38,27,Response,ClientInterface.Delete,"{""type"":""VTuple"",""value"":[]}",,
-39,28,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k1""}",
-39,28,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""cherry""}}",,
-40,29,Invocation,ClientInterface.Delete,,"{""type"":""VString"",""value"":""k5""}",
-40,29,Response,ClientInterface.Delete,"{""type"":""VTuple"",""value"":[]}",,
-41,30,Invocation,ClientInterface.Delete,,"{""type"":""VString"",""value"":""k7""}",
-41,30,Response,ClientInterface.Delete,"{""type"":""VTuple"",""value"":[]}",,
-42,31,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k3""}","{""type"":""VString"",""value"":""jam""}"
-42,31,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-43,32,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k6""}","{""type"":""VString"",""value"":""apple""}"
-43,32,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-44,19,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k5""}","{""type"":""VString"",""value"":""peach""}"
-44,19,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-45,33,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k9""}","{""type"":""VString"",""value"":""banana""}"
-45,33,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-46,34,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k3""}",
-46,34,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""jam""}}",,
-47,10,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k2""}","{""type"":""VString"",""value"":""elder""}"
-47,10,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-48,35,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k7""}","{""type"":""VString"",""value"":""tomato""}"
-48,35,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-49,9,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k2""}","{""type"":""VString"",""value"":""mango""}"
-49,9,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-50,26,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k10""}",
-50,26,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""mango""}}",,
-51,15,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k4""}","{""type"":""VString"",""value"":""quince""}"
-51,15,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-52,5,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k6""}",
-52,5,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""elder""}}",,
-53,0,Invocation,ClientInterface.Delete,,"{""type"":""VString"",""value"":""k8""}",
-53,0,Response,ClientInterface.Delete,"{""type"":""VTuple"",""value"":[]}",,
-54,4,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k7""}","{""type"":""VString"",""value"":""quince""}"
-54,4,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-55,1,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k4""}","{""type"":""VString"",""value"":""mango""}"
-55,1,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-56,3,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k1""}",
-56,3,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""cherry""}}",,
-57,7,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k1""}",
-57,7,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""cherry""}}",,
-58,8,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k5""}","{""type"":""VString"",""value"":""elder""}"
-58,8,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-59,11,Invocation,ClientInterface.Delete,,"{""type"":""VString"",""value"":""k3""}",
-59,11,Response,ClientInterface.Delete,"{""type"":""VTuple"",""value"":[]}",,
-60,2,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k8""}",
-60,2,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""tomato""}}",,
-61,13,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k2""}",
-61,13,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""mango""}}",,
-62,15,Invocation,ClientInterface.Delete,,"{""type"":""VString"",""value"":""k4""}",
-62,15,Response,ClientInterface.Delete,"{""type"":""VTuple"",""value"":[]}",,
-63,16,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k6""}","{""type"":""VString"",""value"":""cherry""}"
-63,16,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-64,12,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k2""}",
-64,12,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""mango""}}",,
-65,14,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k7""}","{""type"":""VString"",""value"":""kiwi""}"
-65,14,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-66,18,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k8""}","{""type"":""VString"",""value"":""tomato""}"
-66,18,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-67,20,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k9""}","{""type"":""VString"",""value"":""elder""}"
-67,20,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-68,23,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k10""}","{""type"":""VString"",""value"":""ham""}"
-68,23,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-69,24,Invocation,ClientInterface.Delete,,"{""type"":""VString"",""value"":""k6""}",
-69,24,Response,ClientInterface.Delete,"{""type"":""VTuple"",""value"":[]}",,
-70,6,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k5""}","{""type"":""VString"",""value"":""peach""}"
-70,6,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-71,25,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k6""}","{""type"":""VString"",""value"":""ice""}"
-71,25,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-72,29,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k6""}","{""type"":""VString"",""value"":""fig""}"
-72,29,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-73,27,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k3""}","{""type"":""VString"",""value"":""grape""}"
-73,27,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-74,28,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k3""}","{""type"":""VString"",""value"":""cherry""}"
-74,28,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-75,7,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k9""}",
-75,7,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""banana""}}",,
-76,0,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k4""}",
-76,0,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":null}",,
-77,5,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k8""}",
-77,5,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":null}",,
-78,10,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k4""}",
-78,10,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""mango""}}",,
-79,15,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k4""}","{""type"":""VString"",""value"":""raisin""}"
-79,15,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-80,30,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k7""}",
-80,30,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""quince""}}",,
-81,17,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k5""}","{""type"":""VString"",""value"":""cherry""}"
-81,17,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-82,21,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k2""}",
-82,21,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""mango""}}",,
-83,22,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k10""}","{""type"":""VString"",""value"":""raisin""}"
-83,22,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-84,3,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k3""}","{""type"":""VString"",""value"":""kiwi""}"
-84,3,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-85,12,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k1""}","{""type"":""VString"",""value"":""raisin""}"
-85,12,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-86,31,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k4""}",
-86,31,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""mango""}}",,
-87,9,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k1""}",
-87,9,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""cherry""}}",,
-88,14,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k9""}",
-88,14,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""banana""}}",,
-89,32,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k4""}","{""type"":""VString"",""value"":""mango""}"
-89,32,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-90,33,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k10""}","{""type"":""VString"",""value"":""ham""}"
-90,33,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-91,11,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k6""}",
-91,11,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""fig""}}",,
-92,34,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k2""}",
-92,34,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""mango""}}",,
-93,7,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k7""}","{""type"":""VString"",""value"":""peach""}"
-93,7,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-94,6,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k10""}","{""type"":""VString"",""value"":""elder""}"
-94,6,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-95,19,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k8""}",
-95,19,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""mango""}}",,
-96,0,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k8""}",
-96,0,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""tomato""}}",,
-97,2,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k10""}","{""type"":""VString"",""value"":""kiwi""}"
-97,2,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-98,13,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k8""}",
-98,13,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""mango""}}",,
-99,14,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k5""}",
-99,14,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""cherry""}}",,
-100,1,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k1""}","{""type"":""VString"",""value"":""grape""}"
-100,1,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-101,8,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k4""}","{""type"":""VString"",""value"":""banana""}"
-101,8,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-102,9,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k5""}","{""type"":""VString"",""value"":""nectar""}"
-102,9,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-103,16,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k1""}",
-103,16,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""cherry""}}",,
-104,17,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k6""}",
-104,17,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""ice""}}",,
-105,4,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k8""}","{""type"":""VString"",""value"":""mango""}"
-105,4,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-106,18,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k2""}",
-106,18,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""jam""}}",,
-107,20,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k9""}",
-107,20,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""elder""}}",,
-108,23,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k10""}","{""type"":""VString"",""value"":""cherry""}"
-108,23,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-109,24,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k7""}",
-109,24,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""peach""}}",,
-110,25,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k3""}","{""type"":""VString"",""value"":""lemon""}"
-110,25,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-111,10,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k3""}","{""type"":""VString"",""value"":""kiwi""}"
-111,10,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-112,1,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k2""}","{""type"":""VString"",""value"":""jam""}"
-112,1,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-113,3,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k3""}","{""type"":""VString"",""value"":""raisin""}"
-113,3,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-114,26,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k1""}","{""type"":""VString"",""value"":""apple""}"
-114,26,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-115,14,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k5""}",
-115,14,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""cherry""}}",,
-116,27,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k9""}","{""type"":""VString"",""value"":""ham""}"
-116,27,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-117,28,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k6""}",
-117,28,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""fig""}}",,
-118,29,Invocation,ClientInterface.Delete,,"{""type"":""VString"",""value"":""k3""}",
-118,29,Response,ClientInterface.Delete,"{""type"":""VTuple"",""value"":[]}",,
-119,5,Invocation,ClientInterface.Delete,,"{""type"":""VString"",""value"":""k3""}",
-119,5,Response,ClientInterface.Delete,"{""type"":""VTuple"",""value"":[]}",,
-120,22,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k10""}","{""type"":""VString"",""value"":""nectar""}"
-120,22,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-121,30,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k6""}",
-121,30,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""fig""}}",,
-122,31,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k1""}","{""type"":""VString"",""value"":""mango""}"
-122,31,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-123,35,Invocation,ClientInterface.Delete,,"{""type"":""VString"",""value"":""k10""}",
-123,35,Response,ClientInterface.Delete,"{""type"":""VTuple"",""value"":[]}",,
-124,1,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k6""}",
-124,1,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""fig""}}",,
-125,0,Invocation,ClientInterface.Delete,,"{""type"":""VString"",""value"":""k2""}",
-125,0,Response,ClientInterface.Delete,"{""type"":""VTuple"",""value"":[]}",,
-126,2,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k8""}","{""type"":""VString"",""value"":""grape""}"
-126,2,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-127,7,Invocation,ClientInterface.Delete,,"{""type"":""VString"",""value"":""k8""}",
-127,7,Response,ClientInterface.Delete,"{""type"":""VTuple"",""value"":[]}",,
-128,15,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k10""}",
-128,15,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""kiwi""}}",,
-129,12,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k9""}","{""type"":""VString"",""value"":""kiwi""}"
-129,12,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-130,21,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k8""}",
-130,21,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""grape""}}",,
-131,11,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k10""}",
-131,11,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""ham""}}",,
-132,4,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k1""}","{""type"":""VString"",""value"":""apple""}"
-132,4,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-133,6,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k7""}","{""type"":""VString"",""value"":""mango""}"
-133,6,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-134,14,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k1""}","{""type"":""VString"",""value"":""raisin""}"
-134,14,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-135,17,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k2""}",
-135,17,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""jam""}}",,
-136,18,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k6""}","{""type"":""VString"",""value"":""banana""}"
-136,18,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-137,19,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k7""}",
-137,19,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""straw""}}",,
-138,9,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k7""}",
-138,9,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""mango""}}",,
-139,25,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k5""}",
-139,25,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""nectar""}}",,
-140,31,Invocation,ClientInterface.Delete,,"{""type"":""VString"",""value"":""k1""}",
-140,31,Response,ClientInterface.Delete,"{""type"":""VTuple"",""value"":[]}",,
-141,29,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k2""}","{""type"":""VString"",""value"":""peach""}"
-141,29,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-142,33,Invocation,ClientInterface.Delete,,"{""type"":""VString"",""value"":""k3""}",
-142,33,Response,ClientInterface.Delete,"{""type"":""VTuple"",""value"":[]}",,
-143,34,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k5""}",
-143,34,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""nectar""}}",,
-144,16,Invocation,ClientInterface.Delete,,"{""type"":""VString"",""value"":""k9""}",
-144,16,Response,ClientInterface.Delete,"{""type"":""VTuple"",""value"":[]}",,
-145,24,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k7""}",
-145,24,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""peach""}}",,
-146,28,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k9""}","{""type"":""VString"",""value"":""banana""}"
-146,28,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-147,32,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k9""}","{""type"":""VString"",""value"":""elder""}"
-147,32,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-148,35,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k5""}","{""type"":""VString"",""value"":""mango""}"
-148,35,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-149,36,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k6""}","{""type"":""VString"",""value"":""straw""}"
-149,36,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-150,8,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k10""}","{""type"":""VString"",""value"":""elder""}"
-150,8,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-151,3,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k4""}","{""type"":""VString"",""value"":""olive""}"
-151,3,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-152,10,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k9""}",
-152,10,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""elder""}}",,
-153,19,Invocation,ClientInterface.Delete,,"{""type"":""VString"",""value"":""k8""}",
-153,19,Response,ClientInterface.Delete,"{""type"":""VTuple"",""value"":[]}",,
-154,17,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k7""}",
-154,17,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""mango""}}",,
-155,20,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k5""}",
-155,20,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""mango""}}",,
-156,26,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k3""}",
-156,26,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":null}",,
-157,13,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k4""}",
-157,13,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""olive""}}",,
-158,0,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k6""}","{""type"":""VString"",""value"":""banana""}"
-158,0,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-159,1,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k1""}","{""type"":""VString"",""value"":""raisin""}"
-159,1,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-160,4,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k6""}",
-160,4,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""banana""}}",,
-161,3,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k10""}",
-161,3,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""tomato""}}",,
-162,6,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k8""}","{""type"":""VString"",""value"":""raisin""}"
-162,6,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-163,16,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k4""}",
-163,16,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""olive""}}",,
-164,5,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k2""}","{""type"":""VString"",""value"":""cherry""}"
-164,5,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-165,10,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k7""}","{""type"":""VString"",""value"":""straw""}"
-165,10,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-166,24,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k4""}",
-166,24,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""olive""}}",,
-167,27,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k3""}","{""type"":""VString"",""value"":""tomato""}"
-167,27,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-168,30,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k9""}","{""type"":""VString"",""value"":""jam""}"
-168,30,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-169,34,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k9""}",
-169,34,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""ice""}}",,
-170,23,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k4""}","{""type"":""VString"",""value"":""raisin""}"
-170,23,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-171,2,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k4""}",
-171,2,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""banana""}}",,
-172,7,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k8""}",
-172,7,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""grape""}}",,
-173,13,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k2""}",
-173,13,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""cherry""}}",,
-174,18,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k5""}","{""type"":""VString"",""value"":""quince""}"
-174,18,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-175,11,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k10""}","{""type"":""VString"",""value"":""quince""}"
-175,11,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-176,25,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k2""}","{""type"":""VString"",""value"":""apple""}"
-176,25,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-177,29,Invocation,ClientInterface.Delete,,"{""type"":""VString"",""value"":""k10""}",
-177,29,Response,ClientInterface.Delete,"{""type"":""VTuple"",""value"":[]}",,
-178,5,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k4""}","{""type"":""VString"",""value"":""banana""}"
-178,5,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-179,14,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k1""}",
-179,14,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""raisin""}}",,
-180,15,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k9""}","{""type"":""VString"",""value"":""lemon""}"
-180,15,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-181,3,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k6""}","{""type"":""VString"",""value"":""ham""}"
-181,3,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-182,22,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k5""}",
-182,22,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""mango""}}",,
-183,31,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k7""}","{""type"":""VString"",""value"":""banana""}"
-183,31,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-184,35,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k3""}","{""type"":""VString"",""value"":""banana""}"
-184,35,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-185,36,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k6""}","{""type"":""VString"",""value"":""olive""}"
-185,36,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-186,37,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k2""}",
-186,37,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""cherry""}}",,
-187,0,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k3""}","{""type"":""VString"",""value"":""date""}"
-187,0,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-188,12,Invocation,ClientInterface.Delete,,"{""type"":""VString"",""value"":""k1""}",
-188,12,Response,ClientInterface.Delete,"{""type"":""VTuple"",""value"":[]}",,
-189,13,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k4""}",
-189,13,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""banana""}}",,
-190,21,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k8""}",
-190,21,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""raisin""}}",,
-191,26,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k2""}",
-191,26,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""cherry""}}",,
-192,38,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k8""}","{""type"":""VString"",""value"":""ham""}"
-192,38,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-193,28,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k9""}","{""type"":""VString"",""value"":""nectar""}"
-193,28,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-194,8,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k10""}","{""type"":""VString"",""value"":""tomato""}"
-194,8,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-195,39,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k10""}",
-195,39,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""quince""}}",,
-196,40,Invocation,ClientInterface.Delete,,"{""type"":""VString"",""value"":""k3""}",
-196,40,Response,ClientInterface.Delete,"{""type"":""VTuple"",""value"":[]}",,
-197,41,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k1""}","{""type"":""VString"",""value"":""straw""}"
-197,41,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-198,9,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k5""}","{""type"":""VString"",""value"":""mango""}"
-198,9,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-199,15,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k9""}","{""type"":""VString"",""value"":""ice""}"
-199,15,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-200,18,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k7""}",
-200,18,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""banana""}}",,
-201,19,Invocation,ClientInterface.Delete,,"{""type"":""VString"",""value"":""k10""}",
-201,19,Response,ClientInterface.Delete,"{""type"":""VTuple"",""value"":[]}",,
-202,24,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k5""}","{""type"":""VString"",""value"":""fig""}"
-202,24,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-203,33,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k9""}",
-203,33,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""nectar""}}",,
-204,23,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k5""}","{""type"":""VString"",""value"":""quince""}"
-204,23,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-205,6,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k1""}",
-205,6,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""ice""}}",,
-206,22,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k8""}",
-206,22,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""raisin""}}",,
-207,20,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k9""}",
-207,20,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""nectar""}}",,
-208,1,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k7""}","{""type"":""VString"",""value"":""olive""}"
-208,1,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-209,3,Invocation,ClientInterface.Delete,,"{""type"":""VString"",""value"":""k4""}",
-209,3,Response,ClientInterface.Delete,"{""type"":""VTuple"",""value"":[]}",,
-210,5,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k5""}","{""type"":""VString"",""value"":""date""}"
-210,5,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-211,17,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k3""}","{""type"":""VString"",""value"":""date""}"
-211,17,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-212,26,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k2""}","{""type"":""VString"",""value"":""elder""}"
-212,26,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-213,27,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k10""}","{""type"":""VString"",""value"":""grape""}"
-213,27,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-214,29,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k6""}","{""type"":""VString"",""value"":""straw""}"
-214,29,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-215,32,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k6""}","{""type"":""VString"",""value"":""ice""}"
-215,32,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-216,37,Invocation,ClientInterface.Delete,,"{""type"":""VString"",""value"":""k3""}",
-216,37,Response,ClientInterface.Delete,"{""type"":""VTuple"",""value"":[]}",,
-217,42,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k8""}",
-217,42,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""tomato""}}",,
-218,4,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k2""}","{""type"":""VString"",""value"":""olive""}"
-218,4,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-219,7,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k8""}",
-219,7,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""raisin""}}",,
-220,11,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k1""}",
-220,11,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""raisin""}}",,
-221,14,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k3""}",
-221,14,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""date""}}",,
-222,16,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k7""}",
-222,16,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""banana""}}",,
-223,22,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k3""}","{""type"":""VString"",""value"":""jam""}"
-223,22,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-224,24,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k6""}","{""type"":""VString"",""value"":""straw""}"
-224,24,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-225,25,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k9""}","{""type"":""VString"",""value"":""fig""}"
-225,25,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-226,10,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k10""}",
-226,10,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""olive""}}",,
-227,2,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k8""}","{""type"":""VString"",""value"":""tomato""}"
-227,2,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-228,8,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k2""}","{""type"":""VString"",""value"":""ice""}"
-228,8,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-229,26,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k1""}","{""type"":""VString"",""value"":""kiwi""}"
-229,26,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-230,34,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k3""}",
-230,34,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""quince""}}",,
-231,28,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k4""}","{""type"":""VString"",""value"":""kiwi""}"
-231,28,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-232,35,Invocation,ClientInterface.Delete,,"{""type"":""VString"",""value"":""k2""}",
-232,35,Response,ClientInterface.Delete,"{""type"":""VTuple"",""value"":[]}",,
-233,12,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k10""}","{""type"":""VString"",""value"":""olive""}"
-233,12,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-234,13,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k2""}",
-234,13,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""ice""}}",,
-235,36,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k1""}","{""type"":""VString"",""value"":""ice""}"
-235,36,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-236,38,Invocation,ClientInterface.Delete,,"{""type"":""VString"",""value"":""k10""}",
-236,38,Response,ClientInterface.Delete,"{""type"":""VTuple"",""value"":[]}",,
-237,39,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k8""}","{""type"":""VString"",""value"":""jam""}"
-237,39,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-238,3,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k4""}","{""type"":""VString"",""value"":""quince""}"
-238,3,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-239,15,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k9""}","{""type"":""VString"",""value"":""ice""}"
-239,15,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-240,20,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k7""}",
-240,20,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""banana""}}",,
-241,9,Invocation,ClientInterface.Delete,,"{""type"":""VString"",""value"":""k5""}",
-241,9,Response,ClientInterface.Delete,"{""type"":""VTuple"",""value"":[]}",,
-242,2,Invocation,ClientInterface.Delete,,"{""type"":""VString"",""value"":""k6""}",
-242,2,Response,ClientInterface.Delete,"{""type"":""VTuple"",""value"":[]}",,
-243,4,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k7""}",
-243,4,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""banana""}}",,
-244,0,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k5""}","{""type"":""VString"",""value"":""grape""}"
-244,0,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-245,18,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k10""}","{""type"":""VString"",""value"":""jam""}"
-245,18,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-246,21,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k2""}","{""type"":""VString"",""value"":""apple""}"
-246,21,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-247,23,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k2""}","{""type"":""VString"",""value"":""kiwi""}"
-247,23,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-248,27,Invocation,ClientInterface.Delete,,"{""type"":""VString"",""value"":""k4""}",
-248,27,Response,ClientInterface.Delete,"{""type"":""VTuple"",""value"":[]}",,
-249,29,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k5""}",
-249,29,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""grape""}}",,
-250,20,Invocation,ClientInterface.Delete,,"{""type"":""VString"",""value"":""k8""}",
-250,20,Response,ClientInterface.Delete,"{""type"":""VTuple"",""value"":[]}",,
-251,7,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k1""}","{""type"":""VString"",""value"":""raisin""}"
-251,7,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-252,22,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k4""}","{""type"":""VString"",""value"":""jam""}"
-252,22,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-253,30,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k8""}",
-253,30,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":null}",,
-254,17,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k9""}",
-254,17,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""cherry""}}",,
-255,19,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k6""}",
-255,19,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""tomato""}}",,
-256,5,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k3""}","{""type"":""VString"",""value"":""quince""}"
-256,5,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-257,1,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k5""}",
-257,1,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""date""}}",,
-258,10,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k7""}","{""type"":""VString"",""value"":""ham""}"
-258,10,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-259,14,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k1""}",
-259,14,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""olive""}}",,
-260,6,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k9""}","{""type"":""VString"",""value"":""cherry""}"
-260,6,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-261,31,Invocation,ClientInterface.Delete,,"{""type"":""VString"",""value"":""k1""}",
-261,31,Response,ClientInterface.Delete,"{""type"":""VTuple"",""value"":[]}",,
-262,32,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k3""}",
-262,32,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""quince""}}",,
-263,8,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k8""}",
-263,8,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""tomato""}}",,
-264,11,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k7""}",
-264,11,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""banana""}}",,
-265,12,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k4""}","{""type"":""VString"",""value"":""quince""}"
-265,12,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-266,13,Invocation,ClientInterface.Delete,,"{""type"":""VString"",""value"":""k6""}",
-266,13,Response,ClientInterface.Delete,"{""type"":""VTuple"",""value"":[]}",,
-267,16,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k1""}","{""type"":""VString"",""value"":""date""}"
-267,16,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-268,22,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k5""}",
-268,22,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""grape""}}",,
-269,33,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k7""}",
-269,33,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""banana""}}",,
-270,35,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k10""}",
-270,35,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""jam""}}",,
-271,24,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k3""}",
-271,24,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""jam""}}",,
-272,36,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k1""}","{""type"":""VString"",""value"":""olive""}"
-272,36,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-273,37,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k8""}","{""type"":""VString"",""value"":""tomato""}"
-273,37,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-274,38,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k6""}","{""type"":""VString"",""value"":""tomato""}"
-274,38,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-275,25,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k8""}","{""type"":""VString"",""value"":""peach""}"
-275,25,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-276,40,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k3""}","{""type"":""VString"",""value"":""jam""}"
-276,40,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-277,41,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k6""}","{""type"":""VString"",""value"":""fig""}"
-277,41,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-278,42,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k9""}","{""type"":""VString"",""value"":""cherry""}"
-278,42,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-279,3,Invocation,ClientInterface.Delete,,"{""type"":""VString"",""value"":""k5""}",
-279,3,Response,ClientInterface.Delete,"{""type"":""VTuple"",""value"":[]}",,
-280,43,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k6""}",
-280,43,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""tomato""}}",,
-281,7,Invocation,ClientInterface.Delete,,"{""type"":""VString"",""value"":""k4""}",
-281,7,Response,ClientInterface.Delete,"{""type"":""VTuple"",""value"":[]}",,
-282,44,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k9""}",
-282,44,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""cherry""}}",,
-283,45,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k7""}",
-283,45,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""banana""}}",,
-284,46,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k4""}","{""type"":""VString"",""value"":""jam""}"
-284,46,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-285,15,Invocation,ClientInterface.Delete,,"{""type"":""VString"",""value"":""k9""}",
-285,15,Response,ClientInterface.Delete,"{""type"":""VTuple"",""value"":[]}",,
-286,47,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k10""}","{""type"":""VString"",""value"":""kiwi""}"
-286,47,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-287,9,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k2""}",
-287,9,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""kiwi""}}",,
-288,5,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k5""}","{""type"":""VString"",""value"":""jam""}"
-288,5,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-289,11,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k4""}",
-289,11,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""jam""}}",,
-290,4,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k5""}",
-290,4,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""jam""}}",,
-291,16,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k7""}",
-291,16,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""banana""}}",,
-292,19,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k6""}",
-292,19,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""fig""}}",,
-293,20,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k10""}","{""type"":""VString"",""value"":""date""}"
-293,20,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-294,0,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k7""}","{""type"":""VString"",""value"":""olive""}"
-294,0,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-295,1,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k8""}",
-295,1,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""tomato""}}",,
-296,2,Invocation,ClientInterface.Delete,,"{""type"":""VString"",""value"":""k9""}",
-296,2,Response,ClientInterface.Delete,"{""type"":""VTuple"",""value"":[]}",,
-297,5,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k10""}","{""type"":""VString"",""value"":""nectar""}"
-297,5,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-298,10,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k8""}",
-298,10,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""tomato""}}",,
-299,12,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k4""}",
-299,12,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""jam""}}",,
-300,13,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k8""}",
-300,13,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""tomato""}}",,
-301,15,Invocation,ClientInterface.Delete,,"{""type"":""VString"",""value"":""k7""}",
-301,15,Response,ClientInterface.Delete,"{""type"":""VTuple"",""value"":[]}",,
-302,6,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k10""}","{""type"":""VString"",""value"":""jam""}"
-302,6,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-303,2,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k9""}","{""type"":""VString"",""value"":""peach""}"
-303,2,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-304,0,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k10""}","{""type"":""VString"",""value"":""olive""}"
-304,0,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-305,3,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k7""}","{""type"":""VString"",""value"":""kiwi""}"
-305,3,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-306,4,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k6""}",
-306,4,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""tomato""}}",,
-307,1,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k9""}",
-307,1,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""peach""}}",,
-308,0,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k10""}",
-308,0,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""olive""}}",,
-309,2,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k7""}",
-309,2,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""kiwi""}}",,
+UniqueID,ClientID,Kind,Action,Payload
+0,0,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k2\""}"", ""{\""type\"":\""VString\"",\""value\"":\""kiwi\""}""]"
+0,0,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+1,1,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k3\""}"", ""{\""type\"":\""VString\"",\""value\"":\""straw\""}""]"
+1,1,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+2,2,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k1\""}"", ""{\""type\"":\""VString\"",\""value\"":\""lemon\""}""]"
+2,2,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+3,3,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k1\""}"", ""{\""type\"":\""VString\"",\""value\"":\""peach\""}""]"
+3,3,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+4,4,Invocation,ClientInterface.Delete,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k1\""}"", """"]"
+4,4,Response,ClientInterface.Delete,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+5,5,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k5\""}"", ""{\""type\"":\""VString\"",\""value\"":\""banana\""}""]"
+5,5,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+6,6,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k3\""}"", """"]"
+6,6,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""straw\""}}"", """", """"]"
+7,3,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k2\""}"", """"]"
+7,3,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""kiwi\""}}"", """", """"]"
+8,7,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k4\""}"", ""{\""type\"":\""VString\"",\""value\"":\""raisin\""}""]"
+8,7,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+9,8,Invocation,ClientInterface.Delete,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k1\""}"", """"]"
+9,8,Response,ClientInterface.Delete,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+10,9,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k3\""}"", """"]"
+10,9,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""apple\""}}"", """", """"]"
+11,10,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k3\""}"", ""{\""type\"":\""VString\"",\""value\"":\""apple\""}""]"
+11,10,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+12,11,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k5\""}"", ""{\""type\"":\""VString\"",\""value\"":\""banana\""}""]"
+12,11,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+13,12,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k2\""}"", ""{\""type\"":\""VString\"",\""value\"":\""banana\""}""]"
+13,12,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+14,13,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k3\""}"", ""{\""type\"":\""VString\"",\""value\"":\""jam\""}""]"
+14,13,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+15,0,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k8\""}"", ""{\""type\"":\""VString\"",\""value\"":\""fig\""}""]"
+15,0,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+16,1,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k7\""}"", ""{\""type\"":\""VString\"",\""value\"":\""peach\""}""]"
+16,1,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+17,14,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k9\""}"", """"]"
+17,14,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":null}"", """", """"]"
+18,4,Invocation,ClientInterface.Delete,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k4\""}"", """"]"
+18,4,Response,ClientInterface.Delete,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+19,15,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k6\""}"", ""{\""type\"":\""VString\"",\""value\"":\""elder\""}""]"
+19,15,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+20,16,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k1\""}"", ""{\""type\"":\""VString\"",\""value\"":\""cherry\""}""]"
+20,16,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+21,7,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k9\""}"", ""{\""type\"":\""VString\"",\""value\"":\""cherry\""}""]"
+21,7,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+22,17,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k1\""}"", """"]"
+22,17,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""cherry\""}}"", """", """"]"
+23,18,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k7\""}"", """"]"
+23,18,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""peach\""}}"", """", """"]"
+24,19,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k5\""}"", ""{\""type\"":\""VString\"",\""value\"":\""apple\""}""]"
+24,19,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+25,3,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k2\""}"", """"]"
+25,3,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""kiwi\""}}"", """", """"]"
+26,20,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k4\""}"", ""{\""type\"":\""VString\"",\""value\"":\""peach\""}""]"
+26,20,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+27,21,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k9\""}"", """"]"
+27,21,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""cherry\""}}"", """", """"]"
+28,22,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k5\""}"", ""{\""type\"":\""VString\"",\""value\"":\""elder\""}""]"
+28,22,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+29,23,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k2\""}"", ""{\""type\"":\""VString\"",\""value\"":\""straw\""}""]"
+29,23,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+30,6,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k2\""}"", ""{\""type\"":\""VString\"",\""value\"":\""date\""}""]"
+30,6,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+31,5,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k6\""}"", """"]"
+31,5,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""elder\""}}"", """", """"]"
+32,24,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k7\""}"", """"]"
+32,24,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""peach\""}}"", """", """"]"
+33,25,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k6\""}"", """"]"
+33,25,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""elder\""}}"", """", """"]"
+34,2,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k2\""}"", """"]"
+34,2,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""banana\""}}"", """", """"]"
+35,12,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k4\""}"", """"]"
+35,12,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""peach\""}}"", """", """"]"
+36,20,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k8\""}"", ""{\""type\"":\""VString\"",\""value\"":\""olive\""}""]"
+36,20,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+37,26,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k10\""}"", ""{\""type\"":\""VString\"",\""value\"":\""mango\""}""]"
+37,26,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+38,27,Invocation,ClientInterface.Delete,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k5\""}"", """"]"
+38,27,Response,ClientInterface.Delete,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+39,28,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k1\""}"", """"]"
+39,28,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""cherry\""}}"", """", """"]"
+40,29,Invocation,ClientInterface.Delete,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k5\""}"", """"]"
+40,29,Response,ClientInterface.Delete,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+41,30,Invocation,ClientInterface.Delete,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k7\""}"", """"]"
+41,30,Response,ClientInterface.Delete,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+42,31,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k3\""}"", ""{\""type\"":\""VString\"",\""value\"":\""jam\""}""]"
+42,31,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+43,32,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k6\""}"", ""{\""type\"":\""VString\"",\""value\"":\""apple\""}""]"
+43,32,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+44,19,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k5\""}"", ""{\""type\"":\""VString\"",\""value\"":\""peach\""}""]"
+44,19,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+45,33,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k9\""}"", ""{\""type\"":\""VString\"",\""value\"":\""banana\""}""]"
+45,33,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+46,34,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k3\""}"", """"]"
+46,34,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""jam\""}}"", """", """"]"
+47,10,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k2\""}"", ""{\""type\"":\""VString\"",\""value\"":\""elder\""}""]"
+47,10,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+48,35,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k7\""}"", ""{\""type\"":\""VString\"",\""value\"":\""tomato\""}""]"
+48,35,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+49,9,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k2\""}"", ""{\""type\"":\""VString\"",\""value\"":\""mango\""}""]"
+49,9,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+50,26,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k10\""}"", """"]"
+50,26,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""mango\""}}"", """", """"]"
+51,15,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k4\""}"", ""{\""type\"":\""VString\"",\""value\"":\""quince\""}""]"
+51,15,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+52,5,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k6\""}"", """"]"
+52,5,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""elder\""}}"", """", """"]"
+53,0,Invocation,ClientInterface.Delete,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k8\""}"", """"]"
+53,0,Response,ClientInterface.Delete,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+54,4,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k7\""}"", ""{\""type\"":\""VString\"",\""value\"":\""quince\""}""]"
+54,4,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+55,1,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k4\""}"", ""{\""type\"":\""VString\"",\""value\"":\""mango\""}""]"
+55,1,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+56,3,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k1\""}"", """"]"
+56,3,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""cherry\""}}"", """", """"]"
+57,7,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k1\""}"", """"]"
+57,7,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""cherry\""}}"", """", """"]"
+58,8,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k5\""}"", ""{\""type\"":\""VString\"",\""value\"":\""elder\""}""]"
+58,8,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+59,11,Invocation,ClientInterface.Delete,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k3\""}"", """"]"
+59,11,Response,ClientInterface.Delete,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+60,2,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k8\""}"", """"]"
+60,2,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""tomato\""}}"", """", """"]"
+61,13,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k2\""}"", """"]"
+61,13,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""mango\""}}"", """", """"]"
+62,15,Invocation,ClientInterface.Delete,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k4\""}"", """"]"
+62,15,Response,ClientInterface.Delete,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+63,16,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k6\""}"", ""{\""type\"":\""VString\"",\""value\"":\""cherry\""}""]"
+63,16,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+64,12,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k2\""}"", """"]"
+64,12,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""mango\""}}"", """", """"]"
+65,14,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k7\""}"", ""{\""type\"":\""VString\"",\""value\"":\""kiwi\""}""]"
+65,14,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+66,18,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k8\""}"", ""{\""type\"":\""VString\"",\""value\"":\""tomato\""}""]"
+66,18,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+67,20,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k9\""}"", ""{\""type\"":\""VString\"",\""value\"":\""elder\""}""]"
+67,20,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+68,23,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k10\""}"", ""{\""type\"":\""VString\"",\""value\"":\""ham\""}""]"
+68,23,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+69,24,Invocation,ClientInterface.Delete,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k6\""}"", """"]"
+69,24,Response,ClientInterface.Delete,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+70,6,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k5\""}"", ""{\""type\"":\""VString\"",\""value\"":\""peach\""}""]"
+70,6,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+71,25,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k6\""}"", ""{\""type\"":\""VString\"",\""value\"":\""ice\""}""]"
+71,25,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+72,29,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k6\""}"", ""{\""type\"":\""VString\"",\""value\"":\""fig\""}""]"
+72,29,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+73,27,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k3\""}"", ""{\""type\"":\""VString\"",\""value\"":\""grape\""}""]"
+73,27,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+74,28,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k3\""}"", ""{\""type\"":\""VString\"",\""value\"":\""cherry\""}""]"
+74,28,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+75,7,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k9\""}"", """"]"
+75,7,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""banana\""}}"", """", """"]"
+76,0,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k4\""}"", """"]"
+76,0,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":null}"", """", """"]"
+77,5,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k8\""}"", """"]"
+77,5,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":null}"", """", """"]"
+78,10,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k4\""}"", """"]"
+78,10,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""mango\""}}"", """", """"]"
+79,15,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k4\""}"", ""{\""type\"":\""VString\"",\""value\"":\""raisin\""}""]"
+79,15,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+80,30,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k7\""}"", """"]"
+80,30,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""quince\""}}"", """", """"]"
+81,17,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k5\""}"", ""{\""type\"":\""VString\"",\""value\"":\""cherry\""}""]"
+81,17,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+82,21,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k2\""}"", """"]"
+82,21,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""mango\""}}"", """", """"]"
+83,22,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k10\""}"", ""{\""type\"":\""VString\"",\""value\"":\""raisin\""}""]"
+83,22,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+84,3,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k3\""}"", ""{\""type\"":\""VString\"",\""value\"":\""kiwi\""}""]"
+84,3,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+85,12,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k1\""}"", ""{\""type\"":\""VString\"",\""value\"":\""raisin\""}""]"
+85,12,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+86,31,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k4\""}"", """"]"
+86,31,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""mango\""}}"", """", """"]"
+87,9,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k1\""}"", """"]"
+87,9,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""cherry\""}}"", """", """"]"
+88,14,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k9\""}"", """"]"
+88,14,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""banana\""}}"", """", """"]"
+89,32,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k4\""}"", ""{\""type\"":\""VString\"",\""value\"":\""mango\""}""]"
+89,32,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+90,33,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k10\""}"", ""{\""type\"":\""VString\"",\""value\"":\""ham\""}""]"
+90,33,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+91,11,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k6\""}"", """"]"
+91,11,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""fig\""}}"", """", """"]"
+92,34,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k2\""}"", """"]"
+92,34,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""mango\""}}"", """", """"]"
+93,7,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k7\""}"", ""{\""type\"":\""VString\"",\""value\"":\""peach\""}""]"
+93,7,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+94,6,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k10\""}"", ""{\""type\"":\""VString\"",\""value\"":\""elder\""}""]"
+94,6,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+95,19,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k8\""}"", """"]"
+95,19,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""mango\""}}"", """", """"]"
+96,0,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k8\""}"", """"]"
+96,0,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""tomato\""}}"", """", """"]"
+97,2,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k10\""}"", ""{\""type\"":\""VString\"",\""value\"":\""kiwi\""}""]"
+97,2,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+98,13,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k8\""}"", """"]"
+98,13,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""mango\""}}"", """", """"]"
+99,14,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k5\""}"", """"]"
+99,14,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""cherry\""}}"", """", """"]"
+100,1,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k1\""}"", ""{\""type\"":\""VString\"",\""value\"":\""grape\""}""]"
+100,1,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+101,8,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k4\""}"", ""{\""type\"":\""VString\"",\""value\"":\""banana\""}""]"
+101,8,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+102,9,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k5\""}"", ""{\""type\"":\""VString\"",\""value\"":\""nectar\""}""]"
+102,9,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+103,16,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k1\""}"", """"]"
+103,16,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""cherry\""}}"", """", """"]"
+104,17,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k6\""}"", """"]"
+104,17,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""ice\""}}"", """", """"]"
+105,4,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k8\""}"", ""{\""type\"":\""VString\"",\""value\"":\""mango\""}""]"
+105,4,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+106,18,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k2\""}"", """"]"
+106,18,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""jam\""}}"", """", """"]"
+107,20,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k9\""}"", """"]"
+107,20,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""elder\""}}"", """", """"]"
+108,23,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k10\""}"", ""{\""type\"":\""VString\"",\""value\"":\""cherry\""}""]"
+108,23,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+109,24,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k7\""}"", """"]"
+109,24,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""peach\""}}"", """", """"]"
+110,25,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k3\""}"", ""{\""type\"":\""VString\"",\""value\"":\""lemon\""}""]"
+110,25,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+111,10,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k3\""}"", ""{\""type\"":\""VString\"",\""value\"":\""kiwi\""}""]"
+111,10,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+112,1,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k2\""}"", ""{\""type\"":\""VString\"",\""value\"":\""jam\""}""]"
+112,1,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+113,3,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k3\""}"", ""{\""type\"":\""VString\"",\""value\"":\""raisin\""}""]"
+113,3,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+114,26,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k1\""}"", ""{\""type\"":\""VString\"",\""value\"":\""apple\""}""]"
+114,26,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+115,14,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k5\""}"", """"]"
+115,14,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""cherry\""}}"", """", """"]"
+116,27,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k9\""}"", ""{\""type\"":\""VString\"",\""value\"":\""ham\""}""]"
+116,27,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+117,28,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k6\""}"", """"]"
+117,28,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""fig\""}}"", """", """"]"
+118,29,Invocation,ClientInterface.Delete,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k3\""}"", """"]"
+118,29,Response,ClientInterface.Delete,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+119,5,Invocation,ClientInterface.Delete,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k3\""}"", """"]"
+119,5,Response,ClientInterface.Delete,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+120,22,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k10\""}"", ""{\""type\"":\""VString\"",\""value\"":\""nectar\""}""]"
+120,22,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+121,30,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k6\""}"", """"]"
+121,30,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""fig\""}}"", """", """"]"
+122,31,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k1\""}"", ""{\""type\"":\""VString\"",\""value\"":\""mango\""}""]"
+122,31,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+123,35,Invocation,ClientInterface.Delete,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k10\""}"", """"]"
+123,35,Response,ClientInterface.Delete,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+124,1,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k6\""}"", """"]"
+124,1,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""fig\""}}"", """", """"]"
+125,0,Invocation,ClientInterface.Delete,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k2\""}"", """"]"
+125,0,Response,ClientInterface.Delete,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+126,2,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k8\""}"", ""{\""type\"":\""VString\"",\""value\"":\""grape\""}""]"
+126,2,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+127,7,Invocation,ClientInterface.Delete,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k8\""}"", """"]"
+127,7,Response,ClientInterface.Delete,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+128,15,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k10\""}"", """"]"
+128,15,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""kiwi\""}}"", """", """"]"
+129,12,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k9\""}"", ""{\""type\"":\""VString\"",\""value\"":\""kiwi\""}""]"
+129,12,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+130,21,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k8\""}"", """"]"
+130,21,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""grape\""}}"", """", """"]"
+131,11,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k10\""}"", """"]"
+131,11,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""ham\""}}"", """", """"]"
+132,4,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k1\""}"", ""{\""type\"":\""VString\"",\""value\"":\""apple\""}""]"
+132,4,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+133,6,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k7\""}"", ""{\""type\"":\""VString\"",\""value\"":\""mango\""}""]"
+133,6,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+134,14,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k1\""}"", ""{\""type\"":\""VString\"",\""value\"":\""raisin\""}""]"
+134,14,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+135,17,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k2\""}"", """"]"
+135,17,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""jam\""}}"", """", """"]"
+136,18,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k6\""}"", ""{\""type\"":\""VString\"",\""value\"":\""banana\""}""]"
+136,18,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+137,19,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k7\""}"", """"]"
+137,19,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""straw\""}}"", """", """"]"
+138,9,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k7\""}"", """"]"
+138,9,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""mango\""}}"", """", """"]"
+139,25,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k5\""}"", """"]"
+139,25,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""nectar\""}}"", """", """"]"
+140,31,Invocation,ClientInterface.Delete,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k1\""}"", """"]"
+140,31,Response,ClientInterface.Delete,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+141,29,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k2\""}"", ""{\""type\"":\""VString\"",\""value\"":\""peach\""}""]"
+141,29,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+142,33,Invocation,ClientInterface.Delete,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k3\""}"", """"]"
+142,33,Response,ClientInterface.Delete,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+143,34,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k5\""}"", """"]"
+143,34,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""nectar\""}}"", """", """"]"
+144,16,Invocation,ClientInterface.Delete,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k9\""}"", """"]"
+144,16,Response,ClientInterface.Delete,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+145,24,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k7\""}"", """"]"
+145,24,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""peach\""}}"", """", """"]"
+146,28,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k9\""}"", ""{\""type\"":\""VString\"",\""value\"":\""banana\""}""]"
+146,28,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+147,32,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k9\""}"", ""{\""type\"":\""VString\"",\""value\"":\""elder\""}""]"
+147,32,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+148,35,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k5\""}"", ""{\""type\"":\""VString\"",\""value\"":\""mango\""}""]"
+148,35,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+149,36,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k6\""}"", ""{\""type\"":\""VString\"",\""value\"":\""straw\""}""]"
+149,36,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+150,8,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k10\""}"", ""{\""type\"":\""VString\"",\""value\"":\""elder\""}""]"
+150,8,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+151,3,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k4\""}"", ""{\""type\"":\""VString\"",\""value\"":\""olive\""}""]"
+151,3,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+152,10,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k9\""}"", """"]"
+152,10,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""elder\""}}"", """", """"]"
+153,19,Invocation,ClientInterface.Delete,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k8\""}"", """"]"
+153,19,Response,ClientInterface.Delete,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+154,17,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k7\""}"", """"]"
+154,17,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""mango\""}}"", """", """"]"
+155,20,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k5\""}"", """"]"
+155,20,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""mango\""}}"", """", """"]"
+156,26,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k3\""}"", """"]"
+156,26,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":null}"", """", """"]"
+157,13,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k4\""}"", """"]"
+157,13,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""olive\""}}"", """", """"]"
+158,0,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k6\""}"", ""{\""type\"":\""VString\"",\""value\"":\""banana\""}""]"
+158,0,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+159,1,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k1\""}"", ""{\""type\"":\""VString\"",\""value\"":\""raisin\""}""]"
+159,1,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+160,4,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k6\""}"", """"]"
+160,4,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""banana\""}}"", """", """"]"
+161,3,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k10\""}"", """"]"
+161,3,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""tomato\""}}"", """", """"]"
+162,6,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k8\""}"", ""{\""type\"":\""VString\"",\""value\"":\""raisin\""}""]"
+162,6,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+163,16,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k4\""}"", """"]"
+163,16,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""olive\""}}"", """", """"]"
+164,5,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k2\""}"", ""{\""type\"":\""VString\"",\""value\"":\""cherry\""}""]"
+164,5,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+165,10,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k7\""}"", ""{\""type\"":\""VString\"",\""value\"":\""straw\""}""]"
+165,10,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+166,24,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k4\""}"", """"]"
+166,24,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""olive\""}}"", """", """"]"
+167,27,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k3\""}"", ""{\""type\"":\""VString\"",\""value\"":\""tomato\""}""]"
+167,27,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+168,30,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k9\""}"", ""{\""type\"":\""VString\"",\""value\"":\""jam\""}""]"
+168,30,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+169,34,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k9\""}"", """"]"
+169,34,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""ice\""}}"", """", """"]"
+170,23,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k4\""}"", ""{\""type\"":\""VString\"",\""value\"":\""raisin\""}""]"
+170,23,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+171,2,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k4\""}"", """"]"
+171,2,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""banana\""}}"", """", """"]"
+172,7,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k8\""}"", """"]"
+172,7,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""grape\""}}"", """", """"]"
+173,13,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k2\""}"", """"]"
+173,13,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""cherry\""}}"", """", """"]"
+174,18,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k5\""}"", ""{\""type\"":\""VString\"",\""value\"":\""quince\""}""]"
+174,18,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+175,11,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k10\""}"", ""{\""type\"":\""VString\"",\""value\"":\""quince\""}""]"
+175,11,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+176,25,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k2\""}"", ""{\""type\"":\""VString\"",\""value\"":\""apple\""}""]"
+176,25,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+177,29,Invocation,ClientInterface.Delete,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k10\""}"", """"]"
+177,29,Response,ClientInterface.Delete,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+178,5,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k4\""}"", ""{\""type\"":\""VString\"",\""value\"":\""banana\""}""]"
+178,5,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+179,14,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k1\""}"", """"]"
+179,14,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""raisin\""}}"", """", """"]"
+180,15,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k9\""}"", ""{\""type\"":\""VString\"",\""value\"":\""lemon\""}""]"
+180,15,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+181,3,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k6\""}"", ""{\""type\"":\""VString\"",\""value\"":\""ham\""}""]"
+181,3,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+182,22,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k5\""}"", """"]"
+182,22,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""mango\""}}"", """", """"]"
+183,31,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k7\""}"", ""{\""type\"":\""VString\"",\""value\"":\""banana\""}""]"
+183,31,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+184,35,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k3\""}"", ""{\""type\"":\""VString\"",\""value\"":\""banana\""}""]"
+184,35,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+185,36,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k6\""}"", ""{\""type\"":\""VString\"",\""value\"":\""olive\""}""]"
+185,36,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+186,37,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k2\""}"", """"]"
+186,37,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""cherry\""}}"", """", """"]"
+187,0,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k3\""}"", ""{\""type\"":\""VString\"",\""value\"":\""date\""}""]"
+187,0,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+188,12,Invocation,ClientInterface.Delete,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k1\""}"", """"]"
+188,12,Response,ClientInterface.Delete,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+189,13,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k4\""}"", """"]"
+189,13,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""banana\""}}"", """", """"]"
+190,21,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k8\""}"", """"]"
+190,21,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""raisin\""}}"", """", """"]"
+191,26,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k2\""}"", """"]"
+191,26,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""cherry\""}}"", """", """"]"
+192,38,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k8\""}"", ""{\""type\"":\""VString\"",\""value\"":\""ham\""}""]"
+192,38,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+193,28,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k9\""}"", ""{\""type\"":\""VString\"",\""value\"":\""nectar\""}""]"
+193,28,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+194,8,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k10\""}"", ""{\""type\"":\""VString\"",\""value\"":\""tomato\""}""]"
+194,8,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+195,39,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k10\""}"", """"]"
+195,39,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""quince\""}}"", """", """"]"
+196,40,Invocation,ClientInterface.Delete,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k3\""}"", """"]"
+196,40,Response,ClientInterface.Delete,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+197,41,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k1\""}"", ""{\""type\"":\""VString\"",\""value\"":\""straw\""}""]"
+197,41,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+198,9,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k5\""}"", ""{\""type\"":\""VString\"",\""value\"":\""mango\""}""]"
+198,9,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+199,15,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k9\""}"", ""{\""type\"":\""VString\"",\""value\"":\""ice\""}""]"
+199,15,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+200,18,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k7\""}"", """"]"
+200,18,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""banana\""}}"", """", """"]"
+201,19,Invocation,ClientInterface.Delete,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k10\""}"", """"]"
+201,19,Response,ClientInterface.Delete,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+202,24,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k5\""}"", ""{\""type\"":\""VString\"",\""value\"":\""fig\""}""]"
+202,24,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+203,33,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k9\""}"", """"]"
+203,33,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""nectar\""}}"", """", """"]"
+204,23,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k5\""}"", ""{\""type\"":\""VString\"",\""value\"":\""quince\""}""]"
+204,23,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+205,6,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k1\""}"", """"]"
+205,6,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""ice\""}}"", """", """"]"
+206,22,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k8\""}"", """"]"
+206,22,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""raisin\""}}"", """", """"]"
+207,20,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k9\""}"", """"]"
+207,20,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""nectar\""}}"", """", """"]"
+208,1,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k7\""}"", ""{\""type\"":\""VString\"",\""value\"":\""olive\""}""]"
+208,1,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+209,3,Invocation,ClientInterface.Delete,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k4\""}"", """"]"
+209,3,Response,ClientInterface.Delete,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+210,5,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k5\""}"", ""{\""type\"":\""VString\"",\""value\"":\""date\""}""]"
+210,5,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+211,17,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k3\""}"", ""{\""type\"":\""VString\"",\""value\"":\""date\""}""]"
+211,17,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+212,26,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k2\""}"", ""{\""type\"":\""VString\"",\""value\"":\""elder\""}""]"
+212,26,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+213,27,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k10\""}"", ""{\""type\"":\""VString\"",\""value\"":\""grape\""}""]"
+213,27,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+214,29,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k6\""}"", ""{\""type\"":\""VString\"",\""value\"":\""straw\""}""]"
+214,29,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+215,32,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k6\""}"", ""{\""type\"":\""VString\"",\""value\"":\""ice\""}""]"
+215,32,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+216,37,Invocation,ClientInterface.Delete,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k3\""}"", """"]"
+216,37,Response,ClientInterface.Delete,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+217,42,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k8\""}"", """"]"
+217,42,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""tomato\""}}"", """", """"]"
+218,4,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k2\""}"", ""{\""type\"":\""VString\"",\""value\"":\""olive\""}""]"
+218,4,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+219,7,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k8\""}"", """"]"
+219,7,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""raisin\""}}"", """", """"]"
+220,11,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k1\""}"", """"]"
+220,11,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""raisin\""}}"", """", """"]"
+221,14,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k3\""}"", """"]"
+221,14,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""date\""}}"", """", """"]"
+222,16,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k7\""}"", """"]"
+222,16,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""banana\""}}"", """", """"]"
+223,22,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k3\""}"", ""{\""type\"":\""VString\"",\""value\"":\""jam\""}""]"
+223,22,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+224,24,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k6\""}"", ""{\""type\"":\""VString\"",\""value\"":\""straw\""}""]"
+224,24,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+225,25,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k9\""}"", ""{\""type\"":\""VString\"",\""value\"":\""fig\""}""]"
+225,25,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+226,10,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k10\""}"", """"]"
+226,10,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""olive\""}}"", """", """"]"
+227,2,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k8\""}"", ""{\""type\"":\""VString\"",\""value\"":\""tomato\""}""]"
+227,2,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+228,8,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k2\""}"", ""{\""type\"":\""VString\"",\""value\"":\""ice\""}""]"
+228,8,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+229,26,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k1\""}"", ""{\""type\"":\""VString\"",\""value\"":\""kiwi\""}""]"
+229,26,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+230,34,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k3\""}"", """"]"
+230,34,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""quince\""}}"", """", """"]"
+231,28,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k4\""}"", ""{\""type\"":\""VString\"",\""value\"":\""kiwi\""}""]"
+231,28,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+232,35,Invocation,ClientInterface.Delete,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k2\""}"", """"]"
+232,35,Response,ClientInterface.Delete,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+233,12,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k10\""}"", ""{\""type\"":\""VString\"",\""value\"":\""olive\""}""]"
+233,12,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+234,13,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k2\""}"", """"]"
+234,13,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""ice\""}}"", """", """"]"
+235,36,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k1\""}"", ""{\""type\"":\""VString\"",\""value\"":\""ice\""}""]"
+235,36,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+236,38,Invocation,ClientInterface.Delete,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k10\""}"", """"]"
+236,38,Response,ClientInterface.Delete,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+237,39,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k8\""}"", ""{\""type\"":\""VString\"",\""value\"":\""jam\""}""]"
+237,39,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+238,3,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k4\""}"", ""{\""type\"":\""VString\"",\""value\"":\""quince\""}""]"
+238,3,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+239,15,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k9\""}"", ""{\""type\"":\""VString\"",\""value\"":\""ice\""}""]"
+239,15,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+240,20,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k7\""}"", """"]"
+240,20,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""banana\""}}"", """", """"]"
+241,9,Invocation,ClientInterface.Delete,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k5\""}"", """"]"
+241,9,Response,ClientInterface.Delete,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+242,2,Invocation,ClientInterface.Delete,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k6\""}"", """"]"
+242,2,Response,ClientInterface.Delete,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+243,4,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k7\""}"", """"]"
+243,4,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""banana\""}}"", """", """"]"
+244,0,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k5\""}"", ""{\""type\"":\""VString\"",\""value\"":\""grape\""}""]"
+244,0,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+245,18,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k10\""}"", ""{\""type\"":\""VString\"",\""value\"":\""jam\""}""]"
+245,18,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+246,21,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k2\""}"", ""{\""type\"":\""VString\"",\""value\"":\""apple\""}""]"
+246,21,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+247,23,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k2\""}"", ""{\""type\"":\""VString\"",\""value\"":\""kiwi\""}""]"
+247,23,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+248,27,Invocation,ClientInterface.Delete,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k4\""}"", """"]"
+248,27,Response,ClientInterface.Delete,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+249,29,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k5\""}"", """"]"
+249,29,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""grape\""}}"", """", """"]"
+250,20,Invocation,ClientInterface.Delete,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k8\""}"", """"]"
+250,20,Response,ClientInterface.Delete,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+251,7,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k1\""}"", ""{\""type\"":\""VString\"",\""value\"":\""raisin\""}""]"
+251,7,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+252,22,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k4\""}"", ""{\""type\"":\""VString\"",\""value\"":\""jam\""}""]"
+252,22,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+253,30,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k8\""}"", """"]"
+253,30,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":null}"", """", """"]"
+254,17,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k9\""}"", """"]"
+254,17,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""cherry\""}}"", """", """"]"
+255,19,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k6\""}"", """"]"
+255,19,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""tomato\""}}"", """", """"]"
+256,5,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k3\""}"", ""{\""type\"":\""VString\"",\""value\"":\""quince\""}""]"
+256,5,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+257,1,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k5\""}"", """"]"
+257,1,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""date\""}}"", """", """"]"
+258,10,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k7\""}"", ""{\""type\"":\""VString\"",\""value\"":\""ham\""}""]"
+258,10,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+259,14,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k1\""}"", """"]"
+259,14,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""olive\""}}"", """", """"]"
+260,6,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k9\""}"", ""{\""type\"":\""VString\"",\""value\"":\""cherry\""}""]"
+260,6,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+261,31,Invocation,ClientInterface.Delete,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k1\""}"", """"]"
+261,31,Response,ClientInterface.Delete,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+262,32,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k3\""}"", """"]"
+262,32,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""quince\""}}"", """", """"]"
+263,8,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k8\""}"", """"]"
+263,8,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""tomato\""}}"", """", """"]"
+264,11,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k7\""}"", """"]"
+264,11,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""banana\""}}"", """", """"]"
+265,12,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k4\""}"", ""{\""type\"":\""VString\"",\""value\"":\""quince\""}""]"
+265,12,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+266,13,Invocation,ClientInterface.Delete,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k6\""}"", """"]"
+266,13,Response,ClientInterface.Delete,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+267,16,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k1\""}"", ""{\""type\"":\""VString\"",\""value\"":\""date\""}""]"
+267,16,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+268,22,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k5\""}"", """"]"
+268,22,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""grape\""}}"", """", """"]"
+269,33,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k7\""}"", """"]"
+269,33,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""banana\""}}"", """", """"]"
+270,35,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k10\""}"", """"]"
+270,35,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""jam\""}}"", """", """"]"
+271,24,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k3\""}"", """"]"
+271,24,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""jam\""}}"", """", """"]"
+272,36,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k1\""}"", ""{\""type\"":\""VString\"",\""value\"":\""olive\""}""]"
+272,36,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+273,37,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k8\""}"", ""{\""type\"":\""VString\"",\""value\"":\""tomato\""}""]"
+273,37,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+274,38,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k6\""}"", ""{\""type\"":\""VString\"",\""value\"":\""tomato\""}""]"
+274,38,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+275,25,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k8\""}"", ""{\""type\"":\""VString\"",\""value\"":\""peach\""}""]"
+275,25,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+276,40,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k3\""}"", ""{\""type\"":\""VString\"",\""value\"":\""jam\""}""]"
+276,40,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+277,41,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k6\""}"", ""{\""type\"":\""VString\"",\""value\"":\""fig\""}""]"
+277,41,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+278,42,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k9\""}"", ""{\""type\"":\""VString\"",\""value\"":\""cherry\""}""]"
+278,42,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+279,3,Invocation,ClientInterface.Delete,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k5\""}"", """"]"
+279,3,Response,ClientInterface.Delete,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+280,43,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k6\""}"", """"]"
+280,43,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""tomato\""}}"", """", """"]"
+281,7,Invocation,ClientInterface.Delete,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k4\""}"", """"]"
+281,7,Response,ClientInterface.Delete,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+282,44,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k9\""}"", """"]"
+282,44,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""cherry\""}}"", """", """"]"
+283,45,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k7\""}"", """"]"
+283,45,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""banana\""}}"", """", """"]"
+284,46,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k4\""}"", ""{\""type\"":\""VString\"",\""value\"":\""jam\""}""]"
+284,46,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+285,15,Invocation,ClientInterface.Delete,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k9\""}"", """"]"
+285,15,Response,ClientInterface.Delete,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+286,47,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k10\""}"", ""{\""type\"":\""VString\"",\""value\"":\""kiwi\""}""]"
+286,47,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+287,9,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k2\""}"", """"]"
+287,9,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""kiwi\""}}"", """", """"]"
+288,5,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k5\""}"", ""{\""type\"":\""VString\"",\""value\"":\""jam\""}""]"
+288,5,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+289,11,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k4\""}"", """"]"
+289,11,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""jam\""}}"", """", """"]"
+290,4,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k5\""}"", """"]"
+290,4,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""jam\""}}"", """", """"]"
+291,16,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k7\""}"", """"]"
+291,16,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""banana\""}}"", """", """"]"
+292,19,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k6\""}"", """"]"
+292,19,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""fig\""}}"", """", """"]"
+293,20,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k10\""}"", ""{\""type\"":\""VString\"",\""value\"":\""date\""}""]"
+293,20,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+294,0,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k7\""}"", ""{\""type\"":\""VString\"",\""value\"":\""olive\""}""]"
+294,0,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+295,1,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k8\""}"", """"]"
+295,1,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""tomato\""}}"", """", """"]"
+296,2,Invocation,ClientInterface.Delete,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k9\""}"", """"]"
+296,2,Response,ClientInterface.Delete,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+297,5,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k10\""}"", ""{\""type\"":\""VString\"",\""value\"":\""nectar\""}""]"
+297,5,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+298,10,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k8\""}"", """"]"
+298,10,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""tomato\""}}"", """", """"]"
+299,12,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k4\""}"", """"]"
+299,12,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""jam\""}}"", """", """"]"
+300,13,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k8\""}"", """"]"
+300,13,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""tomato\""}}"", """", """"]"
+301,15,Invocation,ClientInterface.Delete,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k7\""}"", """"]"
+301,15,Response,ClientInterface.Delete,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+302,6,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k10\""}"", ""{\""type\"":\""VString\"",\""value\"":\""jam\""}""]"
+302,6,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+303,2,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k9\""}"", ""{\""type\"":\""VString\"",\""value\"":\""peach\""}""]"
+303,2,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+304,0,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k10\""}"", ""{\""type\"":\""VString\"",\""value\"":\""olive\""}""]"
+304,0,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+305,3,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k7\""}"", ""{\""type\"":\""VString\"",\""value\"":\""kiwi\""}""]"
+305,3,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+306,4,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k6\""}"", """"]"
+306,4,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""tomato\""}}"", """", """"]"
+307,1,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k9\""}"", """"]"
+307,1,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""peach\""}}"", """", """"]"
+308,0,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k10\""}"", """"]"
+308,0,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""olive\""}}"", """", """"]"
+309,2,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k7\""}"", """"]"
+309,2,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""kiwi\""}}"", """", """"]"

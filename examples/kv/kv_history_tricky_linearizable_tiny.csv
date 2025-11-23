@@ -1,43 +1,43 @@
-UniqueID,ClientID,Kind,Action,Payload1,Payload2,Payload3
-0,0,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k1""}","{""type"":""VString"",""value"":""hotel""}"
-0,0,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-1,1,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k3""}","{""type"":""VString"",""value"":""foxtrot""}"
-1,1,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-2,2,Invocation,ClientInterface.Delete,,"{""type"":""VString"",""value"":""k2""}",
-2,2,Response,ClientInterface.Delete,"{""type"":""VTuple"",""value"":[]}",,
-3,3,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k1""}",
-3,3,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""hotel""}}",,
-4,4,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k2""}","{""type"":""VString"",""value"":""delta""}"
-4,4,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-5,5,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k2""}","{""type"":""VString"",""value"":""hotel""}"
-5,5,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-6,0,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k1""}","{""type"":""VString"",""value"":""charlie""}"
-6,0,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-7,3,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k1""}","{""type"":""VString"",""value"":""golf""}"
-7,3,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-8,4,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k3""}","{""type"":""VString"",""value"":""india""}"
-8,4,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-9,6,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k3""}",
-9,6,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""india""}}",,
-10,7,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k1""}",
-10,7,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""charlie""}}",,
-11,8,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k2""}",
-11,8,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""hotel""}}",,
-12,3,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k1""}",
-12,3,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""charlie""}}",,
-13,1,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k3""}","{""type"":""VString"",""value"":""delta""}"
-13,1,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-14,2,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k3""}","{""type"":""VString"",""value"":""golf""}"
-14,2,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-15,0,Invocation,ClientInterface.Write,,"{""type"":""VString"",""value"":""k3""}","{""type"":""VString"",""value"":""hotel""}"
-15,0,Response,ClientInterface.Write,"{""type"":""VTuple"",""value"":[]}",,
-16,1,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k3""}",
-16,1,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""hotel""}}",,
-17,4,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k1""}",
-17,4,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""charlie""}}",,
-18,5,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k2""}",
-18,5,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":{""type"":""VString"",""value"":""hotel""}}",,
-19,0,Invocation,ClientInterface.Delete,,"{""type"":""VString"",""value"":""k2""}",
-19,0,Response,ClientInterface.Delete,"{""type"":""VTuple"",""value"":[]}",,
-20,0,Invocation,ClientInterface.Read,,"{""type"":""VString"",""value"":""k2""}",
-20,0,Response,ClientInterface.Read,"{""type"":""VOption"",""value"":null}",,
+UniqueID,ClientID,Kind,Action,Payload
+0,0,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k1\""}"", ""{\""type\"":\""VString\"",\""value\"":\""hotel\""}""]"
+0,0,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+1,1,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k3\""}"", ""{\""type\"":\""VString\"",\""value\"":\""foxtrot\""}""]"
+1,1,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+2,2,Invocation,ClientInterface.Delete,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k2\""}"", """"]"
+2,2,Response,ClientInterface.Delete,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+3,3,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k1\""}"", """"]"
+3,3,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""hotel\""}}"", """", """"]"
+4,4,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k2\""}"", ""{\""type\"":\""VString\"",\""value\"":\""delta\""}""]"
+4,4,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+5,5,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k2\""}"", ""{\""type\"":\""VString\"",\""value\"":\""hotel\""}""]"
+5,5,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+6,0,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k1\""}"", ""{\""type\"":\""VString\"",\""value\"":\""charlie\""}""]"
+6,0,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+7,3,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k1\""}"", ""{\""type\"":\""VString\"",\""value\"":\""golf\""}""]"
+7,3,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+8,4,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k3\""}"", ""{\""type\"":\""VString\"",\""value\"":\""india\""}""]"
+8,4,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+9,6,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k3\""}"", """"]"
+9,6,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""india\""}}"", """", """"]"
+10,7,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k1\""}"", """"]"
+10,7,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""charlie\""}}"", """", """"]"
+11,8,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k2\""}"", """"]"
+11,8,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""hotel\""}}"", """", """"]"
+12,3,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k1\""}"", """"]"
+12,3,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""charlie\""}}"", """", """"]"
+13,1,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k3\""}"", ""{\""type\"":\""VString\"",\""value\"":\""delta\""}""]"
+13,1,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+14,2,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k3\""}"", ""{\""type\"":\""VString\"",\""value\"":\""golf\""}""]"
+14,2,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+15,0,Invocation,ClientInterface.Write,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k3\""}"", ""{\""type\"":\""VString\"",\""value\"":\""hotel\""}""]"
+15,0,Response,ClientInterface.Write,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+16,1,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k3\""}"", """"]"
+16,1,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""hotel\""}}"", """", """"]"
+17,4,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k1\""}"", """"]"
+17,4,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""charlie\""}}"", """", """"]"
+18,5,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k2\""}"", """"]"
+18,5,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":{\""type\"":\""VString\"",\""value\"":\""hotel\""}}"", """", """"]"
+19,0,Invocation,ClientInterface.Delete,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k2\""}"", """"]"
+19,0,Response,ClientInterface.Delete,"[""{\""type\"":\""VTuple\"",\""value\"":[]}"", """", """"]"
+20,0,Invocation,ClientInterface.Read,"["""", ""{\""type\"":\""VString\"",\""value\"":\""k2\""}"", """"]"
+20,0,Response,ClientInterface.Read,"[""{\""type\"":\""VOption\"",\""value\"":null}"", """", """"]"

@@ -1,6 +1,7 @@
 package checker
 
 import (
+	"encoding/json"
 	"log"
 	"strconv"
 	"strings"
@@ -37,9 +38,7 @@ type EventRow struct {
 	ClientID string     `csv:"ClientID"`
 	Kind     string     `csv:"Kind"`
 	Action   ActionType `csv:"Action"`
-	Payload1 string     `csv:"Payload1"`
-	Payload2 string     `csv:"Payload2"`
-	Payload3 string     `csv:"Payload3"`
+	Payload  string     `csv:"Payload"`
 }
 
 type pendingInvocation struct {
@@ -54,6 +53,24 @@ func mustAtoi(s string) int {
 		log.Fatalf("bad int %q: %v", s, err)
 	}
 	return v
+}
+
+// parsePayloadArray parses the JSON array string and returns a slice of string payloads
+func parsePayloadArray(payloadStr string) []string {
+	if strings.TrimSpace(payloadStr) == "" {
+		return []string{}
+	}
+
+	var rawPayloads []json.RawMessage
+	if err := json.Unmarshal([]byte(payloadStr), &rawPayloads); err != nil {
+		log.Fatalf("failed to parse payload array %q: %v", payloadStr, err)
+	}
+
+	payloads := make([]string, len(rawPayloads))
+	for i, raw := range rawPayloads {
+		payloads[i] = string(raw)
+	}
+	return payloads
 }
 
 // BuildOperations converts a slice of EventRows into porcupine Operations
@@ -90,31 +107,56 @@ func BuildOperations(eventRows []*EventRow) []porcupine.Operation {
 				continue
 			}
 
+			// Parse payload arrays from both invocation and response
+			invPayloads := parsePayloadArray(invRow.Payload)
+			respPayloads := parsePayloadArray(respRow.Payload)
+
 			var opInput interface{}
 			var opOutput interface{}
 
 			switch invRow.Action {
 			case Write:
+				// Write: Payload[0]=node, Payload[1]=key, Payload[2]=value
+				if len(invPayloads) < 3 {
+					log.Printf("Warning: Write invocation for UniqueID %s has insufficient payloads. Skipping.", row.UniqueID)
+					continue
+				}
 				opInput = KVInput{
 					Op:  "PUT",
-					Key: invRow.Payload2,
-					Val: invRow.Payload3,
+					Key: invPayloads[1],
+					Val: invPayloads[2],
 				}
-				opOutput = respRow.Payload1
+				if len(respPayloads) > 0 {
+					opOutput = respPayloads[0]
+				}
 			case Read:
+				// Read: Payload[0]=node, Payload[1]=key
+				if len(invPayloads) < 2 {
+					log.Printf("Warning: Read invocation for UniqueID %s has insufficient payloads. Skipping.", row.UniqueID)
+					continue
+				}
 				opInput = KVInput{
 					Op:  "GET",
-					Key: invRow.Payload2,
+					Key: invPayloads[1],
 					Val: "",
 				}
-				opOutput = respRow.Payload1
+				if len(respPayloads) > 0 {
+					opOutput = respPayloads[0]
+				}
 			case Delete:
+				// Delete: Payload[0]=node, Payload[1]=key
+				if len(invPayloads) < 2 {
+					log.Printf("Warning: Delete invocation for UniqueID %s has insufficient payloads. Skipping.", row.UniqueID)
+					continue
+				}
 				opInput = KVInput{
 					Op:  "DELETE",
-					Key: invRow.Payload2,
+					Key: invPayloads[1],
 					Val: "",
 				}
-				opOutput = respRow.Payload1
+				if len(respPayloads) > 0 {
+					opOutput = respPayloads[0]
+				}
 			}
 			ops = append(ops, porcupine.Operation{
 				Input:    opInput,
