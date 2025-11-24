@@ -26,7 +26,7 @@ func ReadEventsFromSQLite(dbPath string, runID int) ([]*EventRow, error) {
 		SELECT unique_id, client_id, kind, action, payload
 		FROM executions
 		WHERE run_id = ?
-		ORDER BY unique_id ASC
+		ORDER BY seq_num ASC
 	`
 
 	rows, err := db.Query(query, runID)
