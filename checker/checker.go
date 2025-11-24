@@ -56,6 +56,7 @@ func mustAtoi(s string) int {
 }
 
 // parsePayloadArray parses the JSON array string and returns a slice of string payloads
+// Each payload is unquoted (if it was a JSON string) to get the raw content
 func parsePayloadArray(payloadStr string) []string {
 	if strings.TrimSpace(payloadStr) == "" {
 		return []string{}
@@ -68,7 +69,14 @@ func parsePayloadArray(payloadStr string) []string {
 
 	payloads := make([]string, len(rawPayloads))
 	for i, raw := range rawPayloads {
-		payloads[i] = string(raw)
+		// Try to unmarshal as a string first (to remove JSON string quotes)
+		var str string
+		if err := json.Unmarshal(raw, &str); err == nil {
+			payloads[i] = str
+		} else {
+			// If it's not a string, keep it as-is
+			payloads[i] = string(raw)
+		}
 	}
 	return payloads
 }
@@ -121,10 +129,12 @@ func BuildOperations(eventRows []*EventRow) []porcupine.Operation {
 					log.Printf("Warning: Write invocation for UniqueID %s has insufficient payloads. Skipping.", row.UniqueID)
 					continue
 				}
+				// Parse the key from JSON structure to get the actual string value
+				keyVal := ParseValue(invPayloads[1])
 				opInput = KVInput{
 					Op:  "PUT",
-					Key: invPayloads[1],
-					Val: invPayloads[2],
+					Key: keyVal.String(),
+					Val: ParseValue(invPayloads[2]),
 				}
 				if len(respPayloads) > 0 {
 					opOutput = respPayloads[0]
@@ -135,10 +145,12 @@ func BuildOperations(eventRows []*EventRow) []porcupine.Operation {
 					log.Printf("Warning: Read invocation for UniqueID %s has insufficient payloads. Skipping.", row.UniqueID)
 					continue
 				}
+				// Parse the key from JSON structure to get the actual string value
+				keyVal := ParseValue(invPayloads[1])
 				opInput = KVInput{
 					Op:  "GET",
-					Key: invPayloads[1],
-					Val: "",
+					Key: keyVal.String(),
+					Val: Value{}, // Zero value for read input
 				}
 				if len(respPayloads) > 0 {
 					opOutput = respPayloads[0]
@@ -149,10 +161,12 @@ func BuildOperations(eventRows []*EventRow) []porcupine.Operation {
 					log.Printf("Warning: Delete invocation for UniqueID %s has insufficient payloads. Skipping.", row.UniqueID)
 					continue
 				}
+				// Parse the key from JSON structure to get the actual string value
+				keyVal := ParseValue(invPayloads[1])
 				opInput = KVInput{
 					Op:  "DELETE",
-					Key: invPayloads[1],
-					Val: "",
+					Key: keyVal.String(),
+					Val: Value{},
 				}
 				if len(respPayloads) > 0 {
 					opOutput = respPayloads[0]
