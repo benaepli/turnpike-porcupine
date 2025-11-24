@@ -18,7 +18,8 @@ func main() {
 	inputFile := flag.String("input", "", "Path to the input file (CSV or SQLite database) (required)")
 	inputType := flag.String("type", "sqlite", "Input type: 'csv' or 'sqlite' (default: sqlite)")
 	runID := flag.Int("run", -1, "Run ID to check (SQLite only; -1 means all runs)")
-	outputFile := flag.String("output", "", "Path for the output visualization HTML file (required for single run)")
+	outputFile := flag.String("output", "", "Path for output HTML file (single run) or directory (all runs)")
+	outputDir := flag.String("output-dir", "", "Output directory for HTML files (when processing all runs)")
 	modelName := flag.String("model", "", "Model to check (e.g., 'kv', 'queue') (required)")
 	flag.Parse()
 
@@ -54,7 +55,12 @@ func main() {
 		// SQLite mode
 		if *runID == -1 {
 			// Process all runs
-			processAllRuns(*inputFile, *outputFile, model)
+			// Prefer -output-dir, fall back to -output
+			outDir := *outputDir
+			if outDir == "" {
+				outDir = *outputFile
+			}
+			processAllRuns(*inputFile, outDir, model)
 		} else {
 			// Process single run
 			if *outputFile == "" {
@@ -102,6 +108,13 @@ func processAllRuns(dbPath, outputDir string, model porcupine.Model) {
 	if len(runIDs) == 0 {
 		log.Println("No runs found in database.")
 		return
+	}
+
+	// Create output directory if specified and doesn't exist
+	if outputDir != "" {
+		if err := os.MkdirAll(outputDir, 0755); err != nil {
+			log.Fatalf("failed to create output directory %s: %v", outputDir, err)
+		}
 	}
 
 	fmt.Printf("Found %d run(s) in database. Checking all...\n", len(runIDs))
