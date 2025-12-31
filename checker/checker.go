@@ -109,6 +109,46 @@ func BuildOperationsWithAnnotations(eventRows []*EventRow) ([]porcupine.Operatio
 	for i, row := range eventRows {
 		syntheticTime := int64(i + 1)
 
+		// Direct handling of Crash/Recover/Timeout if they appear as their own Kind
+		switch row.Kind {
+		case "Crash":
+			nodeID := extractNodeID(row.Payload)
+			annotations = append(annotations, porcupine.Annotation{
+				Tag:             fmt.Sprintf("Node %d", nodeID),
+				Start:           syntheticTime,
+				End:             syntheticTime,
+				Description:     "💥 Crash",
+				Details:         fmt.Sprintf("Node %d crashed", nodeID),
+				BackgroundColor: "#ff6b6b",
+				TextColor:       "#ffffff",
+			})
+			continue
+		case "Recover":
+			nodeID := extractNodeID(row.Payload)
+			annotations = append(annotations, porcupine.Annotation{
+				Tag:             fmt.Sprintf("Node %d", nodeID),
+				Start:           syntheticTime,
+				End:             syntheticTime,
+				Description:     "🔄 Recover",
+				Details:         fmt.Sprintf("Node %d recovered", nodeID),
+				BackgroundColor: "#51cf66",
+				TextColor:       "#ffffff",
+			})
+			continue
+		case "Timeout":
+			nodeID := extractNodeID(row.Payload)
+			annotations = append(annotations, porcupine.Annotation{
+				Tag:             fmt.Sprintf("Node %d", nodeID),
+				Start:           syntheticTime,
+				End:             syntheticTime,
+				Description:     "⏱️ Timeout",
+				Details:         fmt.Sprintf("Node %d simulated timeout", nodeID),
+				BackgroundColor: "#fcc419",
+				TextColor:       "#000000",
+			})
+			continue
+		}
+
 		if row.Kind == "Invocation" {
 			if _, exists := pendingInvocations[row.UniqueID]; exists {
 				log.Printf("Warning: Found duplicate invocation for UniqueID %s. Overwriting.", row.UniqueID)
@@ -129,56 +169,20 @@ func BuildOperationsWithAnnotations(eventRows []*EventRow) ([]porcupine.Operatio
 
 			retTime := syntheticTime
 			invRow := inv.invRow
-			respRow := row
 
-			// Handle system events as annotations
-			switch invRow.Action {
-			case Crash:
-				nodeID := extractNodeID(invRow.Payload)
-				annotations = append(annotations, porcupine.Annotation{
-					Tag:             fmt.Sprintf("Node %d", nodeID),
-					Start:           inv.callTime,
-					End:             retTime,
-					Description:     "💥 Crash",
-					Details:         fmt.Sprintf("Node %d crashed", nodeID),
-					BackgroundColor: "#ff6b6b",
-					TextColor:       "#ffffff",
-				})
-				continue
-			case Recover:
-				nodeID := extractNodeID(invRow.Payload)
-				annotations = append(annotations, porcupine.Annotation{
-					Tag:             fmt.Sprintf("Node %d", nodeID),
-					Start:           inv.callTime,
-					End:             retTime,
-					Description:     "🔄 Recover",
-					Details:         fmt.Sprintf("Node %d recovered", nodeID),
-					BackgroundColor: "#51cf66",
-					TextColor:       "#ffffff",
-				})
-				continue
-			case Timeout:
-				nodeID := extractNodeID(invRow.Payload)
-				annotations = append(annotations, porcupine.Annotation{
-					Tag:             fmt.Sprintf("Node %d", nodeID),
-					Start:           inv.callTime,
-					End:             retTime,
-					Description:     "⏱️ Timeout",
-					Details:         fmt.Sprintf("Node %d simulated timeout", nodeID),
-					BackgroundColor: "#fcc419",
-					TextColor:       "#000000",
-				})
+			// Skip system events for linearizability checking
+			if invRow.Action == Crash || invRow.Action == Recover || invRow.Action == Timeout {
 				continue
 			}
 
-			// Skip unknown/other system events for linearizability checking
+			// Skip unknown operations
 			if invRow.Action != Read && invRow.Action != Write && invRow.Action != Delete {
 				continue
 			}
 
 			// Parse payload arrays from both invocation and response
 			invPayloads := parsePayloadArray(invRow.Payload)
-			respPayloads := parsePayloadArray(respRow.Payload)
+			respPayloads := parsePayloadArray(row.Payload)
 
 			var opInput interface{}
 			var opOutput interface{}
