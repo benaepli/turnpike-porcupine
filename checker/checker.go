@@ -2,6 +2,7 @@ package checker
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"strconv"
 	"strings"
@@ -13,9 +14,12 @@ import (
 type ActionType string
 
 const (
-	Read   ActionType = "read"
-	Write  ActionType = "write"
-	Delete ActionType = "delete"
+	Read    ActionType = "read"
+	Write   ActionType = "write"
+	Delete  ActionType = "delete"
+	Crash   ActionType = "crash"
+	Recover ActionType = "recover"
+	Timeout ActionType = "timeout"
 )
 
 func (e *ActionType) UnmarshalCSV(value string) error {
@@ -26,6 +30,12 @@ func (e *ActionType) UnmarshalCSV(value string) error {
 		*e = Write
 	case strings.HasSuffix(value, "ClientInterface.Delete"):
 		*e = Delete
+	case strings.HasSuffix(value, "System.Crash"):
+		*e = Crash
+	case strings.HasSuffix(value, "System.Recover"):
+		*e = Recover
+	case strings.HasSuffix(value, "ClientInterface.SimulateTimeout"):
+		*e = Timeout
 	default:
 		*e = "Unknown operation."
 	}
@@ -81,9 +91,19 @@ func parsePayloadArray(payloadStr string) []string {
 	return payloads
 }
 
-// BuildOperations converts a slice of EventRows into porcupine Operations
+// BuildOperations converts a slice of EventRows into porcupine Operations.
+// Deprecated: Use BuildOperationsWithAnnotations for visualization with system events.
 func BuildOperations(eventRows []*EventRow) []porcupine.Operation {
+	ops, _ := BuildOperationsWithAnnotations(eventRows)
+	return ops
+}
+
+// BuildOperationsWithAnnotations converts a slice of EventRows into porcupine Operations
+// and also returns annotations for system events (Crash, Recover, Timeout) to overlay
+// on the visualization.
+func BuildOperationsWithAnnotations(eventRows []*EventRow) ([]porcupine.Operation, []porcupine.Annotation) {
 	var ops []porcupine.Operation
+	var annotations []porcupine.Annotation
 	pendingInvocations := make(map[string]pendingInvocation)
 
 	for i, row := range eventRows {
@@ -111,6 +131,47 @@ func BuildOperations(eventRows []*EventRow) []porcupine.Operation {
 			invRow := inv.invRow
 			respRow := row
 
+			// Handle system events as annotations
+			switch invRow.Action {
+			case Crash:
+				nodeID := extractNodeID(invRow.Payload)
+				annotations = append(annotations, porcupine.Annotation{
+					Tag:             fmt.Sprintf("Node %d", nodeID),
+					Start:           inv.callTime,
+					End:             retTime,
+					Description:     "💥 Crash",
+					Details:         fmt.Sprintf("Node %d crashed", nodeID),
+					BackgroundColor: "#ff6b6b",
+					TextColor:       "#ffffff",
+				})
+				continue
+			case Recover:
+				nodeID := extractNodeID(invRow.Payload)
+				annotations = append(annotations, porcupine.Annotation{
+					Tag:             fmt.Sprintf("Node %d", nodeID),
+					Start:           inv.callTime,
+					End:             retTime,
+					Description:     "🔄 Recover",
+					Details:         fmt.Sprintf("Node %d recovered", nodeID),
+					BackgroundColor: "#51cf66",
+					TextColor:       "#ffffff",
+				})
+				continue
+			case Timeout:
+				nodeID := extractNodeID(invRow.Payload)
+				annotations = append(annotations, porcupine.Annotation{
+					Tag:             fmt.Sprintf("Node %d", nodeID),
+					Start:           inv.callTime,
+					End:             retTime,
+					Description:     "⏱️ Timeout",
+					Details:         fmt.Sprintf("Node %d simulated timeout", nodeID),
+					BackgroundColor: "#fcc419",
+					TextColor:       "#000000",
+				})
+				continue
+			}
+
+			// Skip unknown/other system events for linearizability checking
 			if invRow.Action != Read && invRow.Action != Write && invRow.Action != Delete {
 				continue
 			}
@@ -182,5 +243,28 @@ func BuildOperations(eventRows []*EventRow) []porcupine.Operation {
 		}
 	}
 
-	return ops
+	return ops, annotations
+}
+
+// extractNodeID parses the node ID from the payload JSON array.
+// System events have Payload[0] = node ID.
+func extractNodeID(payloadStr string) int {
+	payloads := parsePayloadArray(payloadStr)
+	if len(payloads) == 0 {
+		return -1
+	}
+	// The payload is typically {"type":"VNode","value":N} or just a number
+	v := ParseValue(payloads[0])
+	if v.Type == "VNode" || v.Type == "VInt" {
+		var n int
+		if err := json.Unmarshal(v.Raw, &n); err == nil {
+			return n
+		}
+	}
+	// Fallback: try to parse as plain integer
+	var n int
+	if err := json.Unmarshal([]byte(payloads[0]), &n); err == nil {
+		return n
+	}
+	return -1
 }

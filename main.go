@@ -85,8 +85,8 @@ func processCSV(inputFile, outputFile string, model porcupine.Model) {
 		log.Fatalf("failed to unmarshal CSV: %v", err)
 	}
 
-	ops := checker.BuildOperations(eventRows)
-	checkAndVisualize(model, ops, outputFile, "CSV")
+	ops, annotations := checker.BuildOperationsWithAnnotations(eventRows)
+	checkAndVisualize(model, ops, annotations, outputFile, "CSV")
 }
 
 func processSingleRun(dbPath string, runID int, outputFile string, model porcupine.Model) {
@@ -95,8 +95,8 @@ func processSingleRun(dbPath string, runID int, outputFile string, model porcupi
 		log.Fatalf("failed to read events from SQLite: %v", err)
 	}
 
-	ops := checker.BuildOperations(eventRows)
-	checkAndVisualize(model, ops, outputFile, fmt.Sprintf("Run %d", runID))
+	ops, annotations := checker.BuildOperationsWithAnnotations(eventRows)
+	checkAndVisualize(model, ops, annotations, outputFile, fmt.Sprintf("Run %d", runID))
 }
 
 func processAllRuns(dbPath, outputDir string, model porcupine.Model) {
@@ -127,7 +127,7 @@ func processAllRuns(dbPath, outputDir string, model porcupine.Model) {
 			continue
 		}
 
-		ops := checker.BuildOperations(eventRows)
+		ops, annotations := checker.BuildOperationsWithAnnotations(eventRows)
 
 		// Generate output filename
 		var outFile string
@@ -138,7 +138,7 @@ func processAllRuns(dbPath, outputDir string, model porcupine.Model) {
 		}
 
 		fmt.Printf("\n=== Checking Run %d ===\n", runID)
-		if !checkAndVisualize(model, ops, outFile, fmt.Sprintf("Run %d", runID)) {
+		if !checkAndVisualize(model, ops, annotations, outFile, fmt.Sprintf("Run %d", runID)) {
 			allLinearizable = false
 		}
 	}
@@ -152,7 +152,7 @@ func processAllRuns(dbPath, outputDir string, model porcupine.Model) {
 	}
 }
 
-func checkAndVisualize(model porcupine.Model, ops []porcupine.Operation, outputFile, label string) bool {
+func checkAndVisualize(model porcupine.Model, ops []porcupine.Operation, annotations []porcupine.Annotation, outputFile, label string) bool {
 	res, info := porcupine.CheckOperationsVerbose(model, ops, 0)
 
 	if res == porcupine.Ok {
@@ -161,6 +161,11 @@ func checkAndVisualize(model porcupine.Model, ops []porcupine.Operation, outputF
 		fmt.Printf("%s: Linearizable? false\n", label)
 	} else {
 		fmt.Printf("%s: Linearizable? Unknown (Check failed)\n", label)
+	}
+
+	// Add system event annotations (Crash/Recover/Timeout) as overlays
+	if len(annotations) > 0 {
+		info.AddAnnotations(annotations)
 	}
 
 	if err := porcupine.VisualizePath(model, info, outputFile); err != nil {
