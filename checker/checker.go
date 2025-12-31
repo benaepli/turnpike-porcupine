@@ -243,6 +243,36 @@ func BuildOperationsWithAnnotations(eventRows []*EventRow) ([]porcupine.Operatio
 		}
 	}
 
+	// Handle pending Write invocations by creating synthetic responses at the end
+	finalTime := int64(len(eventRows) + 1)
+	for _, inv := range pendingInvocations {
+		if inv.invRow.Action == Write {
+			invRow := inv.invRow
+			invPayloads := parsePayloadArray(invRow.Payload)
+
+			if len(invPayloads) < 3 {
+				log.Printf("Warning: Pending Write invocation for UniqueID %s has insufficient payloads. Skipping.", invRow.UniqueID)
+				continue
+			}
+
+			keyVal := ParseValue(invPayloads[1])
+			opInput := KVInput{
+				Op:  "PUT",
+				Key: keyVal.String(),
+				Val: ParseValue(invPayloads[2]),
+			}
+
+			// Synthetic operation that "completes" at the very end
+			ops = append(ops, porcupine.Operation{
+				Input:    opInput,
+				Output:   nil, // Output irrelevant for PUT in this model
+				Call:     inv.callTime,
+				Return:   finalTime,
+				ClientId: inv.clientID,
+			})
+		}
+	}
+
 	return ops, annotations
 }
 
