@@ -15,9 +15,9 @@ import (
 )
 
 func main() {
-	inputFile := flag.String("input", "", "Path to the input file (CSV or SQLite database) (required)")
-	inputType := flag.String("type", "sqlite", "Input type: 'csv' or 'sqlite' (default: sqlite)")
-	runID := flag.Int("run", -1, "Run ID to check (SQLite only; -1 means all runs)")
+	inputFile := flag.String("input", "", "Path to the input file (CSV or DuckDB database) (required)")
+	inputType := flag.String("type", "duckdb", "Input type: 'csv' or 'duckdb' (default: duckdb)")
+	runID := flag.Int("run", -1, "Run ID to check (DuckDB only; -1 means all runs)")
 	outputFile := flag.String("output", "", "Path for output HTML file (single run) or directory (all runs)")
 	outputDir := flag.String("output-dir", "", "Output directory for HTML files (when processing all runs)")
 	modelName := flag.String("model", "", "Model to check (e.g., 'kv', 'queue') (required)")
@@ -30,8 +30,8 @@ func main() {
 	}
 
 	inputTypeNorm := strings.ToLower(*inputType)
-	if inputTypeNorm != "csv" && inputTypeNorm != "sqlite" {
-		log.Fatalf("invalid input type %q (use csv|sqlite)", *inputType)
+	if inputTypeNorm != "csv" && inputTypeNorm != "duckdb" {
+		log.Fatalf("invalid input type %q (use csv|duckdb)", *inputType)
 	}
 
 	// Get the model
@@ -52,7 +52,7 @@ func main() {
 		}
 		processCSV(*inputFile, *outputFile, model)
 	} else {
-		// SQLite mode
+		// DuckDB mode
 		if *runID == -1 {
 			// Process all runs
 			// Prefer -output-dir, fall back to -output
@@ -90,9 +90,9 @@ func processCSV(inputFile, outputFile string, model porcupine.Model) {
 }
 
 func processSingleRun(dbPath string, runID int, outputFile string, model porcupine.Model) {
-	eventRows, err := checker.ReadEventsFromSQLite(dbPath, runID)
+	eventRows, err := checker.ReadEventsFromDuckDB(dbPath, runID)
 	if err != nil {
-		log.Fatalf("failed to read events from SQLite: %v", err)
+		log.Fatalf("failed to read events from DuckDB: %v", err)
 	}
 
 	ops, annotations := checker.BuildOperationsWithAnnotations(eventRows)
@@ -121,7 +121,7 @@ func processAllRuns(dbPath, outputDir string, model porcupine.Model) {
 
 	allLinearizable := true
 	for _, runID := range runIDs {
-		eventRows, err := checker.ReadEventsFromSQLite(dbPath, runID)
+		eventRows, err := checker.ReadEventsFromDuckDB(dbPath, runID)
 		if err != nil {
 			log.Printf("Warning: failed to read events for run %d: %v", runID, err)
 			continue

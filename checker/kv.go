@@ -144,7 +144,8 @@ func KVModel() porcupine.Model {
 
 		DescribeOperation: func(input, output interface{}) string {
 			in := input.(KVInput)
-			outVal := ParseValue(output.(string))
+			outStr, _ := output.(string)
+			outVal := ParseValue(outStr)
 
 			switch strings.ToUpper(in.Op) {
 			case "PUT":

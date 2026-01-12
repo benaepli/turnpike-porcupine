@@ -6,17 +6,17 @@ import (
 	"fmt"
 	"log"
 
-	_ "github.com/mattn/go-sqlite3"
+	_ "github.com/marcboeker/go-duckdb"
 )
 
 var (
 	ErrNoRunID = errors.New("run_id not found")
 )
 
-// ReadEventsFromSQLite reads execution events from a SQLite database for a given run_id
+// ReadEventsFromDuckDB reads execution events from a DuckDB database for a given run_id
 // and returns them as EventRow structs that can be used with BuildOperations
-func ReadEventsFromSQLite(dbPath string, runID int) ([]*EventRow, error) {
-	db, err := sql.Open("sqlite3", dbPath)
+func ReadEventsFromDuckDB(dbPath string, runID int) ([]*EventRow, error) {
+	db, err := sql.Open("duckdb", dbPath)
 	if err != nil {
 		return nil, fmt.Errorf("failed to open database: %w", err)
 	}
@@ -69,7 +69,7 @@ func ReadEventsFromSQLite(dbPath string, runID int) ([]*EventRow, error) {
 
 // ListRunIDs returns all available run IDs from the database
 func ListRunIDs(dbPath string) ([]int, error) {
-	db, err := sql.Open("sqlite3", dbPath)
+	db, err := sql.Open("duckdb", dbPath)
 	if err != nil {
 		return nil, fmt.Errorf("failed to open database: %w", err)
 	}
@@ -101,7 +101,7 @@ func ListRunIDs(dbPath string) ([]int, error) {
 
 // GetRunMetadata retrieves metadata about a specific run
 func GetRunMetadata(dbPath string, runID int) (startTime, metaInfo string, err error) {
-	db, err := sql.Open("sqlite3", dbPath)
+	db, err := sql.Open("duckdb", dbPath)
 	if err != nil {
 		return "", "", fmt.Errorf("failed to open database: %w", err)
 	}
