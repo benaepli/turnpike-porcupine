@@ -2,8 +2,5 @@ output*.html
 .idea
 .vscode
 .DS_Store
-porcupine-check
-.claude
-jennlang-porcupine
 benchmark
 main
