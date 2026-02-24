@@ -283,9 +283,17 @@ func extractNodeID(payloadStr string) int {
 	if len(payloads) == 0 {
 		return -1
 	}
-	// The payload is typically {"type":"VNode","value":N} or just a number
+	// The payload is typically {"type":"VNode","value":{"role":N, "index":M}} or just a number
 	v := ParseValue(payloads[0])
-	if v.Type == "VNode" || v.Type == "VInt" {
+	if v.Type == "VNode" {
+		var nObj struct {
+			Role  int `json:"role"`
+			Index int `json:"index"`
+		}
+		if err := json.Unmarshal(v.Raw, &nObj); err == nil {
+			return nObj.Index
+		}
+	} else if v.Type == "VInt" {
 		var n int
 		if err := json.Unmarshal(v.Raw, &n); err == nil {
 			return n
