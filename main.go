@@ -11,7 +11,7 @@ import (
 	"github.com/anishathalye/porcupine"
 	"github.com/gocarina/gocsv"
 
-	"github.com/benaepli/jennlang-porcupine/checker"
+	"github.com/benaepli/turnpike-porcupine/checker"
 )
 
 func main() {

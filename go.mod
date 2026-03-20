@@ -1,4 +1,4 @@
-module github.com/benaepli/jennlang-porcupine
+module github.com/benaepli/turnpike-porcupine
 
 go 1.24.9
 
