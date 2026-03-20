@@ -100,16 +100,6 @@ func processSingleRun(dbPath string, runID int, outputFile string, model porcupi
 }
 
 func processAllRuns(dbPath, outputDir string, model porcupine.Model) {
-	runIDs, err := checker.ListRunIDs(dbPath)
-	if err != nil {
-		log.Fatalf("failed to list run IDs: %v", err)
-	}
-
-	if len(runIDs) == 0 {
-		log.Println("No runs found in database.")
-		return
-	}
-
 	// Create output directory if specified and doesn't exist
 	if outputDir != "" {
 		if err := os.MkdirAll(outputDir, 0755); err != nil {
@@ -117,16 +107,11 @@ func processAllRuns(dbPath, outputDir string, model porcupine.Model) {
 		}
 	}
 
-	fmt.Printf("Found %d run(s) in database. Checking all...\n", len(runIDs))
-
 	allLinearizable := true
-	for _, runID := range runIDs {
-		eventRows, err := checker.ReadEventsFromDuckDB(dbPath, runID)
-		if err != nil {
-			log.Printf("Warning: failed to read events for run %d: %v", runID, err)
-			continue
-		}
+	runCount := 0
 
+	err := checker.ProcessAllRunsFromDuckDB(dbPath, func(runID int, eventRows []*checker.EventRow) error {
+		runCount++
 		ops, annotations := checker.BuildOperationsWithAnnotations(eventRows)
 
 		// Generate output filename
@@ -141,9 +126,18 @@ func processAllRuns(dbPath, outputDir string, model porcupine.Model) {
 		if !checkAndVisualize(model, ops, annotations, outFile, fmt.Sprintf("Run %d", runID)) {
 			allLinearizable = false
 		}
+		return nil
+	})
+	if err != nil {
+		log.Fatalf("failed to process runs: %v", err)
 	}
 
-	fmt.Println("\n=== Summary ===")
+	if runCount == 0 {
+		log.Println("No runs found in database.")
+		return
+	}
+
+	fmt.Printf("\n=== Summary (%d runs) ===\n", runCount)
 	if allLinearizable {
 		fmt.Println("All runs are linearizable.")
 	} else {

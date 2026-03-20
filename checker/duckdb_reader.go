@@ -132,6 +132,81 @@ func ReadEventsFromDuckDB(dbPath string, runID int) ([]*EventRow, error) {
 	return eventRows, nil
 }
 
+// ProcessAllRunsFromDuckDB executes a single query over all runs, sorted by
+// run_id and seq_num, and streams events grouped by run_id to the callback.
+func ProcessAllRunsFromDuckDB(dbPath string, processRun func(runID int, events []*EventRow) error) error {
+	db, err := openDB(dbPath)
+	if err != nil {
+		return fmt.Errorf("failed to open database: %w", err)
+	}
+	defer db.Close()
+
+	src := executionsSource(dbPath)
+	query := fmt.Sprintf(`
+		SELECT run_id, unique_id, client_id, kind, action, payload
+		FROM %s
+		ORDER BY run_id ASC, seq_num ASC
+	`, src)
+
+	rows, err := db.Query(query)
+	if err != nil {
+		return fmt.Errorf("failed to query executions: %w", err)
+	}
+	defer rows.Close()
+
+	var (
+		currentRunID = -1
+		currentBatch []*EventRow
+	)
+
+	flush := func() error {
+		if currentBatch != nil {
+			if err := processRun(currentRunID, currentBatch); err != nil {
+				return err
+			}
+		}
+		return nil
+	}
+
+	for rows.Next() {
+		var runID, uniqueID, clientID int
+		var kind, action, payload string
+
+		if err := rows.Scan(&runID, &uniqueID, &clientID, &kind, &action, &payload); err != nil {
+			return fmt.Errorf("failed to scan row: %w", err)
+		}
+
+		if runID != currentRunID {
+			if err := flush(); err != nil {
+				return err
+			}
+			currentRunID = runID
+			currentBatch = nil
+		}
+
+		var actionType ActionType
+		if err := actionType.UnmarshalCSV(action); err != nil {
+			log.Printf("Warning: failed to parse action type %q (run %d): %v", action, runID, err)
+			continue
+		}
+
+		currentBatch = append(currentBatch, &EventRow{
+			UniqueID: fmt.Sprintf("%d", uniqueID),
+			ClientID: fmt.Sprintf("%d", clientID),
+			Kind:     kind,
+			Action:   actionType,
+			Payload:  payload,
+		})
+	}
+
+	if err := rows.Err(); err != nil {
+		return fmt.Errorf("error iterating rows: %w", err)
+	}
+
+	// Flush final batch
+	return flush()
+}
+
 // ListRunIDs returns all available run IDs from the database or Parquet directory.
 func ListRunIDs(dbPath string) ([]int, error) {
 	db, err := openDB(dbPath)
