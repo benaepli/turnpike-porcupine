@@ -172,7 +172,7 @@ func BuildOperationsWithAnnotations(eventRows []*EventRow) ([]porcupine.Operatio
 			respRow := row
 
 			// Skip unknown/other system events for linearizability checking
-			if invRow.Action != Read && invRow.Action != Write && invRow.Action != Delete {
+			if invRow.Action != Read && invRow.Action != Write {
 				continue
 			}
 
@@ -185,17 +185,22 @@ func BuildOperationsWithAnnotations(eventRows []*EventRow) ([]porcupine.Operatio
 
 			switch invRow.Action {
 			case Write:
-				// Write: Payload[0]=node, Payload[1]=key, Payload[2]=value
+				// Write: Payload[0]=node, Payload[1]=key, Payload[2]=uid (VInt)
 				if len(invPayloads) < 3 {
 					log.Printf("Warning: Write invocation for UniqueID %s has insufficient payloads. Skipping.", row.UniqueID)
 					continue
 				}
-				// Parse the key from JSON structure to get the actual string value
 				keyVal := ParseValue(invPayloads[1])
+				uidVal := ParseValue(invPayloads[2])
+				uid, ok := parseVInt(uidVal)
+				if !ok {
+					log.Printf("Warning: Write invocation for UniqueID %s has non-int uid payload. Skipping.", row.UniqueID)
+					continue
+				}
 				opInput = KVInput{
 					Op:  "PUT",
 					Key: keyVal.String(),
-					Val: ParseValue(invPayloads[2]),
+					Uid: uid,
 				}
 				if len(respPayloads) > 0 {
 					opOutput = respPayloads[0]
@@ -206,28 +211,10 @@ func BuildOperationsWithAnnotations(eventRows []*EventRow) ([]porcupine.Operatio
 					log.Printf("Warning: Read invocation for UniqueID %s has insufficient payloads. Skipping.", row.UniqueID)
 					continue
 				}
-				// Parse the key from JSON structure to get the actual string value
 				keyVal := ParseValue(invPayloads[1])
 				opInput = KVInput{
 					Op:  "GET",
 					Key: keyVal.String(),
-					Val: Value{}, // Zero value for read input
-				}
-				if len(respPayloads) > 0 {
-					opOutput = respPayloads[0]
-				}
-			case Delete:
-				// Delete: Payload[0]=node, Payload[1]=key
-				if len(invPayloads) < 2 {
-					log.Printf("Warning: Delete invocation for UniqueID %s has insufficient payloads. Skipping.", row.UniqueID)
-					continue
-				}
-				// Parse the key from JSON structure to get the actual string value
-				keyVal := ParseValue(invPayloads[1])
-				opInput = KVInput{
-					Op:  "DELETE",
-					Key: keyVal.String(),
-					Val: Value{},
 				}
 				if len(respPayloads) > 0 {
 					opOutput = respPayloads[0]
@@ -256,10 +243,16 @@ func BuildOperationsWithAnnotations(eventRows []*EventRow) ([]porcupine.Operatio
 			}
 
 			keyVal := ParseValue(invPayloads[1])
+			uidVal := ParseValue(invPayloads[2])
+			uid, ok := parseVInt(uidVal)
+			if !ok {
+				log.Printf("Warning: Pending Write invocation for UniqueID %s has non-int uid payload. Skipping.", invRow.UniqueID)
+				continue
+			}
 			opInput := KVInput{
 				Op:  "PUT",
 				Key: keyVal.String(),
-				Val: ParseValue(invPayloads[2]),
+				Uid: uid,
 			}
 
 			// Synthetic operation that "completes" at the very end

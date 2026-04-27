@@ -3,7 +3,6 @@ package checker
 import (
 	"encoding/json"
 	"fmt"
-	"maps"
 	"sort"
 	"strings"
 
@@ -87,55 +86,133 @@ func (v Value) ToOption() Value {
 	}
 }
 
-// KVInput represents an input to a key-value store operation.
+// parseVInt extracts an int from a VInt Value. Returns (n, true) on success.
+func parseVInt(v Value) (int, bool) {
+	if v.Type != "VInt" {
+		return 0, false
+	}
+	var n int
+	if err := json.Unmarshal(v.Raw, &n); err != nil {
+		return 0, false
+	}
+	return n, true
+}
+
+// KVInput represents an input to a key-value append-log operation.
+// For PUT: Uid is the unique write identifier, appended to the per-key log.
+// For GET: Uid is unused.
 type KVInput struct {
 	Op  string
 	Key string
-	Val Value
+	Uid int
 }
 
-// KVModel returns a porcupine.Model for a key-value store.
+// parseUidList extracts a []int from a VList-of-VInt Value (a Read response payload).
+// Accepts empty string, an "absent" VOption null, or a VList. Returns nil slice on parse failure.
+func parseUidList(v Value) ([]int, bool) {
+	switch v.Type {
+	case "":
+		return nil, true
+	case "VOption":
+		if string(v.Raw) == "null" {
+			return nil, true
+		}
+		var inner Value
+		if err := json.Unmarshal(v.Raw, &inner); err != nil {
+			return nil, false
+		}
+		return parseUidList(inner)
+	case "VList":
+		var items []Value
+		if err := json.Unmarshal(v.Raw, &items); err != nil {
+			return nil, false
+		}
+		out := make([]int, len(items))
+		for i, it := range items {
+			if it.Type != "VInt" {
+				return nil, false
+			}
+			var n int
+			if err := json.Unmarshal(it.Raw, &n); err != nil {
+				return nil, false
+			}
+			out[i] = n
+		}
+		return out, true
+	}
+	return nil, false
+}
+
+func uidListEqual(a, b []int) bool {
+	if len(a) != len(b) {
+		return false
+	}
+	for i := range a {
+		if a[i] != b[i] {
+			return false
+		}
+	}
+	return true
+}
+
+func formatUidList(xs []int) string {
+	parts := make([]string, len(xs))
+	for i, x := range xs {
+		parts[i] = fmt.Sprintf("%d", x)
+	}
+	return "[" + strings.Join(parts, ", ") + "]"
+}
+
+func cloneLogs(m map[string][]int) map[string][]int {
+	out := make(map[string][]int, len(m))
+	for k, v := range m {
+		cp := make([]int, len(v))
+		copy(cp, v)
+		out[k] = cp
+	}
+	return out
+}
+
+// KVModel returns a porcupine.Model for an append-log key-value store.
+// State: map[key] -> ordered list of uids committed for that key.
+// PUT(key, uid): appends uid to state[key].
+// GET(key) -> []uid: must equal state[key] at some linearization point.
 func KVModel() porcupine.Model {
 	return porcupine.Model{
-		Init: func() interface{} { return map[string]Value{} },
+		Init: func() interface{} { return map[string][]int{} },
 
 		Step: func(state, input, output interface{}) (bool, interface{}) {
-			q := maps.Clone(state.(map[string]Value))
+			q := cloneLogs(state.(map[string][]int))
 			in := input.(KVInput)
-			outStr, _ := output.(string)
-			outVal := ParseValue(outStr)
 
 			switch strings.ToUpper(in.Op) {
 			case "PUT":
-				// Wrap value in Option to match history.ml VOption usage
-				q[in.Key] = in.Val.ToOption()
+				q[in.Key] = append(q[in.Key], in.Uid)
 				return true, q
 
 			case "GET":
-				v, ok := q[in.Key]
+				outStr, _ := output.(string)
+				outVal := ParseValue(outStr)
+				observed, ok := parseUidList(outVal)
 				if !ok {
-					// Expect None (NotFound)
-					return outVal.String() == NotFound.String(), q
+					return false, q
 				}
-				// Compare strings of the structured values
-				return outVal.String() == v.String(), q
+				return uidListEqual(observed, q[in.Key]), q
 
-			case "DELETE":
-				delete(q, in.Key)
-				return true, q
 			default:
 				return false, state
 			}
 		},
 
 		Equal: func(a, b interface{}) bool {
-			ma := a.(map[string]Value)
-			mb := b.(map[string]Value)
+			ma := a.(map[string][]int)
+			mb := b.(map[string][]int)
 			if len(ma) != len(mb) {
 				return false
 			}
 			for k, v := range ma {
-				if v2, ok := mb[k]; !ok || v.String() != v2.String() {
+				v2, ok := mb[k]
+				if !ok || !uidListEqual(v, v2) {
 					return false
 				}
 			}
@@ -144,23 +221,23 @@ func KVModel() porcupine.Model {
 
 		DescribeOperation: func(input, output interface{}) string {
 			in := input.(KVInput)
-			outStr, _ := output.(string)
-			outVal := ParseValue(outStr)
-
 			switch strings.ToUpper(in.Op) {
 			case "PUT":
-				return fmt.Sprintf("PUT '%s' -> %s", in.Key, in.Val.String())
+				return fmt.Sprintf("PUT '%s' <- %d", in.Key, in.Uid)
 			case "GET":
+				outStr, _ := output.(string)
+				outVal := ParseValue(outStr)
+				if list, ok := parseUidList(outVal); ok {
+					return fmt.Sprintf("GET '%s' => %s", in.Key, formatUidList(list))
+				}
 				return fmt.Sprintf("GET '%s' => %s", in.Key, outVal.String())
-			case "DELETE":
-				return fmt.Sprintf("DELETE '%s'", in.Key)
 			default:
 				return fmt.Sprintf("%s %s", in.Op, in.Key)
 			}
 		},
 
 		DescribeState: func(state interface{}) string {
-			m := state.(map[string]Value)
+			m := state.(map[string][]int)
 			keys := make([]string, 0, len(m))
 			for k := range m {
 				keys = append(keys, k)
@@ -172,7 +249,7 @@ func KVModel() porcupine.Model {
 				if i > 0 {
 					b.WriteString(", ")
 				}
-				fmt.Fprintf(&b, "%s: %s", k, m[k].String())
+				fmt.Fprintf(&b, "%s: %s", k, formatUidList(m[k]))
 			}
 			b.WriteString("}")
 			return b.String()
