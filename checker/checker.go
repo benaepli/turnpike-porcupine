@@ -16,6 +16,7 @@ type ActionType string
 const (
 	Read    ActionType = "read"
 	Write   ActionType = "write"
+	Rmw     ActionType = "rmw"
 	Delete  ActionType = "delete"
 	Crash   ActionType = "crash"
 	Recover ActionType = "recover"
@@ -28,6 +29,8 @@ func (e *ActionType) UnmarshalCSV(value string) error {
 		*e = Read
 	case strings.HasSuffix(value, "ClientInterface.Write"):
 		*e = Write
+	case strings.HasSuffix(value, "ClientInterface.RMW"):
+		*e = Rmw
 	case strings.HasSuffix(value, "ClientInterface.Delete"):
 		*e = Delete
 	case strings.HasSuffix(value, "System.Crash"):
@@ -172,7 +175,7 @@ func BuildOperationsWithAnnotations(eventRows []*EventRow) ([]porcupine.Operatio
 			respRow := row
 
 			// Skip unknown/other system events for linearizability checking
-			if invRow.Action != Read && invRow.Action != Write {
+			if invRow.Action != Read && invRow.Action != Write && invRow.Action != Rmw {
 				continue
 			}
 
@@ -205,6 +208,27 @@ func BuildOperationsWithAnnotations(eventRows []*EventRow) ([]porcupine.Operatio
 				if len(respPayloads) > 0 {
 					opOutput = respPayloads[0]
 				}
+			case Rmw:
+				// RMW: same payload shape as Write — Payload[0]=node, Payload[1]=key, Payload[2]=uid.
+				if len(invPayloads) < 3 {
+					log.Printf("Warning: RMW invocation for UniqueID %s has insufficient payloads. Skipping.", row.UniqueID)
+					continue
+				}
+				keyVal := ParseValue(invPayloads[1])
+				uidVal := ParseValue(invPayloads[2])
+				uid, ok := parseVInt(uidVal)
+				if !ok {
+					log.Printf("Warning: RMW invocation for UniqueID %s has non-int uid payload. Skipping.", row.UniqueID)
+					continue
+				}
+				opInput = KVInput{
+					Op:  "RMW",
+					Key: keyVal.String(),
+					Uid: uid,
+				}
+				if len(respPayloads) > 0 {
+					opOutput = respPayloads[0]
+				}
 			case Read:
 				// Read: Payload[0]=node, Payload[1]=key
 				if len(invPayloads) < 2 {
@@ -230,40 +254,49 @@ func BuildOperationsWithAnnotations(eventRows []*EventRow) ([]porcupine.Operatio
 		}
 	}
 
-	// Handle pending Write invocations by creating synthetic responses at the end
+	// Handle pending Write/RMW invocations by creating synthetic responses at the end.
+	// Both are write-like and void from the linearization model's perspective.
 	finalTime := int64(len(eventRows) + 1)
 	for _, inv := range pendingInvocations {
-		if inv.invRow.Action == Write {
-			invRow := inv.invRow
-			invPayloads := parsePayloadArray(invRow.Payload)
-
-			if len(invPayloads) < 3 {
-				log.Printf("Warning: Pending Write invocation for UniqueID %s has insufficient payloads. Skipping.", invRow.UniqueID)
-				continue
-			}
-
-			keyVal := ParseValue(invPayloads[1])
-			uidVal := ParseValue(invPayloads[2])
-			uid, ok := parseVInt(uidVal)
-			if !ok {
-				log.Printf("Warning: Pending Write invocation for UniqueID %s has non-int uid payload. Skipping.", invRow.UniqueID)
-				continue
-			}
-			opInput := KVInput{
-				Op:  "PUT",
-				Key: keyVal.String(),
-				Uid: uid,
-			}
-
-			// Synthetic operation that "completes" at the very end
-			ops = append(ops, porcupine.Operation{
-				Input:    opInput,
-				Output:   nil, // Output irrelevant for PUT in this model
-				Call:     inv.callTime,
-				Return:   finalTime,
-				ClientId: inv.clientID,
-			})
+		var opName string
+		switch inv.invRow.Action {
+		case Write:
+			opName = "PUT"
+		case Rmw:
+			opName = "RMW"
+		default:
+			continue
 		}
+
+		invRow := inv.invRow
+		invPayloads := parsePayloadArray(invRow.Payload)
+
+		if len(invPayloads) < 3 {
+			log.Printf("Warning: Pending %s invocation for UniqueID %s has insufficient payloads. Skipping.", opName, invRow.UniqueID)
+			continue
+		}
+
+		keyVal := ParseValue(invPayloads[1])
+		uidVal := ParseValue(invPayloads[2])
+		uid, ok := parseVInt(uidVal)
+		if !ok {
+			log.Printf("Warning: Pending %s invocation for UniqueID %s has non-int uid payload. Skipping.", opName, invRow.UniqueID)
+			continue
+		}
+		opInput := KVInput{
+			Op:  opName,
+			Key: keyVal.String(),
+			Uid: uid,
+		}
+
+		// Synthetic operation that "completes" at the very end.
+		ops = append(ops, porcupine.Operation{
+			Input:    opInput,
+			Output:   nil, // Output irrelevant for write-like ops in these models.
+			Call:     inv.callTime,
+			Return:   finalTime,
+			ClientId: inv.clientID,
+		})
 	}
 
 	return ops, annotations

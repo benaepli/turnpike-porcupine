@@ -20,7 +20,7 @@ func main() {
 	runID := flag.Int("run", -1, "Run ID to check (DuckDB only; -1 means all runs)")
 	outputFile := flag.String("output", "", "Path for output HTML file (single run) or directory (all runs)")
 	outputDir := flag.String("output-dir", "", "Output directory for HTML files (when processing all runs)")
-	modelName := flag.String("model", "", "Model to check (e.g., 'kv', 'queue') (required)")
+	modelName := flag.String("model", "", "Model to check (e.g., 'kv', 'kv_rmw', 'queue') (required)")
 	flag.Parse()
 
 	// Validate required flags
@@ -36,13 +36,20 @@ func main() {
 
 	// Get the model
 	var model porcupine.Model
+	// Note: the kv and kv_rmw models are NOT interchangeable. kv_rmw expects
+	// Read responses to be a VList of VTuple(VOption(VInt), VInt) — the per-key
+	// log of (prev_uid, uid) entries used by Gryff-style protocols. Specs
+	// targeting kv_rmw must store list<(int?, int)> and return that shape from
+	// ClientInterface.Read; specs storing list<int> belong with -model kv.
 	switch *modelName {
 	case "kv":
 		model = checker.KVModel()
+	case "kv_rmw":
+		model = checker.KVRMWModel()
 	case "queue":
 		model = checker.QueueModel()
 	default:
-		log.Fatalf("unknown model %q (use kv|queue)", *modelName)
+		log.Fatalf("unknown model %q (use kv|kv_rmw|queue)", *modelName)
 	}
 
 	if inputTypeNorm == "csv" {
