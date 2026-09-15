@@ -22,14 +22,13 @@ func main() {
 	runID := flag.Int("run", -1, "Run ID to check (DuckDB only; -1 means all runs)")
 	outputFile := flag.String("output", "", "Path for output HTML file (single run) or directory (all runs)")
 	outputDir := flag.String("output-dir", "", "Output directory for HTML files (when processing all runs)")
-	modelName := flag.String("model", "", "Model to check (e.g., 'kv', 'kv_rmw', 'queue') (required)")
+	modelName := flag.String("model", "", "Model to check: kv|kv_rmw|queue (default: the model recorded in the deployments table; required for CSV)")
 	timeoutMs := flag.Int("timeout", 0, "Per-run timeout in milliseconds (0 = no timeout)")
 	flag.Parse()
 
-	// Validate required flags
-	if *inputFile == "" || *modelName == "" {
+	if *inputFile == "" {
 		flag.Usage()
-		log.Fatalln("Error: -input and -model flags are required.")
+		log.Fatalln("Error: -input flag is required.")
 	}
 
 	inputTypeNorm := strings.ToLower(*inputType)
@@ -37,7 +36,22 @@ func main() {
 		log.Fatalf("invalid input type %q (use csv|duckdb)", *inputType)
 	}
 
-	// Get the model
+	// A CSV history carries no deployments table to read the model from.
+	if inputTypeNorm == "csv" && *modelName == "" {
+		flag.Usage()
+		log.Fatalln("Error: -model flag is required for CSV input.")
+	}
+	if inputTypeNorm == "duckdb" {
+		resolved, warning, err := checker.ResolveModel(*modelName, *inputFile)
+		if err != nil {
+			log.Fatalf("Error: %v", err)
+		}
+		if warning != "" {
+			log.Printf("Warning: %s", warning)
+		}
+		*modelName = resolved
+	}
+
 	var model porcupine.Model
 	switch *modelName {
 	case "kv":
@@ -100,7 +114,7 @@ func processSingleRun(dbPath string, runID int, outputFile string, model porcupi
 		log.Fatalf("failed to read events from DuckDB: %v", err)
 	}
 
-	ops, annotations := checker.BuildOperationsWithAnnotations(eventRows)
+	ops, annotations := checker.BuildOperationsWithNodeNames(eventRows, readTopology(dbPath).NamesForRun(runID))
 	checkAndVisualize(model, ops, annotations, outputFile, fmt.Sprintf("Run %d", runID), timeoutMs)
 }
 
@@ -115,10 +129,11 @@ func processAllRuns(dbPath, outputDir string, model porcupine.Model, timeoutMs i
 	allLinearizable := true
 	runCount := 0
 	var results []stats.RunResult
+	topology := readTopology(dbPath)
 
 	err := checker.ProcessAllRunsFromDuckDB(dbPath, func(runID int, eventRows []*checker.EventRow) error {
 		runCount++
-		ops, annotations := checker.BuildOperationsWithAnnotations(eventRows)
+		ops, annotations := checker.BuildOperationsWithNodeNames(eventRows, topology.NamesForRun(runID))
 
 		// Generate output filename
 		var outFile string
@@ -180,6 +195,17 @@ func processAllRuns(dbPath, outputDir string, model porcupine.Model, timeoutMs i
 		fmt.Println("Some runs are NOT linearizable.")
 		os.Exit(2)
 	}
+}
+
+// readTopology reads the node labels used in annotations. Labels only
+// decorate the visualization, so a failure to read them names nodes by index.
+func readTopology(dbPath string) *checker.Topology {
+	t, err := checker.ReadTopology(dbPath)
+	if err != nil {
+		log.Printf("Warning: node labels unavailable, naming nodes by index: %v", err)
+		return nil
+	}
+	return t
 }
 
 func checkAndVisualize(model porcupine.Model, ops []porcupine.Operation, annotations []porcupine.Annotation, outputFile, label string, timeoutMs int) bool {

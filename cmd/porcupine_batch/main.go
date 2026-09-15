@@ -114,12 +114,12 @@ func knownAction(a checker.ActionType) bool {
 
 func main() {
 	inputPath := flag.String("input", "", "Path to DuckDB file or Parquet output directory (required)")
-	modelName := flag.String("model", "", "Model to check: kv|kv_rmw|queue (required)")
+	modelName := flag.String("model", "", "Model to check: kv|kv_rmw|queue (default: the model recorded in the deployments table)")
 	timeoutMs := flag.Int("timeout", 10000, "Per-run check timeout in milliseconds (0 = no timeout)")
 	jsonPath := flag.String("json", "", "Also write the JSON result to this file (optional)")
 	flag.Parse()
 
-	// Back-compat: `porcupine_batch <dir>` positional form (model defaults to kv).
+	// `porcupine_batch <dir>` positional form.
 	if *inputPath == "" && flag.NArg() == 1 {
 		*inputPath = flag.Arg(0)
 	}
@@ -127,9 +127,15 @@ func main() {
 		flag.Usage()
 		log.Fatalln("Error: -input is required.")
 	}
-	if *modelName == "" {
-		*modelName = "kv"
+	resolved, warning, err := checker.ResolveModel(*modelName, *inputPath)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "error: %v\n", err)
+		os.Exit(1)
 	}
+	if warning != "" {
+		fmt.Fprintf(os.Stderr, "warning: %s\n", warning)
+	}
+	*modelName = resolved
 
 	var model porcupine.Model
 	switch *modelName {
@@ -151,7 +157,7 @@ func main() {
 	}
 	start := time.Now()
 
-	err := checker.ProcessAllRunsFromDuckDB(*inputPath, func(runID int, events []*checker.EventRow) error {
+	err = checker.ProcessAllRunsFromDuckDB(*inputPath, func(runID int, events []*checker.EventRow) error {
 		res.TotalRuns++
 		kept := events[:0:0]
 		for _, row := range events {
