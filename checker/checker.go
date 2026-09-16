@@ -25,19 +25,19 @@ const (
 
 func (e *ActionType) UnmarshalCSV(value string) error {
 	switch {
-	case strings.HasSuffix(value, "ClientInterface.Read"):
+	case strings.HasSuffix(value, "Client.Read"):
 		*e = Read
-	case strings.HasSuffix(value, "ClientInterface.Write"):
+	case strings.HasSuffix(value, "Client.Write"):
 		*e = Write
-	case strings.HasSuffix(value, "ClientInterface.RMW"):
+	case strings.HasSuffix(value, "Client.RMW"):
 		*e = Rmw
-	case strings.HasSuffix(value, "ClientInterface.Delete"):
+	case strings.HasSuffix(value, "Client.Delete"):
 		*e = Delete
 	case strings.HasSuffix(value, "System.Crash"):
 		*e = Crash
 	case strings.HasSuffix(value, "System.Recover"):
 		*e = Recover
-	case strings.HasSuffix(value, "ClientInterface.SimulateTimeout"):
+	case strings.HasSuffix(value, "Client.SimulateTimeout"):
 		*e = Timeout
 	default:
 		*e = "Unknown operation."
@@ -103,8 +103,15 @@ func BuildOperations(eventRows []*EventRow) []porcupine.Operation {
 
 // BuildOperationsWithAnnotations converts a slice of EventRows into porcupine Operations
 // and also returns annotations for system events (Crash, Recover, Timeout) to overlay
-// on the visualization.
+// on the visualization. Nodes are named by global index.
 func BuildOperationsWithAnnotations(eventRows []*EventRow) ([]porcupine.Operation, []porcupine.Annotation) {
+	return BuildOperationsWithNodeNames(eventRows, nil)
+}
+
+// BuildOperationsWithNodeNames is BuildOperationsWithAnnotations with
+// annotations naming each node through names. A nil names, or a node names
+// does not know, is named by global index alone.
+func BuildOperationsWithNodeNames(eventRows []*EventRow, names NodeNames) ([]porcupine.Operation, []porcupine.Annotation) {
 	var ops []porcupine.Operation
 	var annotations []porcupine.Annotation
 	pendingInvocations := make(map[string]pendingInvocation)
@@ -114,23 +121,23 @@ func BuildOperationsWithAnnotations(eventRows []*EventRow) ([]porcupine.Operatio
 
 		switch row.Action {
 		case Crash:
-			nodeID := extractNodeID(row.Payload)
+			tag, who := nodeText(names, extractNodeID(row.Payload))
 			annotations = append(annotations, porcupine.Annotation{
-				Tag:             fmt.Sprintf("Node %d", nodeID),
+				Tag:             tag,
 				Start:           syntheticTime,
 				Description:     "💥 Crash",
-				Details:         fmt.Sprintf("Node %d crashed", nodeID),
+				Details:         who + " crashed",
 				BackgroundColor: "#ff6b6b",
 				TextColor:       "#ffffff",
 			})
 			continue
 		case Recover:
-			nodeID := extractNodeID(row.Payload)
+			tag, who := nodeText(names, extractNodeID(row.Payload))
 			annotations = append(annotations, porcupine.Annotation{
-				Tag:             fmt.Sprintf("Node %d", nodeID),
+				Tag:             tag,
 				Start:           syntheticTime,
 				Description:     "🔄 Recover",
-				Details:         fmt.Sprintf("Node %d recovered", nodeID),
+				Details:         who + " recovered",
 				BackgroundColor: "#51cf66",
 				TextColor:       "#ffffff",
 			})
@@ -150,12 +157,12 @@ func BuildOperationsWithAnnotations(eventRows []*EventRow) ([]porcupine.Operatio
 			// Handle system events as annotations
 			switch row.Action {
 			case Timeout:
-				nodeID := extractNodeID(row.Payload)
+				tag, who := nodeText(names, extractNodeID(row.Payload))
 				annotations = append(annotations, porcupine.Annotation{
-					Tag:             fmt.Sprintf("Node %d", nodeID),
+					Tag:             tag,
 					Start:           syntheticTime,
 					Description:     "⏱️ Timeout",
-					Details:         fmt.Sprintf("Node %d simulated timeout", nodeID),
+					Details:         who + " simulated timeout",
 					BackgroundColor: "#fcc419",
 					TextColor:       "#000000",
 				})
@@ -188,7 +195,7 @@ func BuildOperationsWithAnnotations(eventRows []*EventRow) ([]porcupine.Operatio
 
 			switch invRow.Action {
 			case Write:
-				// Write: Payload[0]=node, Payload[1]=key, Payload[2]=uid (VInt)
+				// Write: Payload[0]=node or unit, Payload[1]=key, Payload[2]=uid (VInt)
 				if len(invPayloads) < 3 {
 					log.Printf("Warning: Write invocation for UniqueID %s has insufficient payloads. Skipping.", row.UniqueID)
 					continue
@@ -209,7 +216,7 @@ func BuildOperationsWithAnnotations(eventRows []*EventRow) ([]porcupine.Operatio
 					opOutput = respPayloads[0]
 				}
 			case Rmw:
-				// RMW: same payload shape as Write — Payload[0]=node, Payload[1]=key, Payload[2]=uid.
+				// RMW: same payload shape as Write - Payload[0]=node or unit, Payload[1]=key, Payload[2]=uid.
 				if len(invPayloads) < 3 {
 					log.Printf("Warning: RMW invocation for UniqueID %s has insufficient payloads. Skipping.", row.UniqueID)
 					continue
@@ -230,7 +237,7 @@ func BuildOperationsWithAnnotations(eventRows []*EventRow) ([]porcupine.Operatio
 					opOutput = respPayloads[0]
 				}
 			case Read:
-				// Read: Payload[0]=node, Payload[1]=key
+				// Read: Payload[0]=node or unit, Payload[1]=key
 				if len(invPayloads) < 2 {
 					log.Printf("Warning: Read invocation for UniqueID %s has insufficient payloads. Skipping.", row.UniqueID)
 					continue
@@ -300,6 +307,28 @@ func BuildOperationsWithAnnotations(eventRows []*EventRow) ([]porcupine.Operatio
 	}
 
 	return ops, annotations
+}
+
+// NodeNames looks up the deployment's description of the node at a global
+// index; the second result is false for a node the deployment does not
+// describe, such as a client node.
+type NodeNames func(index int) (NodeLabel, bool)
+
+// nodeText returns the annotation tag for a node and the longer name used in
+// annotation details. The global index stays in both so a label can be
+// matched against logs and traces, which carry only the index.
+func nodeText(names NodeNames, index int) (tag, who string) {
+	if names != nil {
+		if l, ok := names(index); ok {
+			tag = fmt.Sprintf("%s[%d] (node %d)", l.Role, l.Ordinal, index)
+			if l.Path != "" {
+				return tag, fmt.Sprintf("%s at %s", tag, l.Path)
+			}
+			return tag, tag
+		}
+	}
+	tag = fmt.Sprintf("Node %d", index)
+	return tag, tag
 }
 
 // extractNodeID parses the node ID from the payload JSON array.

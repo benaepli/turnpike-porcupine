@@ -83,18 +83,18 @@ try:
         p1_resp, p2_resp, p3_resp = "", "", ""
 
         if op == "PUT":
-            action = "ClientInterface.Write"
+            action = "Client.Write"
             p2_inv = wrap_key_or_value(row["key"])
             p3_inv = wrap_key_or_value(row["value"])
             p1_resp = get_op_output()
 
         elif op == "GET":
-            action = "ClientInterface.Read"
+            action = "Client.Read"
             p2_inv = wrap_key_or_value(row["key"])
             p1_resp = wrap_get_output(row["output"])
 
         elif op == "DELETE":
-            action = "ClientInterface.Delete"  # Assigning a new op code
+            action = "Client.Delete"  # Assigning a new op code
             p2_inv = wrap_key_or_value(row["key"])
             p1_resp = get_op_output()  # Assuming DELETE returns "OK"
 

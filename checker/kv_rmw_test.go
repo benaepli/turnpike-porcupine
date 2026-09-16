@@ -8,7 +8,7 @@ import (
 )
 
 // makeUidListValue serializes a []int as the JSON shape that
-// ClientInterface.Read or ClientInterface.RMW would emit: a VList of VInt.
+// Client.Read or Client.RMW would emit: a VList of VInt.
 func makeUidListValue(uids []int) string {
 	type rawValue struct {
 		Type string          `json:"type"`
@@ -178,4 +178,91 @@ func TestKVRMW_PendingRmwSyntheticResponse(t *testing.T) {
 func escapeJSON(s string) string {
 	b, _ := json.Marshal(s)
 	return string(b[1 : len(b)-1])
+}
+
+func TestClientActionStrings(t *testing.T) {
+	cases := map[string]ActionType{
+		"Client.Read":          Read,
+		"Client.Write":         Write,
+		"Client.RMW":           Rmw,
+		"System.Crash":         Crash,
+		"System.Recover":       Recover,
+		"ClientInterface.Read": "Unknown operation.",
+	}
+	for in, want := range cases {
+		var got ActionType
+		if err := got.UnmarshalCSV(in); err != nil || got != want {
+			t.Errorf("%q: got %q err %v, want %q", in, got, err, want)
+		}
+	}
+}
+
+func TestUnitDestinationPayload(t *testing.T) {
+	// An operation without a destination carries a unit value where the node
+	// would be; the key and uid keep their positions.
+	unit := `"{\"type\":\"VUnit\",\"value\":null}"`
+	key := `"{\"type\":\"VString\",\"value\":\"k\"}"`
+	rows := []*EventRow{
+		{UniqueID: "1", ClientID: "0", Kind: "Invocation", Action: Write,
+			Payload: `[` + unit + `,` + key + `,"{\"type\":\"VInt\",\"value\":5}"]`},
+		{UniqueID: "1", ClientID: "0", Kind: "Response", Action: Write,
+			Payload: `["{\"type\":\"VUnit\",\"value\":null}"]`},
+		{UniqueID: "2", ClientID: "0", Kind: "Invocation", Action: Rmw,
+			Payload: `[` + unit + `,` + key + `,"{\"type\":\"VInt\",\"value\":6}"]`},
+		{UniqueID: "2", ClientID: "0", Kind: "Response", Action: Rmw,
+			Payload: `["` + escapeJSON(makeUidListValue([]int{5})) + `"]`},
+		{UniqueID: "3", ClientID: "0", Kind: "Invocation", Action: Read,
+			Payload: `[` + unit + `,` + key + `]`},
+		{UniqueID: "3", ClientID: "0", Kind: "Response", Action: Read,
+			Payload: `["` + escapeJSON(makeUidListValue([]int{5, 6})) + `"]`},
+	}
+	ops, _ := BuildOperationsWithAnnotations(rows)
+	if len(ops) != 3 {
+		t.Fatalf("expected 3 ops, got %d: %+v", len(ops), ops)
+	}
+	// Keys are stored in their printed form, quoted.
+	want := []KVInput{{Op: "PUT", Key: `"k"`, Uid: 5}, {Op: "RMW", Key: `"k"`, Uid: 6}, {Op: "GET", Key: `"k"`}}
+	for i, o := range ops {
+		if o.Input.(KVInput) != want[i] {
+			t.Errorf("op %d: got %+v, want %+v", i, o.Input, want[i])
+		}
+	}
+	if !runRMW(t, ops) {
+		t.Fatalf("expected linearizable: PUT 5, RMW 6 returning [5], GET [5, 6]")
+	}
+}
+
+func TestAnnotationsNameNodesByDeployment(t *testing.T) {
+	crash := func(index int) *EventRow {
+		return &EventRow{UniqueID: "9", ClientID: "-1", Kind: "Crash", Action: Crash,
+			Payload: `["{\"type\":\"VNode\",\"value\":{\"role\":0,\"index\":` + intToJSON(index) + `}}"]`}
+	}
+	rows := []*EventRow{crash(1), crash(2), crash(3)}
+	names := func(index int) (NodeLabel, bool) {
+		switch index {
+		case 1:
+			return NodeLabel{Role: "Node", Ordinal: 0, Path: "shards[1].nodes[0]"}, true
+		case 2:
+			return NodeLabel{Role: "Router", Ordinal: 0}, true
+		}
+		return NodeLabel{}, false
+	}
+	_, ann := BuildOperationsWithNodeNames(rows, names)
+	if len(ann) != 3 {
+		t.Fatalf("expected 3 annotations, got %d", len(ann))
+	}
+	want := []struct{ tag, details string }{
+		{"Node[0] (node 1)", "Node[0] (node 1) at shards[1].nodes[0] crashed"},
+		{"Router[0] (node 2)", "Router[0] (node 2) crashed"},
+		{"Node 3", "Node 3 crashed"},
+	}
+	for i, w := range want {
+		if ann[i].Tag != w.tag || ann[i].Details != w.details {
+			t.Errorf("annotation %d: got %q / %q, want %q / %q", i, ann[i].Tag, ann[i].Details, w.tag, w.details)
+		}
+	}
+	_, ann = BuildOperationsWithAnnotations(rows[:1])
+	if ann[0].Tag != "Node 1" {
+		t.Errorf("without names: got tag %q, want Node 1", ann[0].Tag)
+	}
 }
