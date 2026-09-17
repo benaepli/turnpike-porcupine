@@ -29,16 +29,18 @@ import (
 
 // Result is the machine-readable summary consumed by the research harness.
 type Result struct {
-	Input           string `json:"input"`
-	Model           string `json:"model"`
-	TotalRuns       int    `json:"total_runs"`
-	Ok              int    `json:"ok"`
-	Violations      int    `json:"violations"`
-	Unknown         int    `json:"unknown"`
-	SkippedOps      int    `json:"skipped_ops"`
-	ViolatingRunIDs []int  `json:"violating_run_ids"`
-	UnknownRunIDs   []int  `json:"unknown_run_ids"`
-	WallMs          int64  `json:"wall_ms"`
+	ReusedRuns       int    `json:"reused_runs"`
+	NewlyCheckedRuns int    `json:"newly_checked_runs"`
+	Input            string `json:"input"`
+	Model            string `json:"model"`
+	TotalRuns        int    `json:"total_runs"`
+	Ok               int    `json:"ok"`
+	Violations       int    `json:"violations"`
+	Unknown          int    `json:"unknown"`
+	SkippedOps       int    `json:"skipped_ops"`
+	ViolatingRunIDs  []int  `json:"violating_run_ids"`
+	UnknownRunIDs    []int  `json:"unknown_run_ids"`
+	WallMs           int64  `json:"wall_ms"`
 	// Position of the first violating run in run_id order (1-based) and its
 	// id, so a consumer can measure time to the first violation from the
 	// runs table. Absent when nothing violated.
@@ -117,6 +119,7 @@ func main() {
 	modelName := flag.String("model", "", "Model to check: kv|kv_rmw|queue (default: the model recorded in the deployments table)")
 	timeoutMs := flag.Int("timeout", 10000, "Per-run check timeout in milliseconds (0 = no timeout)")
 	jsonPath := flag.String("json", "", "Also write the JSON result to this file (optional)")
+	recheckAll := flag.Bool("recheck-all", false, "Recheck every history independently, bypassing cached verdicts")
 	flag.Parse()
 
 	// `porcupine_batch <dir>` positional form.
@@ -157,8 +160,15 @@ func main() {
 	}
 	start := time.Now()
 
-	err = checker.ProcessAllRunsFromDuckDB(*inputPath, func(runID int, events []*checker.EventRow) error {
+	err = checker.ProcessRunsWithCache(*inputPath, *modelName, *recheckAll, func(runID int, events []*checker.EventRow, cached *checker.CachedVerdict, reuse bool) error {
 		res.TotalRuns++
+		if reuse {
+			res.ReusedRuns++
+			res.Ok++
+			res.SkippedOps += cached.SkippedOps
+			return nil
+		}
+		res.NewlyCheckedRuns++
 		kept := events[:0:0]
 		for _, row := range events {
 			if knownAction(row.Action) {
@@ -169,6 +179,11 @@ func main() {
 		}
 		ops, _ := checker.BuildOperationsWithAnnotations(kept)
 		verdict, info := porcupine.CheckOperationsVerbose(model, ops, time.Duration(*timeoutMs)*time.Millisecond)
+		var reconcileErr error
+		verdict, reconcileErr = checker.ReconcileVerdict(runID, verdict, cached)
+		if reconcileErr != nil {
+			return reconcileErr
+		}
 		switch verdict {
 		case porcupine.Ok:
 			res.Ok++

@@ -24,6 +24,7 @@ func main() {
 	outputDir := flag.String("output-dir", "", "Output directory for HTML files (when processing all runs)")
 	modelName := flag.String("model", "", "Model to check: kv|kv_rmw|queue (default: the model recorded in the deployments table; required for CSV)")
 	timeoutMs := flag.Int("timeout", 0, "Per-run timeout in milliseconds (0 = no timeout)")
+	recheckAll := flag.Bool("recheck-all", false, "Recheck every history and generate all HTML reports")
 	flag.Parse()
 
 	if *inputFile == "" {
@@ -79,13 +80,13 @@ func main() {
 			if outDir == "" {
 				outDir = *outputFile
 			}
-			processAllRuns(*inputFile, outDir, model, *timeoutMs)
+			processAllRuns(*inputFile, outDir, *modelName, model, *timeoutMs, *recheckAll)
 		} else {
 			// Process single run
 			if *outputFile == "" {
 				log.Fatalln("Error: -output flag is required when checking a single run.")
 			}
-			processSingleRun(*inputFile, *runID, *outputFile, model, *timeoutMs)
+			processSingleRun(*inputFile, *runID, *outputFile, *modelName, model, *timeoutMs)
 		}
 	}
 }
@@ -105,20 +106,31 @@ func processCSV(inputFile, outputFile string, model porcupine.Model, timeoutMs i
 	}
 
 	ops, annotations := checker.BuildOperationsWithAnnotations(eventRows)
-	checkAndVisualize(model, ops, annotations, outputFile, "CSV", timeoutMs)
+	exitForVerdict(checkAndVisualize(model, ops, annotations, outputFile, "CSV", timeoutMs))
 }
 
-func processSingleRun(dbPath string, runID int, outputFile string, model porcupine.Model, timeoutMs int) {
+func processSingleRun(dbPath string, runID int, outputFile, modelName string, model porcupine.Model, timeoutMs int) {
+	cache, err := checker.LoadCheckCache(dbPath, modelName)
+	if err != nil {
+		log.Fatalf("failed to read check metadata: %v", err)
+	}
 	eventRows, err := checker.ReadEventsFromDuckDB(dbPath, runID)
 	if err != nil {
 		log.Fatalf("failed to read events from DuckDB: %v", err)
 	}
 
 	ops, annotations := checker.BuildOperationsWithNodeNames(eventRows, readTopology(dbPath).NamesForRun(runID))
-	checkAndVisualize(model, ops, annotations, outputFile, fmt.Sprintf("Run %d", runID), timeoutMs)
+	verdict := checkAndVisualize(model, ops, annotations, outputFile, fmt.Sprintf("Run %d", runID), timeoutMs)
+	if cached, ok := cache.Runs[runID]; ok {
+		verdict, err = checker.ReconcileVerdict(runID, verdict, &cached)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+	exitForVerdict(verdict)
 }
 
-func processAllRuns(dbPath, outputDir string, model porcupine.Model, timeoutMs int) {
+func processAllRuns(dbPath, outputDir, modelName string, model porcupine.Model, timeoutMs int, recheckAll bool) {
 	// Create output directory if specified and doesn't exist
 	if outputDir != "" {
 		if err := os.MkdirAll(outputDir, 0755); err != nil {
@@ -126,13 +138,17 @@ func processAllRuns(dbPath, outputDir string, model porcupine.Model, timeoutMs i
 		}
 	}
 
-	allLinearizable := true
+	violations, unknown, reused := 0, 0, 0
 	runCount := 0
 	var results []stats.RunResult
 	topology := readTopology(dbPath)
 
-	err := checker.ProcessAllRunsFromDuckDB(dbPath, func(runID int, eventRows []*checker.EventRow) error {
+	err := checker.ProcessRunsWithCache(dbPath, modelName, recheckAll, func(runID int, eventRows []*checker.EventRow, cached *checker.CachedVerdict, reuse bool) error {
 		runCount++
+		if reuse {
+			reused++
+			return nil
+		}
 		ops, annotations := checker.BuildOperationsWithNodeNames(eventRows, topology.NamesForRun(runID))
 
 		// Generate output filename
@@ -145,18 +161,26 @@ func processAllRuns(dbPath, outputDir string, model porcupine.Model, timeoutMs i
 
 		fmt.Printf("\n=== Checking Run %d ===\n", runID)
 		start := time.Now()
-		linearizable := checkAndVisualize(model, ops, annotations, outFile, fmt.Sprintf("Run %d", runID), timeoutMs)
+		verdict := checkAndVisualize(model, ops, annotations, outFile, fmt.Sprintf("Run %d", runID), timeoutMs)
+		var err error
+		verdict, err = checker.ReconcileVerdict(runID, verdict, cached)
+		if err != nil {
+			return err
+		}
 		elapsed := time.Since(start)
 
 		results = append(results, stats.RunResult{
 			FileName:     fmt.Sprintf("run_%d", runID),
 			ElapsedTime:  elapsed,
-			Success:      true,
-			Linearizable: linearizable,
+			Success:      verdict != porcupine.Unknown,
+			Linearizable: verdict == porcupine.Ok,
 		})
 
-		if !linearizable {
-			allLinearizable = false
+		if verdict == porcupine.Illegal {
+			violations++
+		}
+		if verdict == porcupine.Unknown {
+			unknown++
 		}
 		return nil
 	})
@@ -169,9 +193,10 @@ func processAllRuns(dbPath, outputDir string, model porcupine.Model, timeoutMs i
 		return
 	}
 
-	// Print timing summary
-	st := stats.CalculateStats(results)
-	stats.PrintSummary(st)
+	if len(results) > 0 {
+		fmt.Printf("\nTiming for %d newly checked runs:\n", len(results))
+		stats.PrintSummary(stats.CalculateStats(results))
+	}
 
 	// Print slow runs
 	slowThreshold := 5 * time.Second
@@ -189,12 +214,14 @@ func processAllRuns(dbPath, outputDir string, model porcupine.Model, timeoutMs i
 	}
 
 	fmt.Printf("\n=== Summary (%d runs) ===\n", runCount)
-	if allLinearizable {
-		fmt.Println("All runs are linearizable.")
-	} else {
-		fmt.Println("Some runs are NOT linearizable.")
+	fmt.Printf("%d reused passes (HTML omitted), %d violations, %d unknown\n", reused, violations, unknown)
+	if violations > 0 {
 		os.Exit(2)
 	}
+	if unknown > 0 {
+		os.Exit(4)
+	}
+	fmt.Println("All runs are linearizable.")
 }
 
 // readTopology reads the node labels used in annotations. Labels only
@@ -208,7 +235,7 @@ func readTopology(dbPath string) *checker.Topology {
 	return t
 }
 
-func checkAndVisualize(model porcupine.Model, ops []porcupine.Operation, annotations []porcupine.Annotation, outputFile, label string, timeoutMs int) bool {
+func checkAndVisualize(model porcupine.Model, ops []porcupine.Operation, annotations []porcupine.Annotation, outputFile, label string, timeoutMs int) porcupine.CheckResult {
 	res, info := porcupine.CheckOperationsVerbose(model, ops, time.Duration(timeoutMs)*time.Millisecond)
 
 	if res == porcupine.Ok {
@@ -230,9 +257,14 @@ func checkAndVisualize(model porcupine.Model, ops []porcupine.Operation, annotat
 		fmt.Printf("Visualization written to %s\n", outputFile)
 	}
 
-	if res != porcupine.Ok {
-		log.Printf("%s: History is NOT linearizable.\n", label)
-		return false
+	return res
+}
+
+func exitForVerdict(verdict porcupine.CheckResult) {
+	if verdict == porcupine.Illegal {
+		os.Exit(2)
 	}
-	return true
+	if verdict == porcupine.Unknown {
+		os.Exit(4)
+	}
 }
