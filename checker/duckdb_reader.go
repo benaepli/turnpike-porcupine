@@ -151,13 +151,15 @@ func processAllRunsExcluding(dbPath, excludePasses string, processRun func(runID
 	if excludePasses != "" {
 		exclusion = " AND run_id NOT IN (" + excludePasses + ")"
 	}
-	// Timer firings are system events the checker discards as unknown
-	// actions; they can outnumber client operations many times over, so
-	// they are left in the store rather than read and dropped.
+	// The checker consumes invocations and responses and discards every
+	// other kind as an unknown action. System rows - timer firings, faults,
+	// clock advances - can outnumber client operations many times over, so
+	// the reader keeps only the two kinds it uses and every later system
+	// kind is skipped without another edit here.
 	query := fmt.Sprintf(`
 		SELECT run_id, unique_id, client_id, kind, action, payload
 		FROM %s
-		WHERE kind <> 'TimerFired' %s
+		WHERE kind IN ('Invocation', 'Response') %s
 		ORDER BY run_id ASC, seq_num ASC
 	`, src, exclusion)
 
