@@ -138,6 +138,9 @@ func main() {
 	if warning != "" {
 		fmt.Fprintf(os.Stderr, "warning: %s\n", warning)
 	}
+	if warning := checker.SymbolicWarning(*inputPath); warning != "" {
+		fmt.Fprintf(os.Stderr, "warning: %s\n", warning)
+	}
 	*modelName = resolved
 
 	var model porcupine.Model

@@ -50,6 +50,9 @@ func main() {
 		if warning != "" {
 			log.Printf("Warning: %s", warning)
 		}
+		if warning := checker.SymbolicWarning(*inputFile); warning != "" {
+			log.Printf("Warning: %s", warning)
+		}
 		*modelName = resolved
 	}
 
