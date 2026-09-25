@@ -136,6 +136,10 @@ func ReadEventsFromDuckDB(dbPath string, runID int) ([]*EventRow, error) {
 // ProcessAllRunsFromDuckDB executes a single query over all runs, sorted by
 // run_id and seq_num, and streams events grouped by run_id to the callback.
 func ProcessAllRunsFromDuckDB(dbPath string, processRun func(runID int, events []*EventRow) error) error {
+	return processAllRunsExcluding(dbPath, "", processRun)
+}
+
+func processAllRunsExcluding(dbPath, excludePasses string, processRun func(runID int, events []*EventRow) error) error {
 	db, err := openDB(dbPath)
 	if err != nil {
 		return fmt.Errorf("failed to open database: %w", err)
@@ -143,15 +147,21 @@ func ProcessAllRunsFromDuckDB(dbPath string, processRun func(runID int, events [
 	defer db.Close()
 
 	src := executionsSource(dbPath)
-	// Timer firings are system events the checker discards as unknown
-	// actions; they can outnumber client operations many times over, so
-	// they are left in the store rather than read and dropped.
+	exclusion := ""
+	if excludePasses != "" {
+		exclusion = " AND run_id NOT IN (" + excludePasses + ")"
+	}
+	// The checker consumes invocations and responses and discards every
+	// other kind as an unknown action. System rows - timer firings, faults,
+	// clock advances - can outnumber client operations many times over, so
+	// the reader keeps only the two kinds it uses and every later system
+	// kind is skipped without another edit here.
 	query := fmt.Sprintf(`
 		SELECT run_id, unique_id, client_id, kind, action, payload
 		FROM %s
-		WHERE kind <> 'TimerFired'
+		WHERE kind IN ('Invocation', 'Response') %s
 		ORDER BY run_id ASC, seq_num ASC
-	`, src)
+	`, src, exclusion)
 
 	rows, err := db.Query(query)
 	if err != nil {
