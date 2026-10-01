@@ -1,0 +1,23 @@
+{
+  "name": "lin_failing_keys_byte_order",
+  "description": "Two keys fail; the witness is the key first in byte order, not first in the history.",
+  "model": "kv",
+  "claim": {"Read": "linearizable", "Write": "linearizable"},
+  "interrupt": null,
+  "events": [
+    {"kind": "Invocation", "id": 1, "client": 3, "action": "Client.Write", "key": "b", "uid": 101, "step": 2, "global_time": 0},
+    {"kind": "Response", "id": 1, "client": 3, "action": "Client.Write", "step": 5, "global_time": 0},
+    {"kind": "Invocation", "id": 2, "client": 4, "action": "Client.Read", "key": "b", "step": 8, "global_time": 0},
+    {"kind": "Response", "id": 2, "client": 4, "action": "Client.Read", "value": [], "step": 11, "global_time": 0},
+    {"kind": "Invocation", "id": 3, "client": 3, "action": "Client.Write", "key": "a", "uid": 102, "step": 14, "global_time": 0},
+    {"kind": "Response", "id": 3, "client": 3, "action": "Client.Write", "step": 17, "global_time": 0},
+    {"kind": "Invocation", "id": 4, "client": 4, "action": "Client.Read", "key": "a", "step": 20, "global_time": 0},
+    {"kind": "Response", "id": 4, "client": 4, "action": "Client.Read", "value": [], "step": 23, "global_time": 0}
+  ],
+  "expect": {
+    "verdict": "illegal",
+    "reason": "",
+    "triage": "ordered_sequential",
+    "witness": "{\"level\":\"linearizable\",\"kind\":\"cycle\",\"key\":\"a\",\"order\":[],\"cycle\":[{\"from\":3,\"to\":4,\"relation\":\"real_time\"},{\"from\":4,\"to\":3,\"relation\":\"rw\"}],\"blocked\":[],\"value\":null}"
+  }
+}

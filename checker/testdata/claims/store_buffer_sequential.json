@@ -1,0 +1,23 @@
+{
+  "name": "store_buffer_sequential",
+  "description": "Store-buffer litmus: each session writes one key then reads the other empty; every key alone is sequentially consistent, the whole history is not.",
+  "model": "kv",
+  "claim": {"Read": "sequential", "Write": "sequential"},
+  "interrupt": null,
+  "events": [
+    {"kind": "Invocation", "id": 1, "client": 3, "action": "Client.Write", "key": "x", "uid": 101, "step": 2, "global_time": 0},
+    {"kind": "Invocation", "id": 3, "client": 4, "action": "Client.Write", "key": "y", "uid": 102, "step": 5, "global_time": 0},
+    {"kind": "Response", "id": 1, "client": 3, "action": "Client.Write", "step": 8, "global_time": 0},
+    {"kind": "Response", "id": 3, "client": 4, "action": "Client.Write", "step": 11, "global_time": 0},
+    {"kind": "Invocation", "id": 2, "client": 3, "action": "Client.Read", "key": "y", "step": 14, "global_time": 0},
+    {"kind": "Invocation", "id": 4, "client": 4, "action": "Client.Read", "key": "x", "step": 17, "global_time": 0},
+    {"kind": "Response", "id": 2, "client": 3, "action": "Client.Read", "value": [], "step": 20, "global_time": 0},
+    {"kind": "Response", "id": 4, "client": 4, "action": "Client.Read", "value": [], "step": 23, "global_time": 0}
+  ],
+  "expect": {
+    "verdict": "illegal",
+    "reason": "",
+    "triage": "none",
+    "witness": "{\"level\":\"sequential\",\"kind\":\"cycle\",\"key\":null,\"order\":[],\"cycle\":[{\"from\":1,\"to\":2,\"relation\":\"session\"},{\"from\":2,\"to\":3,\"relation\":\"rw\"},{\"from\":3,\"to\":4,\"relation\":\"session\"},{\"from\":4,\"to\":1,\"relation\":\"rw\"}],\"blocked\":[],\"value\":null}"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "name": "mixed_read_real_time",
+  "description": "Reads linearizable and writes sequential: a read misses a write another read already returned.",
+  "model": "kv",
+  "claim": {"Read": "linearizable", "Write": "sequential"},
+  "interrupt": null,
+  "events": [
+    {"kind": "Invocation", "id": 1, "client": 3, "action": "Client.Write", "key": "x", "uid": 101, "step": 2, "global_time": 0},
+    {"kind": "Response", "id": 1, "client": 3, "action": "Client.Write", "step": 5, "global_time": 0},
+    {"kind": "Invocation", "id": 2, "client": 4, "action": "Client.Read", "key": "x", "step": 8, "global_time": 0},
+    {"kind": "Response", "id": 2, "client": 4, "action": "Client.Read", "value": [101], "step": 11, "global_time": 0},
+    {"kind": "Invocation", "id": 3, "client": 5, "action": "Client.Read", "key": "x", "step": 14, "global_time": 0},
+    {"kind": "Response", "id": 3, "client": 5, "action": "Client.Read", "value": [], "step": 17, "global_time": 0}
+  ],
+  "expect": {
+    "verdict": "illegal",
+    "reason": "",
+    "triage": "ordered_sequential",
+    "witness": "{\"level\":\"mixed\",\"kind\":\"cycle\",\"key\":null,\"order\":[],\"cycle\":[{\"from\":1,\"to\":2,\"relation\":\"wr\"},{\"from\":2,\"to\":3,\"relation\":\"real_time\"},{\"from\":3,\"to\":1,\"relation\":\"rw\"}],\"blocked\":[],\"value\":null}"
+  }
+}

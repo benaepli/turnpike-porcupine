@@ -1,0 +1,19 @@
+{
+  "name": "stale_read_linearizable",
+  "description": "A write completes and a later read in another session misses it: not linearizable, and a stale read is all that is wrong.",
+  "model": "kv",
+  "claim": {"Read": "linearizable", "Write": "linearizable"},
+  "interrupt": null,
+  "events": [
+    {"kind": "Invocation", "id": 1, "client": 3, "action": "Client.Write", "key": "x", "uid": 101, "step": 2, "global_time": 0},
+    {"kind": "Response", "id": 1, "client": 3, "action": "Client.Write", "step": 5, "global_time": 0},
+    {"kind": "Invocation", "id": 2, "client": 4, "action": "Client.Read", "key": "x", "step": 8, "global_time": 0},
+    {"kind": "Response", "id": 2, "client": 4, "action": "Client.Read", "value": [], "step": 11, "global_time": 0}
+  ],
+  "expect": {
+    "verdict": "illegal",
+    "reason": "",
+    "triage": "ordered_sequential",
+    "witness": "{\"level\":\"linearizable\",\"kind\":\"cycle\",\"key\":\"x\",\"order\":[],\"cycle\":[{\"from\":1,\"to\":2,\"relation\":\"real_time\"},{\"from\":2,\"to\":1,\"relation\":\"rw\"}],\"blocked\":[],\"value\":null}"
+  }
+}

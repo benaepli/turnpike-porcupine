@@ -1,0 +1,18 @@
+{
+  "name": "pending_write_observed_linearizable",
+  "description": "A write that never returns is observed by a read.",
+  "model": "kv",
+  "claim": {"Read": "linearizable", "Write": "linearizable"},
+  "interrupt": null,
+  "events": [
+    {"kind": "Invocation", "id": 1, "client": 3, "action": "Client.Write", "key": "x", "uid": 101, "step": 2, "global_time": 0},
+    {"kind": "Invocation", "id": 2, "client": 4, "action": "Client.Read", "key": "x", "step": 5, "global_time": 0},
+    {"kind": "Response", "id": 2, "client": 4, "action": "Client.Read", "value": [101], "step": 8, "global_time": 0}
+  ],
+  "expect": {
+    "verdict": "ok",
+    "reason": "",
+    "triage": "linearizable",
+    "witness": "{\"level\":\"linearizable\",\"kind\":\"order\",\"key\":null,\"order\":[1,2],\"cycle\":[],\"blocked\":[],\"value\":null}"
+  }
+}

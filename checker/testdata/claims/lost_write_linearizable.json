@@ -1,0 +1,23 @@
+{
+  "name": "lost_write_linearizable",
+  "description": "A session writes twice across a server crash and another session reads only the second write: the first is lost under every claim.",
+  "model": "kv",
+  "claim": {"Read": "linearizable", "Write": "linearizable"},
+  "interrupt": null,
+  "events": [
+    {"kind": "Invocation", "id": 1, "client": 3, "action": "Client.Write", "key": "x", "uid": 101, "step": 2, "global_time": 0},
+    {"kind": "Response", "id": 1, "client": 3, "action": "Client.Write", "step": 5, "global_time": 0},
+    {"kind": "Crash", "node": 0, "step": 8, "global_time": 0},
+    {"kind": "Recover", "node": 0, "step": 11, "global_time": 0},
+    {"kind": "Invocation", "id": 2, "client": 3, "action": "Client.Write", "key": "x", "uid": 102, "step": 14, "global_time": 0},
+    {"kind": "Response", "id": 2, "client": 3, "action": "Client.Write", "step": 17, "global_time": 0},
+    {"kind": "Invocation", "id": 3, "client": 4, "action": "Client.Read", "key": "x", "step": 20, "global_time": 0},
+    {"kind": "Response", "id": 3, "client": 4, "action": "Client.Read", "value": [102], "step": 23, "global_time": 0}
+  ],
+  "expect": {
+    "verdict": "illegal",
+    "reason": "",
+    "triage": "none",
+    "witness": "{\"level\":\"linearizable\",\"kind\":\"cycle\",\"key\":\"x\",\"order\":[],\"cycle\":[{\"from\":1,\"to\":2,\"relation\":\"session\"},{\"from\":2,\"to\":1,\"relation\":\"ww\"}],\"blocked\":[],\"value\":null}"
+  }
+}

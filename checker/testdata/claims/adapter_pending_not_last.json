@@ -1,0 +1,18 @@
+{
+  "name": "adapter_pending_not_last",
+  "description": "A pending write is followed by another operation of its session.",
+  "model": "kv",
+  "claim": {"Read": "linearizable", "Write": "linearizable"},
+  "interrupt": null,
+  "events": [
+    {"kind": "Invocation", "id": 1, "client": 3, "action": "Client.Write", "key": "x", "uid": 101, "step": 2, "global_time": 0},
+    {"kind": "Invocation", "id": 2, "client": 3, "action": "Client.Read", "key": "x", "step": 5, "global_time": 0},
+    {"kind": "Response", "id": 2, "client": 3, "action": "Client.Read", "value": [], "step": 8, "global_time": 0}
+  ],
+  "expect": {
+    "verdict": "unknown",
+    "reason": "adapter_error",
+    "triage": "unknown",
+    "witness": null
+  }
+}

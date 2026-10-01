@@ -1,0 +1,19 @@
+{
+  "name": "store_buffer_key_x_sequential",
+  "description": "The key x operations of store_buffer_sequential alone pass, which is why the claim check takes the whole history.",
+  "model": "kv",
+  "claim": {"Read": "sequential", "Write": "sequential"},
+  "interrupt": null,
+  "events": [
+    {"kind": "Invocation", "id": 1, "client": 3, "action": "Client.Write", "key": "x", "uid": 101, "step": 2, "global_time": 0},
+    {"kind": "Response", "id": 1, "client": 3, "action": "Client.Write", "step": 5, "global_time": 0},
+    {"kind": "Invocation", "id": 4, "client": 4, "action": "Client.Read", "key": "x", "step": 8, "global_time": 0},
+    {"kind": "Response", "id": 4, "client": 4, "action": "Client.Read", "value": [], "step": 11, "global_time": 0}
+  ],
+  "expect": {
+    "verdict": "ok",
+    "reason": "",
+    "triage": "ordered_sequential",
+    "witness": "{\"level\":\"sequential\",\"kind\":\"order\",\"key\":null,\"order\":[4,1],\"cycle\":[],\"blocked\":[],\"value\":null}"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "name": "rmw_read_empty_after_write_linearizable",
+  "description": "A read returns the empty list after a blind write completed: two heads blocked by precedence.",
+  "model": "kv_rmw",
+  "claim": {"RMW": "linearizable", "Read": "linearizable", "Write": "linearizable"},
+  "interrupt": null,
+  "events": [
+    {"kind": "Invocation", "id": 1, "client": 3, "action": "Client.Write", "key": "x", "uid": 101, "step": 2, "global_time": 0},
+    {"kind": "Response", "id": 1, "client": 3, "action": "Client.Write", "step": 5, "global_time": 0},
+    {"kind": "Invocation", "id": 2, "client": 4, "action": "Client.Read", "key": "x", "step": 8, "global_time": 0},
+    {"kind": "Response", "id": 2, "client": 4, "action": "Client.Read", "value": [], "step": 11, "global_time": 0}
+  ],
+  "expect": {
+    "verdict": "illegal",
+    "reason": "",
+    "triage": "ordered_sequential",
+    "witness": "{\"level\":\"linearizable\",\"kind\":\"frontier\",\"key\":\"x\",\"order\":[],\"cycle\":[],\"blocked\":[{\"session\":3,\"op\":1,\"reason\":\"precedence\",\"after\":[{\"op\":2,\"relation\":\"rw\"}]},{\"session\":4,\"op\":2,\"reason\":\"precedence\",\"after\":[{\"op\":1,\"relation\":\"real_time\"}]}],\"value\":null}"
+  }
+}
