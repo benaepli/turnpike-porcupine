@@ -3,24 +3,67 @@ package checker
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"sort"
+	"strconv"
 	"strings"
 
 	"github.com/anishathalye/porcupine"
 )
 
-type Value struct {
-	Type string          `json:"type"`
-	Raw  json.RawMessage `json:"value"`
+// The upstream porcupine models and history conversion below exist only so
+// the tests can check the engine against upstream porcupine as an oracle.
+
+// ActionType represents the type of action performed on the data structure
+type ActionType string
+
+const (
+	Read    ActionType = "read"
+	Write   ActionType = "write"
+	Rmw     ActionType = "rmw"
+	Delete  ActionType = "delete"
+	Crash   ActionType = "crash"
+	Recover ActionType = "recover"
+	Timeout ActionType = "timeout"
+)
+
+func (e *ActionType) UnmarshalCSV(value string) error {
+	*e = ParseAction(value)
+	return nil
 }
 
-var NotFound = Value{Type: "VOption", Raw: []byte("null")}
+// ParseAction classifies an action string by its suffix.
+func ParseAction(value string) ActionType {
+	switch {
+	case strings.HasSuffix(value, "Client.Read"):
+		return Read
+	case strings.HasSuffix(value, "Client.Write"):
+		return Write
+	case strings.HasSuffix(value, "Client.RMW"):
+		return Rmw
+	case strings.HasSuffix(value, "Client.Delete"):
+		return Delete
+	case strings.HasSuffix(value, "System.Crash"):
+		return Crash
+	case strings.HasSuffix(value, "System.Recover"):
+		return Recover
+	case strings.HasSuffix(value, "Client.SimulateTimeout"):
+		return Timeout
+	}
+	return "Unknown operation."
+}
 
-// ParseValue converts a JSON string into a Value struct.
-func ParseValue(s string) Value {
-	var v Value
-	if err := json.Unmarshal([]byte(s), &v); err != nil {
-		return Value{Type: "Error", Raw: []byte(fmt.Sprintf("%q", err.Error()))}
+type pendingInvocation struct {
+	invRow   *EventRow
+	action   ActionType
+	callTime int64
+	clientID int
+}
+
+func mustAtoi(s string) int {
+	v, err := strconv.Atoi(strings.TrimSpace(s))
+	if err != nil {
+		log.Fatalf("bad int %q: %v", s, err)
 	}
 	return v
 }
@@ -74,15 +117,6 @@ func (v Value) String() string {
 		return fmt.Sprintf("{%s}", strings.Join(strs, ", "))
 	default:
 		return fmt.Sprintf("%s<%s>", v.Type, string(v.Raw))
-	}
-}
-
-// ToOption wraps a value in a VOption (Some(v)).
-func (v Value) ToOption() Value {
-	raw, _ := json.Marshal(v)
-	return Value{
-		Type: "VOption",
-		Raw:  raw,
 	}
 }
 
@@ -364,4 +398,220 @@ func KVModel() porcupine.Model {
 			return b.String()
 		},
 	}
+}
+
+// BuildOperations converts a slice of EventRows into porcupine Operations.
+func BuildOperations(eventRows []*EventRow) []porcupine.Operation {
+	ops, _ := BuildOperationsWithAnnotations(eventRows)
+	return ops
+}
+
+// BuildOperationsWithAnnotations converts a slice of EventRows into porcupine Operations
+// and also returns annotations for system events (Crash, Recover, Timeout) to overlay
+// on the visualization. Nodes are named by global index.
+func BuildOperationsWithAnnotations(eventRows []*EventRow) ([]porcupine.Operation, []porcupine.Annotation) {
+	return BuildOperationsWithNodeNames(eventRows, nil)
+}
+
+// BuildOperationsWithNodeNames is BuildOperationsWithAnnotations with
+// annotations naming each node through names. A nil names, or a node names
+// does not know, is named by global index alone.
+func BuildOperationsWithNodeNames(eventRows []*EventRow, names NodeNames) ([]porcupine.Operation, []porcupine.Annotation) {
+	var ops []porcupine.Operation
+	var annotations []porcupine.Annotation
+	pendingInvocations := make(map[string]pendingInvocation)
+
+	for i, row := range eventRows {
+		syntheticTime := int64(i + 1)
+		action := ParseAction(row.Action)
+
+		switch action {
+		case Crash:
+			tag, who := nodeText(names, extractNodeID(row.Payload))
+			annotations = append(annotations, porcupine.Annotation{
+				Tag:             tag,
+				Start:           syntheticTime,
+				Description:     "💥 Crash",
+				Details:         who + " crashed",
+				BackgroundColor: "#ff6b6b",
+				TextColor:       "#ffffff",
+			})
+			continue
+		case Recover:
+			tag, who := nodeText(names, extractNodeID(row.Payload))
+			annotations = append(annotations, porcupine.Annotation{
+				Tag:             tag,
+				Start:           syntheticTime,
+				Description:     "🔄 Recover",
+				Details:         who + " recovered",
+				BackgroundColor: "#51cf66",
+				TextColor:       "#ffffff",
+			})
+			continue
+		}
+
+		if row.Kind == "Invocation" {
+			if _, exists := pendingInvocations[row.UniqueID]; exists {
+				log.Printf("Warning: Found duplicate invocation for UniqueID %s. Overwriting.", row.UniqueID)
+			}
+			clientID := mustAtoi(row.ClientID)
+			pendingInvocations[row.UniqueID] = pendingInvocation{
+				invRow:   row,
+				action:   action,
+				callTime: syntheticTime,
+				clientID: clientID,
+			}
+			// Handle system events as annotations
+			switch action {
+			case Timeout:
+				tag, who := nodeText(names, extractNodeID(row.Payload))
+				annotations = append(annotations, porcupine.Annotation{
+					Tag:             tag,
+					Start:           syntheticTime,
+					Description:     "⏱️ Timeout",
+					Details:         who + " simulated timeout",
+					BackgroundColor: "#fcc419",
+					TextColor:       "#000000",
+				})
+				continue
+			}
+
+		} else if row.Kind == "Response" {
+			inv, ok := pendingInvocations[row.UniqueID]
+			if !ok {
+				log.Printf("Warning: Found response for UniqueID %s without matching invocation. Skipping.", row.UniqueID)
+				continue
+			}
+			delete(pendingInvocations, row.UniqueID)
+
+			retTime := syntheticTime
+			invRow := inv.invRow
+			respRow := row
+
+			// Skip unknown/other system events for linearizability checking
+			if inv.action != Read && inv.action != Write && inv.action != Rmw {
+				continue
+			}
+
+			// Parse payload arrays from both invocation and response
+			invPayloads := parsePayloadArray(invRow.Payload)
+			respPayloads := parsePayloadArray(respRow.Payload)
+
+			var opInput interface{}
+			var opOutput interface{}
+
+			switch inv.action {
+			case Write:
+				// Write: Payload[0]=node or unit, Payload[1]=key, Payload[2]=uid (VInt)
+				if len(invPayloads) < 3 {
+					log.Printf("Warning: Write invocation for UniqueID %s has insufficient payloads. Skipping.", row.UniqueID)
+					continue
+				}
+				keyVal := ParseValue(invPayloads[1])
+				uidVal := ParseValue(invPayloads[2])
+				uid, ok := parseVInt(uidVal)
+				if !ok {
+					log.Printf("Warning: Write invocation for UniqueID %s has non-int uid payload. Skipping.", row.UniqueID)
+					continue
+				}
+				opInput = KVInput{
+					Op:  "PUT",
+					Key: keyVal.String(),
+					Uid: uid,
+				}
+				if len(respPayloads) > 0 {
+					opOutput = respPayloads[0]
+				}
+			case Rmw:
+				// RMW: same payload shape as Write - Payload[0]=node or unit, Payload[1]=key, Payload[2]=uid.
+				if len(invPayloads) < 3 {
+					log.Printf("Warning: RMW invocation for UniqueID %s has insufficient payloads. Skipping.", row.UniqueID)
+					continue
+				}
+				keyVal := ParseValue(invPayloads[1])
+				uidVal := ParseValue(invPayloads[2])
+				uid, ok := parseVInt(uidVal)
+				if !ok {
+					log.Printf("Warning: RMW invocation for UniqueID %s has non-int uid payload. Skipping.", row.UniqueID)
+					continue
+				}
+				opInput = KVInput{
+					Op:  "RMW",
+					Key: keyVal.String(),
+					Uid: uid,
+				}
+				if len(respPayloads) > 0 {
+					opOutput = respPayloads[0]
+				}
+			case Read:
+				// Read: Payload[0]=node or unit, Payload[1]=key
+				if len(invPayloads) < 2 {
+					log.Printf("Warning: Read invocation for UniqueID %s has insufficient payloads. Skipping.", row.UniqueID)
+					continue
+				}
+				keyVal := ParseValue(invPayloads[1])
+				opInput = KVInput{
+					Op:  "GET",
+					Key: keyVal.String(),
+				}
+				if len(respPayloads) > 0 {
+					opOutput = respPayloads[0]
+				}
+			}
+			ops = append(ops, porcupine.Operation{
+				Input:    opInput,
+				Output:   opOutput,
+				Call:     inv.callTime,
+				Return:   retTime,
+				ClientId: inv.clientID,
+			})
+		}
+	}
+
+	// Handle pending Write/RMW invocations by creating synthetic responses at the end.
+	// Both are write-like and void from the linearization model's perspective.
+	finalTime := int64(len(eventRows) + 1)
+	for _, inv := range pendingInvocations {
+		var opName string
+		switch inv.action {
+		case Write:
+			opName = "PUT"
+		case Rmw:
+			opName = "RMW"
+		default:
+			continue
+		}
+
+		invRow := inv.invRow
+		invPayloads := parsePayloadArray(invRow.Payload)
+
+		if len(invPayloads) < 3 {
+			log.Printf("Warning: Pending %s invocation for UniqueID %s has insufficient payloads. Skipping.", opName, invRow.UniqueID)
+			continue
+		}
+
+		keyVal := ParseValue(invPayloads[1])
+		uidVal := ParseValue(invPayloads[2])
+		uid, ok := parseVInt(uidVal)
+		if !ok {
+			log.Printf("Warning: Pending %s invocation for UniqueID %s has non-int uid payload. Skipping.", opName, invRow.UniqueID)
+			continue
+		}
+		opInput := KVInput{
+			Op:  opName,
+			Key: keyVal.String(),
+			Uid: uid,
+		}
+
+		// Synthetic operation that "completes" at the very end.
+		ops = append(ops, porcupine.Operation{
+			Input:    opInput,
+			Output:   nil, // Output irrelevant for write-like ops in these models.
+			Call:     inv.callTime,
+			Return:   finalTime,
+			ClientId: inv.clientID,
+		})
+	}
+
+	return ops, annotations
 }

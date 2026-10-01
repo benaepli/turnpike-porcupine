@@ -19,7 +19,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/anishathalye/porcupine"
 	"github.com/gocarina/gocsv"
 
 	"github.com/benaepli/turnpike-porcupine/checker"
@@ -28,19 +27,9 @@ import (
 	"github.com/benaepli/turnpike-porcupine/stats"
 )
 
-// Which pages to draw: the claim view, the upstream linearizability view, or
-// both side by side, the upstream one beside the other as
-// run_<id>.upstream.html.
-const (
-	viewEngine   = "engine"
-	viewUpstream = "upstream"
-	viewBoth     = "both"
-)
-
 type settings struct {
 	claim   engine.Claim
 	timeout time.Duration
-	view    string
 }
 
 func main() {
@@ -53,7 +42,6 @@ func main() {
 	claimFlag := flag.String("claim", "", `Claim to check, as its JSON object, e.g. {"Read":"sequential","Write":"linearizable"} (default: the claim recorded in the deployments table, else every operation linearizable)`)
 	timeoutMs := flag.Int("timeout", 0, "Per-stage check timeout in milliseconds (0 = no timeout)")
 	recheckAll := flag.Bool("recheck-all", false, "Recheck every history and generate all HTML reports")
-	viewFlag := flag.String("view", viewEngine, "HTML view: engine (the claim view), upstream (the linearizability view of upstream porcupine), or both")
 	flag.Parse()
 
 	if *inputFile == "" {
@@ -64,11 +52,6 @@ func main() {
 	inputTypeNorm := strings.ToLower(*inputType)
 	if inputTypeNorm != "csv" && inputTypeNorm != "duckdb" {
 		log.Fatalf("invalid input type %q (use csv|duckdb)", *inputType)
-	}
-	switch *viewFlag {
-	case viewEngine, viewUpstream, viewBoth:
-	default:
-		log.Fatalf("invalid view %q (use engine|upstream|both)", *viewFlag)
 	}
 
 	// A CSV history carries no deployments table to read the model from.
@@ -104,10 +87,7 @@ func main() {
 		log.Printf("Warning: %s", warning)
 	}
 	fmt.Printf("Model %s, claim %s %s\n", model, claim.Name(), claim.JSON())
-	if claim.Name() != "linearizable" && *viewFlag != viewEngine {
-		log.Printf("Warning: the upstream view checks linearizability, not the claim %s", claim.Name())
-	}
-	s := settings{claim: claim, timeout: time.Duration(*timeoutMs) * time.Millisecond, view: *viewFlag}
+	s := settings{claim: claim, timeout: time.Duration(*timeoutMs) * time.Millisecond}
 
 	if inputTypeNorm == "csv" {
 		if *outputFile == "" {
@@ -292,8 +272,8 @@ func check(events []*checker.EventRow, label string, s settings) history {
 	return history{label: label, events: events, rows: rows, outcome: checker.CheckHistory(rows, s.claim, s.timeout, true)}
 }
 
-// report prints the outcome and writes the pages and, for a violation, the
-// witness as text beside them.
+// report prints the outcome and writes the page and, for a violation, the
+// witness as text beside it.
 func report(h history, o checker.Outcome, outputFile string, names checker.NodeNames, s settings) {
 	switch o.Verdict {
 	case engine.VerdictOK:
@@ -318,42 +298,14 @@ func report(h history, o checker.Outcome, outputFile string, names checker.NodeN
 		}
 	}
 
-	if s.view != viewUpstream {
-		in, err := checker.ViewInput(h.label, s.claim, o, events, names)
-		if err == nil {
-			err = view.WritePath(outputFile, in)
-		}
-		if err != nil {
-			log.Printf("Warning: failed to write visualization to %s: %v", outputFile, err)
-		} else {
-			fmt.Printf("Visualization written to %s\n", outputFile)
-		}
+	in, err := checker.ViewInput(h.label, s.claim, o, events, names)
+	if err == nil {
+		err = view.WritePath(outputFile, in)
 	}
-	switch s.view {
-	case viewUpstream:
-		upstreamView(h.events, names, s, outputFile)
-	case viewBoth:
-		upstreamView(h.events, names, s, base+".upstream.html")
-	}
-}
-
-// upstreamView draws upstream porcupine's linearizability view. Upstream
-// porcupine builds the page from its own search, so it checks the history
-// again; its verdict is shown on the page and is not the claim's.
-func upstreamView(events []*checker.EventRow, names checker.NodeNames, s settings, outputFile string) {
-	model := checker.KVModel()
-	if s.claim.Model == engine.KVRMW {
-		model = checker.KVRMWModel()
-	}
-	ops, annotations := checker.BuildOperationsWithNodeNames(events, names)
-	_, info := porcupine.CheckOperationsVerbose(model, ops, s.timeout)
-	if len(annotations) > 0 {
-		info.AddAnnotations(annotations)
-	}
-	if err := porcupine.VisualizePath(model, info, outputFile); err != nil {
-		log.Printf("Warning: failed to write the upstream visualization to %s: %v", outputFile, err)
+	if err != nil {
+		log.Printf("Warning: failed to write visualization to %s: %v", outputFile, err)
 	} else {
-		fmt.Printf("Upstream visualization written to %s\n", outputFile)
+		fmt.Printf("Visualization written to %s\n", outputFile)
 	}
 }
 
