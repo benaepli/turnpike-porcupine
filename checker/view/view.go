@@ -535,6 +535,11 @@ func build(in Input) (*page, error) {
 	var opList []*op
 	var sys []sysEvent
 	for i, e := range in.Events {
+		// An invocation or response whose action names no client operation
+		// is a system row, which the check ignores.
+		if (e.Kind == "Invocation" || e.Kind == "Response") && kindOf(e.Action) == "" {
+			continue
+		}
 		switch e.Kind {
 		case "Invocation":
 			if _, dup := ops[e.ID]; dup {
@@ -547,9 +552,6 @@ func build(in Input) (*page, error) {
 			}
 			if e.UID != nil {
 				o.UID, o.HasUID = *e.UID, true
-			}
-			if o.Kind == "" {
-				warn("operation %d has action %q, which is not a client operation", e.ID, e.Action)
 			}
 			ops[e.ID] = o
 			opList = append(opList, o)

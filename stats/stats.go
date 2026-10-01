@@ -125,8 +125,8 @@ func PrintSummary(st BenchmarkStats) {
 	}
 
 	if st.SuccessfulRuns > 0 {
-		fmt.Printf("Linearizable:       %d\n", st.LinearizableRuns)
-		fmt.Printf("Non-Linearizable:   %d\n", st.NonLinearizableRuns)
+		fmt.Printf("Claim holds:        %d\n", st.LinearizableRuns)
+		fmt.Printf("Claim violated:     %d\n", st.NonLinearizableRuns)
 
 		separator := "------------------------------------------------------------"
 		fmt.Printf("\n%s\n", separator)

@@ -12,35 +12,7 @@ import (
 	"github.com/benaepli/turnpike-porcupine/checker/engine"
 )
 
-// actionText restores the action suffix the engine reads from a parsed
-// action type.
-func actionText(a ActionType) string {
-	switch a {
-	case Read:
-		return "Client.Read"
-	case Write:
-		return "Client.Write"
-	case Rmw:
-		return "Client.RMW"
-	case Delete:
-		return "Client.Delete"
-	case Timeout:
-		return "Client.SimulateTimeout"
-	case Crash:
-		return "System.Crash"
-	case Recover:
-		return "System.Recover"
-	}
-	return string(a)
-}
-
-func engineRows(events []*EventRow) []engine.Row {
-	rows := make([]engine.Row, len(events))
-	for i, e := range events {
-		rows[i] = engine.RowFromEvent(e.UniqueID, e.ClientID, e.Kind, actionText(e.Action), e.Payload)
-	}
-	return rows
-}
+func engineRows(events []*EventRow) []engine.Row { return EngineRows(events) }
 
 func upstreamModel(m engine.Model) porcupine.Model {
 	if m == engine.KVRMW {

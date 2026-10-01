@@ -9,14 +9,19 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/anishathalye/porcupine"
+	"github.com/benaepli/turnpike-porcupine/checker/engine"
 )
 
-const checkerVersion = "porcupine-rs-0.3.0-spur.1"
-const contractVersion = "spur-kv-1"
+const checkerVersion = "spur-engine-1"
+const contractVersion = "spur-kv-2"
 
+// CachedVerdict is the simulator's definitive check of one history under the
+// claim being checked. Witness is the canonical witness, empty when the
+// simulator recorded none.
 type CachedVerdict struct {
-	Verdict    porcupine.CheckResult
+	Verdict    string
+	Triage     string
+	Witness    string
 	SkippedOps int
 }
 
@@ -49,7 +54,9 @@ func hasColumns(db *sql.DB, source string, wanted ...string) (bool, error) {
 	return true, nil
 }
 
-func LoadCheckCache(dbPath, model string) (*CheckCache, error) {
+// LoadCheckCache reads the simulator's verdicts that may stand in for a
+// check under model and claim, the claim in its canonical JSON form.
+func LoadCheckCache(dbPath, model, claim string) (*CheckCache, error) {
 	cache := &CheckCache{Runs: make(map[int]CachedVerdict)}
 	root := dbPath
 	if filepath.Base(root) == "executions" {
@@ -98,7 +105,7 @@ func LoadCheckCache(dbPath, model string) (*CheckCache, error) {
 		source string
 		names  []string
 	}{
-		{checks, []string{"session_id", "run_id", "deployment_id", "history_digest", "model", "checker_version", "contract_version", "verdict", "skipped_ops"}},
+		{checks, []string{"session_id", "run_id", "deployment_id", "history_digest", "model", "claim", "checker_version", "contract_version", "verdict", "triage", "witness", "skipped_ops"}},
 		{runs, []string{"run_id", "deployment_id", "check_session_id", "history_digest"}},
 	} {
 		ok, err := hasColumns(db, spec.source, spec.names...)
@@ -106,14 +113,16 @@ func LoadCheckCache(dbPath, model string) (*CheckCache, error) {
 			return cache, err
 		}
 	}
-	eligible := fmt.Sprintf(`SELECT c.run_id, c.verdict, c.skipped_ops FROM %s c JOIN %s r
+	eligible := fmt.Sprintf(`SELECT c.run_id, c.verdict, c.skipped_ops, coalesce(c.triage, '') AS triage,
+        coalesce(c.witness, '') AS witness FROM %s c JOIN %s r
         ON c.run_id = r.run_id AND c.deployment_id = r.deployment_id
         AND c.session_id = r.check_session_id AND c.history_digest = r.history_digest
-        WHERE c.session_id = %s AND c.model = %s AND c.checker_version = %s
+        WHERE c.session_id = %s AND c.model = %s AND c.claim = %s AND c.checker_version = %s
         AND c.contract_version = %s AND c.history_digest <> '' AND c.verdict IN ('ok', 'illegal')`,
-		checks, runs, sqlString(manifest.SessionID), sqlString(model), sqlString(checkerVersion), sqlString(contractVersion))
-	consistent := "SELECT run_id, min(verdict) AS verdict, min(skipped_ops) AS skipped_ops FROM (" + eligible +
-		") GROUP BY run_id HAVING count(DISTINCT verdict) = 1 AND count(DISTINCT skipped_ops) = 1"
+		checks, runs, sqlString(manifest.SessionID), sqlString(model), sqlString(claim), sqlString(checkerVersion), sqlString(contractVersion))
+	consistent := "SELECT run_id, min(verdict) AS verdict, min(skipped_ops) AS skipped_ops, min(triage) AS triage, " +
+		"min(witness) AS witness FROM (" + eligible + ") GROUP BY run_id HAVING count(DISTINCT verdict) = 1 " +
+		"AND count(DISTINCT skipped_ops) = 1 AND count(DISTINCT triage) = 1 AND count(DISTINCT witness) = 1"
 	rows, err := db.Query(consistent)
 	if err != nil {
 		return nil, err
@@ -121,15 +130,11 @@ func LoadCheckCache(dbPath, model string) (*CheckCache, error) {
 	defer rows.Close()
 	for rows.Next() {
 		var runID, skipped int
-		var verdict string
-		if err := rows.Scan(&runID, &verdict, &skipped); err != nil {
+		var verdict, triage, witness string
+		if err := rows.Scan(&runID, &verdict, &skipped, &triage, &witness); err != nil {
 			return nil, err
 		}
-		result := porcupine.Ok
-		if verdict == "illegal" {
-			result = porcupine.Illegal
-		}
-		cache.Runs[runID] = CachedVerdict{Verdict: result, SkippedOps: skipped}
+		cache.Runs[runID] = CachedVerdict{Verdict: verdict, Triage: triage, Witness: witness, SkippedOps: skipped}
 	}
 	if err := rows.Err(); err != nil {
 		return nil, err
@@ -169,8 +174,8 @@ func recordedRunIDs(dbPath string) ([]int, error) {
 }
 
 // Passed histories are excluded in SQL; callbacks retain full run-id order.
-func ProcessRunsWithCache(dbPath, model string, recheckAll bool, process func(int, []*EventRow, *CachedVerdict, bool) error) error {
-	cache, err := LoadCheckCache(dbPath, model)
+func ProcessRunsWithCache(dbPath, model, claim string, recheckAll bool, process func(int, []*EventRow, *CachedVerdict, bool) error) error {
+	cache, err := LoadCheckCache(dbPath, model, claim)
 	if err != nil {
 		return err
 	}
@@ -182,7 +187,7 @@ func ProcessRunsWithCache(dbPath, model string, recheckAll bool, process func(in
 	index := 0
 	emit := func(id int, rows []*EventRow) error {
 		if cached, ok := cache.Runs[id]; ok {
-			return process(id, rows, &cached, !recheckAll && cached.Verdict == porcupine.Ok)
+			return process(id, rows, &cached, !recheckAll && cached.Verdict == engine.VerdictOK)
 		}
 		return process(id, rows, nil, false)
 	}
@@ -213,15 +218,31 @@ func ProcessRunsWithCache(dbPath, model string, recheckAll bool, process func(in
 	return nil
 }
 
-func ReconcileVerdict(runID int, actual porcupine.CheckResult, cached *CachedVerdict) (porcupine.CheckResult, error) {
+// ReconcileVerdict joins a fresh check with the simulator's cached one. A
+// definitive verdict or triage that contradicts the cache, or a witness that
+// differs from a cached one, is a checker disagreement. A cached violation
+// stands when the fresh check is undecided.
+func ReconcileVerdict(runID int, actual Outcome, cached *CachedVerdict) (Outcome, error) {
 	if cached == nil {
 		return actual, nil
 	}
-	if actual != porcupine.Unknown && actual != cached.Verdict {
-		return actual, fmt.Errorf("checker disagreement on run %d: Rust=%s Go=%s", runID, cached.Verdict, actual)
+	if actual.Verdict != engine.VerdictUnknown && actual.Verdict != cached.Verdict {
+		return actual, fmt.Errorf("checker disagreement on run %d: Rust=%s Go=%s", runID, cached.Verdict, actual.Verdict)
 	}
-	if cached.Verdict == porcupine.Illegal {
-		return porcupine.Illegal, nil
+	if definiteTriage(actual.Triage) && definiteTriage(cached.Triage) && actual.Triage != cached.Triage {
+		return actual, fmt.Errorf("checker disagreement on run %d: Rust triage=%s Go triage=%s", runID, cached.Triage, actual.Triage)
+	}
+	if actual.Witness != "" && cached.Witness != "" && actual.Witness != cached.Witness {
+		return actual, fmt.Errorf("checker disagreement on run %d: Rust witness=%s Go witness=%s", runID, cached.Witness, actual.Witness)
+	}
+	if cached.Verdict == engine.VerdictIllegal && actual.Verdict == engine.VerdictUnknown {
+		out := Outcome{Verdict: engine.VerdictIllegal, Triage: actual.Triage, Witness: cached.Witness}
+		if definiteTriage(cached.Triage) {
+			out.Triage = cached.Triage
+		}
+		return out, nil
 	}
 	return actual, nil
 }
+
+func definiteTriage(t string) bool { return t != "" && t != engine.VerdictUnknown }

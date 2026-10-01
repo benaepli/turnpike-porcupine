@@ -4,9 +4,9 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"log"
 	"os"
 	"path/filepath"
+	"strconv"
 
 	_ "github.com/marcboeker/go-duckdb/v2"
 )
@@ -78,7 +78,41 @@ func runsSource(path string) string {
 	return "runs"
 }
 
-// ReadEventsFromDuckDB reads execution events for a given run_id.
+// timeColumns returns the select expressions for step and global time:
+// the columns when the executions relation has them, else zero.
+func timeColumns(db *sql.DB, src string) (string, error) {
+	ok, err := hasColumns(db, src, "step", "global_time")
+	if err != nil {
+		return "", fmt.Errorf("failed to read the executions columns: %w", err)
+	}
+	if !ok {
+		return "0::BIGINT AS step, 0::BIGINT AS global_time", nil
+	}
+	return "coalesce(step, 0)::BIGINT AS step, coalesce(global_time, 0)::BIGINT AS global_time", nil
+}
+
+func scanEvent(rows *sql.Rows, runID *int) (*EventRow, error) {
+	var uniqueID, clientID, step, globalTime int64
+	var kind, action, payload string
+	dest := []interface{}{&uniqueID, &clientID, &kind, &action, &payload, &step, &globalTime}
+	if runID != nil {
+		dest = append([]interface{}{runID}, dest...)
+	}
+	if err := rows.Scan(dest...); err != nil {
+		return nil, fmt.Errorf("failed to scan row: %w", err)
+	}
+	return &EventRow{
+		UniqueID:   strconv.FormatInt(uniqueID, 10),
+		ClientID:   strconv.FormatInt(clientID, 10),
+		Kind:       kind,
+		Action:     action,
+		Payload:    payload,
+		Step:       step,
+		GlobalTime: globalTime,
+	}, nil
+}
+
+// ReadEventsFromDuckDB reads every execution row of a run, in row order.
 // Works with both a .duckdb file and a Parquet directory.
 func ReadEventsFromDuckDB(dbPath string, runID int) ([]*EventRow, error) {
 	db, err := openDB(dbPath)
@@ -88,12 +122,16 @@ func ReadEventsFromDuckDB(dbPath string, runID int) ([]*EventRow, error) {
 	defer db.Close()
 
 	src := executionsSource(dbPath)
+	times, err := timeColumns(db, src)
+	if err != nil {
+		return nil, err
+	}
 	query := fmt.Sprintf(`
-		SELECT unique_id, client_id, kind, action, payload
+		SELECT unique_id, client_id, kind, action, payload, %s
 		FROM %s
 		WHERE run_id = ?
 		ORDER BY seq_num ASC
-	`, src)
+	`, times, src)
 
 	rows, err := db.Query(query, runID)
 	if err != nil {
@@ -102,34 +140,16 @@ func ReadEventsFromDuckDB(dbPath string, runID int) ([]*EventRow, error) {
 	defer rows.Close()
 
 	var eventRows []*EventRow
-
 	for rows.Next() {
-		var uniqueID, clientID int
-		var kind, action, payload string
-
-		if err := rows.Scan(&uniqueID, &clientID, &kind, &action, &payload); err != nil {
-			return nil, fmt.Errorf("failed to scan row: %w", err)
+		e, err := scanEvent(rows, nil)
+		if err != nil {
+			return nil, err
 		}
-
-		var actionType ActionType
-		if err := actionType.UnmarshalCSV(action); err != nil {
-			log.Printf("Warning: failed to parse action type %q: %v", action, err)
-			continue
-		}
-
-		eventRows = append(eventRows, &EventRow{
-			UniqueID: fmt.Sprintf("%d", uniqueID),
-			ClientID: fmt.Sprintf("%d", clientID),
-			Kind:     kind,
-			Action:   actionType,
-			Payload:  payload,
-		})
+		eventRows = append(eventRows, e)
 	}
-
 	if err := rows.Err(); err != nil {
 		return nil, fmt.Errorf("error iterating rows: %w", err)
 	}
-
 	return eventRows, nil
 }
 
@@ -147,21 +167,25 @@ func processAllRunsExcluding(dbPath, excludePasses string, processRun func(runID
 	defer db.Close()
 
 	src := executionsSource(dbPath)
+	times, err := timeColumns(db, src)
+	if err != nil {
+		return err
+	}
 	exclusion := ""
 	if excludePasses != "" {
 		exclusion = " AND run_id NOT IN (" + excludePasses + ")"
 	}
-	// The checker consumes invocations and responses and discards every
-	// other kind as an unknown action. System rows - timer firings, faults,
+	// The check consumes invocations and responses, and the view draws
+	// crashes and recoveries. Other system rows - timer firings, partitions,
 	// clock advances - can outnumber client operations many times over, so
-	// the reader keeps only the two kinds it uses and every later system
-	// kind is skipped without another edit here.
+	// the reader keeps only those four kinds and every later system kind is
+	// skipped without another edit here.
 	query := fmt.Sprintf(`
-		SELECT run_id, unique_id, client_id, kind, action, payload
+		SELECT run_id, unique_id, client_id, kind, action, payload, %s
 		FROM %s
-		WHERE kind IN ('Invocation', 'Response') %s
+		WHERE kind IN ('Invocation', 'Response', 'Crash', 'Recover') %s
 		ORDER BY run_id ASC, seq_num ASC
-	`, src, exclusion)
+	`, times, src, exclusion)
 
 	rows, err := db.Query(query)
 	if err != nil {
@@ -184,13 +208,11 @@ func processAllRunsExcluding(dbPath, excludePasses string, processRun func(runID
 	}
 
 	for rows.Next() {
-		var runID, uniqueID, clientID int
-		var kind, action, payload string
-
-		if err := rows.Scan(&runID, &uniqueID, &clientID, &kind, &action, &payload); err != nil {
-			return fmt.Errorf("failed to scan row: %w", err)
+		var runID int
+		e, err := scanEvent(rows, &runID)
+		if err != nil {
+			return err
 		}
-
 		if runID != currentRunID {
 			if err := flush(); err != nil {
 				return err
@@ -198,20 +220,7 @@ func processAllRunsExcluding(dbPath, excludePasses string, processRun func(runID
 			currentRunID = runID
 			currentBatch = nil
 		}
-
-		var actionType ActionType
-		if err := actionType.UnmarshalCSV(action); err != nil {
-			log.Printf("Warning: failed to parse action type %q (run %d): %v", action, runID, err)
-			continue
-		}
-
-		currentBatch = append(currentBatch, &EventRow{
-			UniqueID: fmt.Sprintf("%d", uniqueID),
-			ClientID: fmt.Sprintf("%d", clientID),
-			Kind:     kind,
-			Action:   actionType,
-			Payload:  payload,
-		})
+		currentBatch = append(currentBatch, e)
 	}
 
 	if err := rows.Err(); err != nil {

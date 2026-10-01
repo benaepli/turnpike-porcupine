@@ -149,11 +149,11 @@ func TestKVRMW_PendingRmwSyntheticResponse(t *testing.T) {
 	// A pending (no-response) RMW gets synthesized with Output=nil. The model
 	// must accept it (skip the output check) so the run can still linearize.
 	rows := []*EventRow{
-		{UniqueID: "1", ClientID: "0", Kind: "Invocation", Action: Rmw,
+		{UniqueID: "1", ClientID: "0", Kind: "Invocation", Action: "Client.RMW",
 			Payload: `["{\"type\":\"VNode\",\"value\":{\"role\":0,\"index\":0}}","{\"type\":\"VString\",\"value\":\"k\"}","{\"type\":\"VInt\",\"value\":42}"]`},
-		{UniqueID: "2", ClientID: "0", Kind: "Invocation", Action: Read,
+		{UniqueID: "2", ClientID: "0", Kind: "Invocation", Action: "Client.Read",
 			Payload: `["{\"type\":\"VNode\",\"value\":{\"role\":0,\"index\":0}}","{\"type\":\"VString\",\"value\":\"k\"}"]`},
-		{UniqueID: "2", ClientID: "0", Kind: "Response", Action: Read,
+		{UniqueID: "2", ClientID: "0", Kind: "Response", Action: "Client.Read",
 			Payload: `["` + escapeJSON(makeUidListValue([]int{42})) + `"]`},
 	}
 	ops, _ := BuildOperationsWithAnnotations(rows)
@@ -203,17 +203,17 @@ func TestUnitDestinationPayload(t *testing.T) {
 	unit := `"{\"type\":\"VUnit\",\"value\":null}"`
 	key := `"{\"type\":\"VString\",\"value\":\"k\"}"`
 	rows := []*EventRow{
-		{UniqueID: "1", ClientID: "0", Kind: "Invocation", Action: Write,
+		{UniqueID: "1", ClientID: "0", Kind: "Invocation", Action: "Client.Write",
 			Payload: `[` + unit + `,` + key + `,"{\"type\":\"VInt\",\"value\":5}"]`},
-		{UniqueID: "1", ClientID: "0", Kind: "Response", Action: Write,
+		{UniqueID: "1", ClientID: "0", Kind: "Response", Action: "Client.Write",
 			Payload: `["{\"type\":\"VUnit\",\"value\":null}"]`},
-		{UniqueID: "2", ClientID: "0", Kind: "Invocation", Action: Rmw,
+		{UniqueID: "2", ClientID: "0", Kind: "Invocation", Action: "Client.RMW",
 			Payload: `[` + unit + `,` + key + `,"{\"type\":\"VInt\",\"value\":6}"]`},
-		{UniqueID: "2", ClientID: "0", Kind: "Response", Action: Rmw,
+		{UniqueID: "2", ClientID: "0", Kind: "Response", Action: "Client.RMW",
 			Payload: `["` + escapeJSON(makeUidListValue([]int{5})) + `"]`},
-		{UniqueID: "3", ClientID: "0", Kind: "Invocation", Action: Read,
+		{UniqueID: "3", ClientID: "0", Kind: "Invocation", Action: "Client.Read",
 			Payload: `[` + unit + `,` + key + `]`},
-		{UniqueID: "3", ClientID: "0", Kind: "Response", Action: Read,
+		{UniqueID: "3", ClientID: "0", Kind: "Response", Action: "Client.Read",
 			Payload: `["` + escapeJSON(makeUidListValue([]int{5, 6})) + `"]`},
 	}
 	ops, _ := BuildOperationsWithAnnotations(rows)
@@ -234,7 +234,7 @@ func TestUnitDestinationPayload(t *testing.T) {
 
 func TestAnnotationsNameNodesByDeployment(t *testing.T) {
 	crash := func(index int) *EventRow {
-		return &EventRow{UniqueID: "9", ClientID: "-1", Kind: "Crash", Action: Crash,
+		return &EventRow{UniqueID: "9", ClientID: "-1", Kind: "Crash", Action: "System.Crash",
 			Payload: `["{\"type\":\"VNode\",\"value\":{\"role\":0,\"index\":` + intToJSON(index) + `}}"]`}
 	}
 	rows := []*EventRow{crash(1), crash(2), crash(3)}

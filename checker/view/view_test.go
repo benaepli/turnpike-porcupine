@@ -85,6 +85,8 @@ func once(t *testing.T, name, page, needle string) {
 
 var urlRef = regexp.MustCompile(`url\(([^)]*)\)`)
 
+var opRef = regexp.MustCompile(`data-op="-?[0-9]+"`)
+
 // noExternal fails on anything that would make the page fetch or link
 // outside itself.
 func noExternal(t *testing.T, name, page string) {
@@ -117,10 +119,18 @@ func TestFixturePages(t *testing.T) {
 
 		ids := map[int64]bool{}
 		for _, e := range f.Events {
-			if e.Kind == "Invocation" && !ids[e.ID] {
+			if e.Kind == "Invocation" && kindOf(e.Action) != "" && !ids[e.ID] {
 				ids[e.ID] = true
 				once(t, f.Name, page, fmt.Sprintf(`data-op="%d"`, e.ID))
 			}
+		}
+		for _, e := range f.Events {
+			if e.Kind == "Invocation" && kindOf(e.Action) == "" && !ids[e.ID] && strings.Contains(page, fmt.Sprintf(`data-op="%d"`, e.ID)) {
+				t.Errorf("%s: system row %d (%s) drawn as an operation", f.Name, e.ID, e.Action)
+			}
+		}
+		if n, want := len(opRef.FindAllString(page, -1)), len(ids); n != want {
+			t.Errorf("%s: %d operations drawn, want %d", f.Name, n, want)
 		}
 		if !strings.Contains(page, `class="v verdict-`+f.Expect.Verdict+`"`) {
 			t.Errorf("%s: verdict %q not shown", f.Name, f.Expect.Verdict)

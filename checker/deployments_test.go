@@ -95,7 +95,7 @@ func TestResolveModelErrors(t *testing.T) {
 	if _, _, err := ResolveModel("", missing); err == nil {
 		t.Fatal("a missing deployments table without -model must be an error")
 	}
-	if model, warning, err := ResolveModel("queue", missing); err != nil || model != "queue" || warning != "" {
+	if model, warning, err := ResolveModel("kv_rmw", missing); err != nil || model != "kv_rmw" || warning != "" {
 		t.Fatalf("a flag without a deployments table: got %q warning %q err %v", model, warning, err)
 	}
 }
