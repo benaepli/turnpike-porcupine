@@ -1,0 +1,597 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{.Title}} - {{.Verdict}}</title>
+<style>
+:root {
+  color-scheme: light;
+  --bg: #f6f6f3;
+  --surface: #ffffff;
+  --surface-2: #f0f1ee;
+  --ink: #1c1e22;
+  --muted: #5d636c;
+  --line: #d8dbd6;
+  --lane: #ffffff;
+  --lane-alt: #f3f4f1;
+  --bar: #e9edf3;
+  --bar-ink: #1c1e22;
+  --bar-stroke: #97a1ae;
+  --accent: #2c63c9;
+  --bad: #c3352b;
+  --bad-soft: #fbe5e2;
+  --good: #1d7f47;
+  --good-soft: #def3e6;
+  --warn: #a86a12;
+  --warn-soft: #fbefd9;
+  --other: #7b3fc6;
+  --other-soft: #efe5fb;
+  --down: #f2c9c4;
+  --r-session: #5f6b7a;
+  --r-real_time: #c26a00;
+  --r-ww: #7b3fc6;
+  --r-wr: #0b8478;
+  --r-rw: #d0234f;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #131519;
+    --surface: #1b1e23;
+    --surface-2: #22262c;
+    --ink: #e5e7ea;
+    --muted: #9aa2ac;
+    --line: #333840;
+    --lane: #1b1e23;
+    --lane-alt: #20242a;
+    --bar: #2a3039;
+    --bar-ink: #e5e7ea;
+    --bar-stroke: #5e6876;
+    --accent: #79a6ff;
+    --bad: #ff7468;
+    --bad-soft: #3d2220;
+    --good: #55c98c;
+    --good-soft: #193526;
+    --warn: #e4ac52;
+    --warn-soft: #3a2c15;
+    --other: #b892f5;
+    --other-soft: #2d2440;
+    --down: #4a2724;
+    --r-session: #a3adb9;
+    --r-real_time: #f0a038;
+    --r-ww: #b892f5;
+    --r-wr: #3fcfbe;
+    --r-rw: #ff6f91;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #131519;
+  --surface: #1b1e23;
+  --surface-2: #22262c;
+  --ink: #e5e7ea;
+  --muted: #9aa2ac;
+  --line: #333840;
+  --lane: #1b1e23;
+  --lane-alt: #20242a;
+  --bar: #2a3039;
+  --bar-ink: #e5e7ea;
+  --bar-stroke: #5e6876;
+  --accent: #79a6ff;
+  --bad: #ff7468;
+  --bad-soft: #3d2220;
+  --good: #55c98c;
+  --good-soft: #193526;
+  --warn: #e4ac52;
+  --warn-soft: #3a2c15;
+  --other: #b892f5;
+  --other-soft: #2d2440;
+  --down: #4a2724;
+  --r-session: #a3adb9;
+  --r-real_time: #f0a038;
+  --r-ww: #b892f5;
+  --r-wr: #3fcfbe;
+  --r-rw: #ff6f91;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 14px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+main { max-width: 1280px; margin: 0 auto; padding: 20px 16px 48px; }
+code, .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.93em; }
+h1 { font-size: 1.35rem; margin: 0; line-height: 1.25; overflow-wrap: anywhere; }
+h2 { font-size: 1rem; margin: 0 0 10px; }
+.top { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-start; justify-content: space-between; margin-bottom: 14px; }
+.controls { display: flex; flex-wrap: wrap; gap: 8px; }
+button {
+  font: inherit; font-size: 13px; color: var(--ink); background: var(--surface);
+  border: 1px solid var(--line); border-radius: 6px; padding: 4px 10px; cursor: pointer;
+}
+button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--surface); }
+button:focus-visible, .op:focus-visible, tr:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.seg { display: inline-flex; }
+.seg button { border-radius: 0; }
+.seg button:first-child { border-radius: 6px 0 0 6px; }
+.seg button:last-child { border-radius: 0 6px 6px 0; margin-left: -1px; }
+.facts { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 16px; padding: 0; list-style: none; }
+.facts li { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 6px 10px; min-width: 0; }
+.facts .k { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); }
+.facts .v { font-weight: 600; overflow-wrap: anywhere; }
+.verdict-ok { color: var(--good); }
+.verdict-illegal { color: var(--bad); }
+.verdict-unknown { color: var(--muted); }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px; margin-bottom: 16px; min-width: 0; }
+.chart { display: flex; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); overflow: hidden; margin-bottom: 8px; }
+.chart .labels { flex: 0 0 auto; border-right: 1px solid var(--line); width: 150px; }
+@media (max-width: 560px) { .chart .labels { width: 92px; } }
+.chart .scroll { flex: 1 1 auto; overflow-x: auto; min-width: 0; }
+.chart .scroll svg { min-width: 100%; }
+svg { display: block; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+.hint { color: var(--muted); font-size: 12.5px; margin: 0 0 16px; }
+.lane { fill: var(--lane); }
+.lane.alt { fill: var(--lane-alt); }
+.lane-label { fill: var(--ink); font-size: 12.5px; font-weight: 600; }
+.lane-sub { fill: var(--muted); font-size: 10.5px; }
+.tick text { fill: var(--muted); font-size: 10.5px; }
+.tick line { stroke: var(--line); }
+.axis-title { fill: var(--muted); font-size: 10.5px; }
+.bar { fill: var(--bar); stroke: var(--bar-stroke); stroke-width: 1; }
+.op text { fill: var(--bar-ink); font-size: 12px; }
+.op .opid { fill: var(--muted); font-size: 11px; }
+.op { cursor: pointer; outline: none; }
+.op.kW .bar { fill: color-mix(in srgb, var(--bar) 88%, var(--accent)); }
+.op.kM .bar { fill: color-mix(in srgb, var(--bar) 88%, var(--other)); }
+.op.pending .bar { stroke: none; fill: url(#pending-fade); }
+.op.pending .outline { fill: none; stroke: var(--bar-stroke); stroke-width: 1; }
+.op.dropped .bar, .op.dropped .outline { stroke-dasharray: 4 3; }
+.op.dropped { opacity: 0.7; }
+.linmark { fill: var(--accent); }
+.seq circle { fill: var(--ink); }
+.seq text { fill: var(--surface); font-size: 10.5px; font-weight: 700; text-anchor: middle; dominant-baseline: central; }
+.op.incycle .bar, .op.value-op .bar { stroke: var(--bad); stroke-width: 2.2; fill: var(--bad-soft); }
+.op.value-other .bar { stroke: var(--other); stroke-width: 2.2; fill: var(--other-soft); }
+.blockmark { fill: none; stroke: var(--warn); stroke-width: 2; stroke-dasharray: 5 3; }
+.callout { fill: var(--warn); font-size: 11px; font-weight: 600; }
+.op.dim { opacity: 0.32; }
+.arrow path.line { fill: none; stroke-width: 1.8; }
+.arrow .pill rect { fill: var(--surface); stroke-width: 1; }
+.arrow .pill text { font-size: 10.5px; font-weight: 600; text-anchor: middle; dominant-baseline: central; }
+{{- range $r := .Relations}}
+.rel-{{$r.Name}} path.line { stroke: var(--r-{{$r.Name}}); }
+.rel-{{$r.Name}} .pill rect { stroke: var(--r-{{$r.Name}}); }
+.rel-{{$r.Name}} .pill text { fill: var(--r-{{$r.Name}}); }
+.head-{{$r.Name}} { fill: var(--r-{{$r.Name}}); }
+.swatch-{{$r.Name}} { background: var(--r-{{$r.Name}}); }
+{{- end}}
+.valuelink path.line { fill: none; stroke: var(--other); stroke-width: 1.6; stroke-dasharray: 5 3; }
+.valuelink .pill rect { fill: var(--surface); stroke: var(--other); }
+.valuelink .pill text { fill: var(--other); font-size: 10.5px; font-weight: 600; text-anchor: middle; dominant-baseline: central; }
+.head-value { fill: var(--other); }
+.sysline { stroke-width: 1; stroke-dasharray: 2 4; }
+.sysline.crash { stroke: var(--bad); }
+.sysline.recover { stroke: var(--good); }
+.sysmark.crash path { fill: var(--bad); stroke: var(--surface); stroke-width: 1.5; }
+.sysmark.recover circle { fill: var(--good); stroke: var(--surface); stroke-width: 1.5; }
+.downtime { fill: var(--down); }
+svg.focusing .op:not(.hot), svg.focusing .arrow:not(.hot), svg.focusing .valuelink:not(.hot) { opacity: 0.18; }
+.op.hot .bar { stroke: var(--accent); stroke-width: 2.4; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; margin: 0 0 6px; padding: 0; list-style: none; font-size: 12.5px; color: var(--muted); }
+.legend li { display: flex; align-items: center; gap: 6px; }
+.swatch { display: inline-block; width: 16px; height: 4px; border-radius: 2px; }
+.sw-box { display: inline-block; width: 16px; height: 11px; border-radius: 3px; border: 1px solid var(--bar-stroke); background: var(--bar); }
+.sw-lin { border-left: 4px solid var(--accent); }
+.sw-cycle { border: 2px solid var(--bad); background: var(--bad-soft); }
+.sw-block { border: 2px dashed var(--warn); background: transparent; }
+.sw-other { border: 2px solid var(--other); background: var(--other-soft); }
+.sw-pending { border-right: none; background: linear-gradient(90deg, var(--bar), transparent); }
+.sw-seq { display: inline-grid; place-items: center; width: 16px; height: 16px; border-radius: 50%; background: var(--ink); color: var(--surface); font-size: 10px; font-weight: 700; }
+.sw-crash, .sw-recover { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+.sw-crash { border-radius: 1px; transform: rotate(45deg) scale(0.9); }
+.sw-crash { background: var(--bad); }
+.sw-recover { background: var(--good); }
+.grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 340px); gap: 16px; align-items: start; }
+@media (max-width: 860px) { .grid { grid-template-columns: minmax(0, 1fr); } }
+ol.order { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 4px; }
+ol.order li { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; padding: 4px 6px; border-radius: 6px; cursor: pointer; }
+ol.order li:hover, .edges li:hover, .head:hover { background: var(--surface-2); }
+.pos { display: inline-grid; place-items: center; min-width: 22px; height: 22px; padding: 0 4px; border-radius: 11px; background: var(--ink); color: var(--surface); font-size: 11px; font-weight: 700; }
+.state { color: var(--muted); }
+.edges { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.edges li { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; padding: 4px 6px; border-radius: 6px; cursor: pointer; }
+.rel { display: inline-block; padding: 1px 8px; border-radius: 999px; font-size: 11.5px; font-weight: 600; border: 1px solid currentColor; }
+.rel.session { color: var(--r-session); }
+.rel.real_time { color: var(--r-real_time); }
+.rel.ww { color: var(--r-ww); }
+.rel.wr { color: var(--r-wr); }
+.rel.rw { color: var(--r-rw); }
+.head { border: 1px dashed var(--warn); border-radius: 8px; padding: 10px; margin-bottom: 10px; cursor: pointer; }
+.head .why { font-weight: 600; color: var(--warn); }
+.sides { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; margin-top: 8px; }
+.side { background: var(--surface-2); border-radius: 8px; padding: 8px 10px; min-width: 0; overflow-wrap: anywhere; }
+.side .k { display: block; font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
+.side.bad { box-shadow: inset 3px 0 0 var(--bad); }
+.side.other { box-shadow: inset 3px 0 0 var(--other); }
+.side.warn { box-shadow: inset 3px 0 0 var(--warn); }
+.muted { color: var(--muted); }
+.warnings { border-color: var(--warn); background: var(--warn-soft); }
+.warnings ul { margin: 0; padding-left: 18px; }
+#inspector dl { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 12px; margin: 0; }
+#inspector dt { color: var(--muted); }
+#inspector dd { margin: 0; overflow-wrap: anywhere; }
+.table-wrap { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 13px; }
+th, td { text-align: left; padding: 5px 8px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+th { color: var(--muted); font-weight: 600; font-size: 12px; }
+tbody tr { cursor: pointer; }
+tbody tr:hover, tbody tr.hot { background: var(--surface-2); }
+tr.hl-bad td:first-child { box-shadow: inset 3px 0 0 var(--bad); }
+tr.hl-warn td:first-child { box-shadow: inset 3px 0 0 var(--warn); }
+tr.hl-other td:first-child { box-shadow: inset 3px 0 0 var(--other); }
+details summary { cursor: pointer; color: var(--muted); }
+</style>
+</head>
+<body>
+<main>
+<div class="top">
+  <div>
+    <h1>{{.Title}}</h1>
+    <div class="muted">{{if .HasWitness}}Witness of kind <strong>{{.WitnessKind}}</strong> at level <strong>{{.Level}}</strong>{{else}}No witness: the verdict is undecided{{end}}</div>
+  </div>
+  <div class="controls">
+    {{- if .HasGT}}
+    <div class="seg" role="group" aria-label="Horizontal axis">
+      <button type="button" data-axis-button="step" aria-pressed="true">Step</button>
+      <button type="button" data-axis-button="gt" aria-pressed="false">Global time</button>
+    </div>
+    {{- end}}
+    <button type="button" id="theme" title="Switch color scheme">Theme: auto</button>
+  </div>
+</div>
+
+<ul class="facts">
+  <li><span class="k">Verdict</span><span class="v verdict-{{.Verdict}}">{{.Verdict}}{{if .Reason}} ({{.Reason}}){{end}}</span></li>
+  <li><span class="k">Triage</span><span class="v">{{.Triage}}</span></li>
+  <li><span class="k">Claim</span><span class="v">{{.ClaimName}}</span></li>
+  <li><span class="k">Marks</span><span class="v">{{range $i, $m := .Marks}}{{if $i}}, {{end}}{{$m.Kind}} {{$m.Mark}}{{end}}</span></li>
+  <li><span class="k">Model</span><span class="v mono">{{.Model}}</span></li>
+  {{- if .HasKey}}<li><span class="k">Failing key</span><span class="v mono">{{.Key}}</span></li>{{end}}
+  <li><span class="k">Sessions</span><span class="v">{{.Sessions}}</span></li>
+  <li><span class="k">Operations</span><span class="v">{{.OpCount}}</span></li>
+  {{- if .Nodes}}<li><span class="k">Nodes with faults</span><span class="v">{{.Nodes}}</span></li>{{end}}
+</ul>
+
+{{- if .Warnings}}
+<div class="card warnings" role="note">
+  <h2>History notes</h2>
+  <ul>{{range .Warnings}}<li>{{.}}</li>{{end}}</ul>
+</div>
+{{- end}}
+
+<div class="chart">
+  <svg class="labels" width="{{.LabelWidth}}" height="{{.Height}}" aria-hidden="true">
+    <rect x="0" y="0" width="{{.LabelWidth}}" height="{{.Height}}" class="lane"/>
+    {{- range .Lanes}}
+    <rect class="lane{{if .Stripe}} alt{{end}}" x="0" y="{{.Y}}" width="{{$.LabelWidth}}" height="{{.H}}"/>
+    <text class="lane-label" x="12" y="{{.TextY}}"><title>{{.Label}}</title>{{.Label}}</text>
+    <text class="lane-sub" x="12" y="{{.SubY}}">{{.Sub}}</text>
+    {{- end}}
+  </svg>
+  <div class="scroll">
+  <svg id="chart" width="{{.Width}}" height="{{.Height}}" role="img" aria-label="Operations by session over time">
+    <defs>
+      <linearGradient id="pending-fade" x1="0" x2="1" y1="0" y2="0">
+        <stop offset="0" stop-color="var(--bar)"/>
+        <stop offset="0.7" stop-color="var(--bar)"/>
+        <stop offset="1" stop-color="var(--bar)" stop-opacity="0"/>
+      </linearGradient>
+      {{- range .Relations}}
+      <marker id="head-{{.Name}}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="head-{{.Name}}" d="M0 0 L10 5 L0 10 z"/></marker>
+      {{- end}}
+      <marker id="head-value" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="head-value" d="M0 0 L10 5 L0 10 z"/></marker>
+    </defs>
+    <rect x="0" y="0" width="100%" height="{{.Height}}" class="lane"/>
+    {{- range .Lanes}}
+    <rect class="lane{{if .Stripe}} alt{{end}}" x="0" y="{{.Y}}" width="100%" height="{{.H}}"/>
+    {{- end}}
+    <g class="ticks" data-axis="step">
+      {{- range .StepTicks}}
+      <g class="tick"><line x1="{{.X}}" x2="{{.X}}" y1="22" y2="{{$.Height}}" stroke-dasharray="1 5"/><text x="{{.X}}" y="15" text-anchor="middle">{{.Label}}</text></g>
+      {{- end}}
+    </g>
+    {{- if .HasGT}}
+    <g class="ticks" data-axis="gt" display="none">
+      {{- range .GTTicks}}
+      <g class="tick"><line x1="{{.X}}" x2="{{.X}}" y1="22" y2="{{$.Height}}" stroke-dasharray="1 5"/><text x="{{.X}}" y="15" text-anchor="middle">{{.Label}}</text></g>
+      {{- end}}
+    </g>
+    {{- end}}
+    {{- range .Downtimes}}
+    <rect class="downtime" {{.Rect}} y="{{.Y}}" height="{{.H}}" rx="3"/>
+    {{- end}}
+    {{- range .SysMarks}}
+    <line class="sysline {{.Class}}" {{.Line}} y1="{{.Top}}" y2="{{.Bottom}}"/>
+    {{- end}}
+    {{- range .Bars}}
+    <g class="op {{.Class}}" data-op="{{.ID}}" tabindex="0" role="button" aria-label="{{.Tooltip}}">
+      <title>{{.Tooltip}}</title>
+      {{- if .Blocked}}
+      <rect class="blockmark" data-blocked="{{.ID}}" {{.BlockAt}} y="{{.BlockY}}" height="36" rx="8"/>
+      {{- end}}
+      <rect class="bar" {{.Rect}} y="{{.Y}}" height="28" rx="5"/>
+      {{- if .Outline}}
+      <path class="outline" {{.Outline}}/>
+      {{- end}}
+      {{- if .Lin}}
+      <rect class="linmark" {{.LinMark}} y="{{.Y}}" width="4" height="28" rx="1"/>
+      {{- end}}
+      <svg class="lbl" {{.LabelBox}} y="{{.Y}}" height="28"><text x="0" y="18.5"><tspan class="opid">op {{.ID}}</tspan> {{.LabelText}}</text></svg>
+      {{- if .Seq}}
+      <g class="seq" {{.SeqAt}}><circle r="9"/><text>{{.Seq}}</text></g>
+      {{- end}}
+      {{- if .Callout}}
+      <text class="callout" {{.CalloutAt}} y="{{.CalloutY}}">{{.Callout}}</text>
+      {{- end}}
+      {{- if eq .ValueRole "op"}}
+      <rect data-value-op="{{.ID}}" {{.Rect}} y="{{.Y}}" height="28" fill="none"/>
+      {{- else if eq .ValueRole "other"}}
+      <rect data-value-other="{{.ID}}" {{.Rect}} y="{{.Y}}" height="28" fill="none"/>
+      {{- end}}
+    </g>
+    {{- end}}
+    {{- with .ValueLink}}
+    <g class="valuelink" data-from="{{.From}}" data-to="{{.To}}">
+      <path class="line" {{.Path}} marker-end="url(#head-value)"/>
+      <g class="pill" {{.LabelAt}}><rect x="{{.LabelX}}" y="-9" width="{{.LabelW}}" height="18" rx="9"/><text>{{.Label}}</text></g>
+    </g>
+    {{- end}}
+    {{- range .Arrows}}
+    <g class="arrow {{.Class}}" data-edge="{{.From}}-{{.To}}" data-from="{{.From}}" data-to="{{.To}}">
+      <title>op {{.From}} before op {{.To}}: {{.Relation}}</title>
+      <path class="line" {{.Path}} marker-end="url(#head-{{.Relation}})"/>
+      <g class="pill" {{.LabelAt}}><rect x="{{.LabelX}}" y="-9" width="{{.LabelW}}" height="18" rx="9"/><text>{{.Label}}</text></g>
+    </g>
+    {{- end}}
+    {{- range .SysMarks}}
+    <g class="sysmark {{.Class}}" {{.At}}><title>{{.Tooltip}}</title>{{if eq .Class "crash"}}<path d="M0 -6.5 L6.5 0 L0 6.5 L-6.5 0 z"/>{{else}}<circle r="5.5"/>{{end}}</g>
+    {{- end}}
+  </svg>
+  </div>
+</div>
+<p class="hint">{{if .HasGT}}The step axis gives each distinct step a column; the global time axis is linear in global time.{{else}}Each distinct step has a column; tick labels give the step.{{end}} Hover or select an operation to trace its edges; select one for its details.</p>
+
+<ul class="legend" aria-label="Legend">
+  {{- if .AnyLin}}<li><span class="sw-box sw-lin"></span>claim marks this kind linearizable</li>{{end}}
+  {{- if .Order}}<li><span class="sw-seq">1</span>position in the witness order</li>{{end}}
+  {{- if eq .WitnessKind "cycle"}}<li><span class="sw-box sw-cycle"></span>on the cycle</li>{{end}}
+  {{- if .Heads}}<li><span class="sw-box sw-block"></span>blocked session head</li>{{end}}
+  {{- if .Value}}<li><span class="sw-box sw-cycle"></span>failed value check</li>{{if .Value.HasOther}}<li><span class="sw-box sw-other"></span>the operation it conflicts with</li>{{end}}{{end}}
+  {{- if .AnyPending}}<li><span class="sw-box sw-pending"></span>pending, runs to the end</li>{{end}}
+  {{- if .SysMarks}}<li><span class="sw-crash"></span>crash</li><li><span class="sw-recover"></span>recover</li><li><span class="sw-box" style="background:var(--down);border:none"></span>node down</li>{{end}}
+  {{- if .HasKey}}<li><span class="muted">other keys dimmed</span></li>{{end}}
+  {{- range .Relations}}<li><span class="swatch swatch-{{.Name}}"></span><strong>{{.Name}}</strong>&nbsp;{{.Text}}</li>{{end}}
+</ul>
+
+<div class="grid" style="margin-top:16px">
+<div>
+{{- if .Value}}
+<section class="card">
+  <h2>Value check failed: <code>{{.Value.Reason}}</code></h2>
+  <p class="muted" style="margin:0">{{.Value.Desc}}: {{.Value.ReasonText}}.</p>
+  <div class="sides">
+    <div class="side bad" data-ref="{{.Value.ID}}"><span class="k">op {{.Value.ID}} {{.Value.ListLabel}}</span><span class="mono">{{.Value.List}}</span></div>
+    {{- if .Value.HasOther}}
+    <div class="side other" data-ref="{{.Value.Other}}"><span class="k">op {{.Value.Other}} {{.Value.OtherLabel}}</span><span class="mono">{{.Value.OtherList}}</span></div>
+    {{- end}}
+    <div class="side"><span class="k">uids named</span><span class="mono">{{.Value.UIDs}}</span></div>
+  </div>
+  {{- if .Value.HasOther}}<p class="muted" style="margin:8px 0 0">Other: {{.Value.OtherDesc}}.</p>{{end}}
+</section>
+{{- end}}
+
+{{- if .CycleList}}
+<section class="card">
+  <h2>Cycle of required orderings</h2>
+  <p class="muted" style="margin:0 0 8px">Every order that satisfies the claim must contain each of these edges, and together they close a loop.</p>
+  <ol class="edges">
+    {{- range .CycleList}}
+    <li data-ref="{{.From}}"><span class="mono">{{.FromDesc}}</span><span class="rel {{.Relation}}">{{.Relation}}</span><span class="mono">{{.ToDesc}}</span></li>
+    {{- end}}
+  </ol>
+</section>
+{{- end}}
+
+{{- if .Heads}}
+<section class="card">
+  <h2>Blocked session heads</h2>
+  <p class="muted" style="margin:0 0 8px">At the deepest point the search reached, no session head could be placed next.</p>
+  {{- range .Heads}}
+  <div class="head" data-ref="{{.ID}}">
+    <div><span class="why">{{if eq .Reason "value"}}Value block{{else}}Waits for unplaced operations{{end}}</span> <span class="muted">session {{.Session}}</span></div>
+    <div class="mono">{{.Desc}}</div>
+    {{- if eq .Reason "value"}}
+    <div class="sides">
+      <div class="side warn"><span class="k">state of {{.Key}}</span><span class="mono">{{.State}}</span></div>
+      <div class="side"><span class="k">observed</span><span class="mono">{{.Observed}}</span></div>
+    </div>
+    {{- else}}
+    <ul class="edges" style="margin-top:6px">
+      {{- range .After}}
+      <li data-ref="{{.From}}"><span class="mono">after {{.FromDesc}}</span><span class="rel {{.Relation}}">{{.Relation}}</span></li>
+      {{- end}}
+    </ul>
+    {{- end}}
+  </div>
+  {{- end}}
+</section>
+{{- end}}
+
+{{- if .HasWitness}}{{if ne .WitnessKind "value"}}
+<section class="card">
+  <h2>{{if eq .WitnessKind "order"}}Witness order{{else}}Longest placed prefix{{end}}</h2>
+  <p class="muted" style="margin:0 0 8px">{{.OrderNote}}</p>
+  {{- if .Order}}
+  <ol class="order">
+    {{- range .Order}}
+    <li data-ref="{{.ID}}"><span class="pos">{{.Pos}}</span><span class="mono">{{.Desc}}</span><span class="state mono">{{.State}}</span></li>
+    {{- end}}
+  </ol>
+  {{- else}}
+  <p class="muted" style="margin:0">No operation could be placed.</p>
+  {{- end}}
+</section>
+{{end}}{{end}}
+</div>
+<aside class="card" id="inspector" aria-live="polite">
+  <h2>Operation</h2>
+  <p class="muted" id="inspector-empty" style="margin:0">Select an operation in the chart, a list or the table.</p>
+  <dl id="inspector-fields" hidden></dl>
+</aside>
+</div>
+
+<section class="card">
+  <details open>
+    <summary><h2 style="display:inline">All operations</h2></summary>
+    <div class="table-wrap" style="margin-top:8px">
+    <table>
+      <thead><tr><th>Op</th><th>Session</th><th>Kind</th><th>Key</th><th>Uid</th><th>Result</th><th>Call step</th><th>Return step</th>{{if .HasGT}}<th>Call time</th><th>Return time</th>{{end}}<th>Claim</th><th>Position</th></tr></thead>
+      <tbody>
+        {{- range .Rows}}
+        <tr class="{{.Class}}" data-row="{{.ID}}" tabindex="0"><td class="mono">{{.ID}}</td><td>{{.Session}}</td><td>{{.Kind}}</td><td class="mono">{{.Key}}</td><td class="mono">{{.UID}}</td><td class="mono">{{.Result}}</td><td>{{.Call}}</td><td>{{.Return}}</td>{{if $.HasGT}}<td>{{.CallGT}}</td><td>{{.ReturnGT}}</td>{{end}}<td>{{.Mark}}</td><td>{{.Seq}}</td></tr>
+        {{- end}}
+      </tbody>
+    </table>
+    </div>
+  </details>
+</section>
+</main>
+<script type="application/json" id="run-data">{{.Data}}</script>
+<script>
+(function () {
+  "use strict";
+  var data = JSON.parse(document.getElementById("run-data").textContent);
+  var ops = {};
+  data.ops.forEach(function (o) { ops[o.id] = o; });
+  var root = document.documentElement;
+  var chart = document.getElementById("chart");
+
+  var themes = ["auto", "light", "dark"];
+  var themeButton = document.getElementById("theme");
+  function setTheme(t) {
+    if (t === "auto") { root.removeAttribute("data-theme"); } else { root.setAttribute("data-theme", t); }
+    themeButton.textContent = "Theme: " + t;
+    try { localStorage.setItem("spur-view-theme", t); } catch (e) {}
+  }
+  var saved = "auto";
+  try { saved = localStorage.getItem("spur-view-theme") || "auto"; } catch (e) {}
+  if (themes.indexOf(saved) < 0) { saved = "auto"; }
+  setTheme(saved);
+  themeButton.addEventListener("click", function () {
+    var cur = root.getAttribute("data-theme") || "auto";
+    setTheme(themes[(themes.indexOf(cur) + 1) % themes.length]);
+  });
+
+  var axisButtons = document.querySelectorAll("[data-axis-button]");
+  function setAxis(mode) {
+    chart.querySelectorAll("*").forEach(function (el) {
+      for (var i = 0; i < el.attributes.length; i++) {
+        var name = el.attributes[i].name;
+        if (name.indexOf("data-g-") !== 0) { continue; }
+        var attr = name.slice(7);
+        if (!el.hasAttribute("data-s-" + attr)) { el.setAttribute("data-s-" + attr, el.getAttribute(attr)); }
+        el.setAttribute(attr, el.getAttribute((mode === "gt" ? "data-g-" : "data-s-") + attr));
+      }
+    });
+    chart.querySelectorAll("[data-axis]").forEach(function (g) {
+      g.setAttribute("display", g.getAttribute("data-axis") === mode ? "inline" : "none");
+    });
+    axisButtons.forEach(function (b) { b.setAttribute("aria-pressed", String(b.getAttribute("data-axis-button") === mode)); });
+  }
+  axisButtons.forEach(function (b) {
+    b.addEventListener("click", function () { setAxis(b.getAttribute("data-axis-button")); });
+  });
+
+  var pinned = null;
+  function focusOp(id) {
+    chart.classList.toggle("focusing", id !== null);
+    chart.querySelectorAll(".op").forEach(function (g) {
+      g.classList.toggle("hot", id !== null && g.getAttribute("data-op") === String(id));
+    });
+    chart.querySelectorAll("[data-from]").forEach(function (g) {
+      var on = id !== null && (g.getAttribute("data-from") === String(id) || g.getAttribute("data-to") === String(id));
+      g.classList.toggle("hot", on);
+      if (on) {
+        chart.querySelectorAll('.op[data-op="' + g.getAttribute("data-from") + '"], .op[data-op="' + g.getAttribute("data-to") + '"]').forEach(function (o) { o.classList.add("hot"); });
+      }
+    });
+    document.querySelectorAll("tr[data-row]").forEach(function (r) {
+      r.classList.toggle("hot", id !== null && r.getAttribute("data-row") === String(id));
+    });
+  }
+  function show(id) {
+    var o = ops[id];
+    var dl = document.getElementById("inspector-fields");
+    var empty = document.getElementById("inspector-empty");
+    while (dl.firstChild) { dl.removeChild(dl.firstChild); }
+    if (!o) { dl.hidden = true; empty.hidden = false; return; }
+    function row(k, v) {
+      var dt = document.createElement("dt"); dt.textContent = k;
+      var dd = document.createElement("dd"); dd.textContent = v;
+      dl.appendChild(dt); dl.appendChild(dd);
+    }
+    function list(l) { return "[" + (l || []).join(", ") + "]"; }
+    row("Operation", "op " + o.id);
+    row("Description", o.label);
+    row("Session", String(o.session));
+    if (o.key !== null) { row("Key", JSON.stringify(o.key)); }
+    if (o.uid !== null) { row("Uid", String(o.uid)); }
+    if (o.kind === "GET" && !o.pending) { row("Observed", list(o.value)); }
+    if (o.kind === "RMW" && !o.pending) { row("Prior", list(o.value)); }
+    row("Invoked", "step " + o.call_step + ", global time " + o.call_global_time);
+    row("Returned", o.pending ? (o.dropped ? "pending; dropped by the check" : "pending; kept to the end") : "step " + o.return_step + ", global time " + o.return_global_time);
+    if (o.mark) { row("Claim", o.mark); }
+    if (o.position) { row("Position", String(o.position)); row("State after", list(o.state_after)); }
+    var edges = [];
+    chart.querySelectorAll("[data-edge]").forEach(function (g) {
+      var f = g.getAttribute("data-from"), t = g.getAttribute("data-to"), rel = g.querySelector(".pill text").textContent;
+      if (f === String(id)) { edges.push("before op " + t + " (" + rel + ")"); }
+      if (t === String(id)) { edges.push("after op " + f + " (" + rel + ")"); }
+    });
+    if (edges.length) { row("Witness edges", edges.join("; ")); }
+    dl.hidden = false; empty.hidden = true;
+  }
+  function select(id) {
+    pinned = id;
+    focusOp(id);
+    show(id);
+  }
+  chart.querySelectorAll(".op").forEach(function (g) {
+    var id = g.getAttribute("data-op");
+    g.addEventListener("mouseenter", function () { if (pinned === null) { focusOp(id); } });
+    g.addEventListener("mouseleave", function () { if (pinned === null) { focusOp(null); } });
+    g.addEventListener("click", function (ev) { ev.stopPropagation(); select(pinned === id ? null : id); });
+    g.addEventListener("keydown", function (ev) { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); select(pinned === id ? null : id); } });
+  });
+  chart.addEventListener("click", function () { select(null); });
+  document.addEventListener("keydown", function (ev) { if (ev.key === "Escape") { select(null); } });
+  function reveal(id) {
+    select(id);
+    var g = chart.querySelector('.op[data-op="' + id + '"]');
+    if (g && g.scrollIntoView) { g.scrollIntoView({ block: "nearest", inline: "center", behavior: "smooth" }); }
+  }
+  document.querySelectorAll("[data-ref]").forEach(function (el) {
+    el.addEventListener("click", function () { reveal(el.getAttribute("data-ref")); });
+  });
+  document.querySelectorAll("tr[data-row]").forEach(function (r) {
+    var id = r.getAttribute("data-row");
+    r.addEventListener("click", function () { reveal(id); });
+    r.addEventListener("keydown", function (ev) { if (ev.key === "Enter") { reveal(id); } });
+  });
+})();
+</script>
+</body>
+</html>
