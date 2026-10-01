@@ -80,8 +80,12 @@ func (h *History) valueChecks() {
 		var repeated []int64
 		for _, u := range l {
 			seen[u]++
-			if seen[u] == 2 {
+		}
+		// The repeated uids are listed in order of first occurrence.
+		for _, u := range l {
+			if seen[u] > 1 {
 				repeated = append(repeated, u)
+				seen[u] = 0
 			}
 		}
 		if len(repeated) > 0 {
