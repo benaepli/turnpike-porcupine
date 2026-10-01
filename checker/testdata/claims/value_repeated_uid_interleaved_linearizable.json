@@ -1,0 +1,21 @@
+{
+  "name": "value_repeated_uid_interleaved_linearizable",
+  "description": "A read returns two uids twice each, the second repeated before the first; uids list them in order of first occurrence.",
+  "model": "kv",
+  "claim": {"Read": "linearizable", "Write": "linearizable"},
+  "interrupt": null,
+  "events": [
+    {"kind": "Invocation", "id": 1, "client": 3, "action": "Client.Write", "key": "x", "uid": 101, "step": 2, "global_time": 0},
+    {"kind": "Response", "id": 1, "client": 3, "action": "Client.Write", "step": 5, "global_time": 0},
+    {"kind": "Invocation", "id": 2, "client": 3, "action": "Client.Write", "key": "x", "uid": 102, "step": 8, "global_time": 0},
+    {"kind": "Response", "id": 2, "client": 3, "action": "Client.Write", "step": 11, "global_time": 0},
+    {"kind": "Invocation", "id": 3, "client": 4, "action": "Client.Read", "key": "x", "step": 14, "global_time": 0},
+    {"kind": "Response", "id": 3, "client": 4, "action": "Client.Read", "value": [101, 102, 102, 101], "step": 17, "global_time": 0}
+  ],
+  "expect": {
+    "verdict": "illegal",
+    "reason": "",
+    "triage": "none",
+    "witness": "{\"level\":\"linearizable\",\"kind\":\"value\",\"key\":null,\"order\":[],\"cycle\":[],\"blocked\":[],\"value\":{\"op\":3,\"reason\":\"repeated_uid\",\"uids\":[101,102],\"other\":null}}"
+  }
+}

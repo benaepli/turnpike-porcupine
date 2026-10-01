@@ -24,38 +24,47 @@ const (
 )
 
 func (e *ActionType) UnmarshalCSV(value string) error {
-	switch {
-	case strings.HasSuffix(value, "Client.Read"):
-		*e = Read
-	case strings.HasSuffix(value, "Client.Write"):
-		*e = Write
-	case strings.HasSuffix(value, "Client.RMW"):
-		*e = Rmw
-	case strings.HasSuffix(value, "Client.Delete"):
-		*e = Delete
-	case strings.HasSuffix(value, "System.Crash"):
-		*e = Crash
-	case strings.HasSuffix(value, "System.Recover"):
-		*e = Recover
-	case strings.HasSuffix(value, "Client.SimulateTimeout"):
-		*e = Timeout
-	default:
-		*e = "Unknown operation."
-	}
+	*e = ParseAction(value)
 	return nil
 }
 
-// EventRow represents a single row in the history CSV file
+// ParseAction classifies an action string by its suffix.
+func ParseAction(value string) ActionType {
+	switch {
+	case strings.HasSuffix(value, "Client.Read"):
+		return Read
+	case strings.HasSuffix(value, "Client.Write"):
+		return Write
+	case strings.HasSuffix(value, "Client.RMW"):
+		return Rmw
+	case strings.HasSuffix(value, "Client.Delete"):
+		return Delete
+	case strings.HasSuffix(value, "System.Crash"):
+		return Crash
+	case strings.HasSuffix(value, "System.Recover"):
+		return Recover
+	case strings.HasSuffix(value, "Client.SimulateTimeout"):
+		return Timeout
+	}
+	return "Unknown operation."
+}
+
+// EventRow is one history row. Action is the action string as recorded,
+// prefix included. Step and GlobalTime are zero where the source does not
+// record them.
 type EventRow struct {
-	UniqueID string     `csv:"UniqueID"`
-	ClientID string     `csv:"ClientID"`
-	Kind     string     `csv:"Kind"`
-	Action   ActionType `csv:"Action"`
-	Payload  string     `csv:"Payload"`
+	UniqueID   string `csv:"UniqueID"`
+	ClientID   string `csv:"ClientID"`
+	Kind       string `csv:"Kind"`
+	Action     string `csv:"Action"`
+	Payload    string `csv:"Payload"`
+	Step       int64  `csv:"Step"`
+	GlobalTime int64  `csv:"GlobalTime"`
 }
 
 type pendingInvocation struct {
 	invRow   *EventRow
+	action   ActionType
 	callTime int64
 	clientID int
 }
@@ -118,8 +127,9 @@ func BuildOperationsWithNodeNames(eventRows []*EventRow, names NodeNames) ([]por
 
 	for i, row := range eventRows {
 		syntheticTime := int64(i + 1)
+		action := ParseAction(row.Action)
 
-		switch row.Action {
+		switch action {
 		case Crash:
 			tag, who := nodeText(names, extractNodeID(row.Payload))
 			annotations = append(annotations, porcupine.Annotation{
@@ -151,11 +161,12 @@ func BuildOperationsWithNodeNames(eventRows []*EventRow, names NodeNames) ([]por
 			clientID := mustAtoi(row.ClientID)
 			pendingInvocations[row.UniqueID] = pendingInvocation{
 				invRow:   row,
+				action:   action,
 				callTime: syntheticTime,
 				clientID: clientID,
 			}
 			// Handle system events as annotations
-			switch row.Action {
+			switch action {
 			case Timeout:
 				tag, who := nodeText(names, extractNodeID(row.Payload))
 				annotations = append(annotations, porcupine.Annotation{
@@ -182,7 +193,7 @@ func BuildOperationsWithNodeNames(eventRows []*EventRow, names NodeNames) ([]por
 			respRow := row
 
 			// Skip unknown/other system events for linearizability checking
-			if invRow.Action != Read && invRow.Action != Write && invRow.Action != Rmw {
+			if inv.action != Read && inv.action != Write && inv.action != Rmw {
 				continue
 			}
 
@@ -193,7 +204,7 @@ func BuildOperationsWithNodeNames(eventRows []*EventRow, names NodeNames) ([]por
 			var opInput interface{}
 			var opOutput interface{}
 
-			switch invRow.Action {
+			switch inv.action {
 			case Write:
 				// Write: Payload[0]=node or unit, Payload[1]=key, Payload[2]=uid (VInt)
 				if len(invPayloads) < 3 {
@@ -266,7 +277,7 @@ func BuildOperationsWithNodeNames(eventRows []*EventRow, names NodeNames) ([]por
 	finalTime := int64(len(eventRows) + 1)
 	for _, inv := range pendingInvocations {
 		var opName string
-		switch inv.invRow.Action {
+		switch inv.action {
 		case Write:
 			opName = "PUT"
 		case Rmw:

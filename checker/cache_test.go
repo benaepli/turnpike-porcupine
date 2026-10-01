@@ -7,9 +7,9 @@ import (
 	"path/filepath"
 	"reflect"
 	"testing"
-
-	"github.com/anishathalye/porcupine"
 )
+
+const linClaim = `{"Read":"linearizable","Write":"linearizable"}`
 
 func cacheFixture(t *testing.T) string {
 	t.Helper()
@@ -20,7 +20,7 @@ func cacheFixture(t *testing.T) string {
 	}
 	defer db.Close()
 	writeParquet(t, db, dir, "runs", `SELECT i::BIGINT AS run_id, 0::INTEGER AS deployment_id,
-        'session' AS check_session_id, 'digest' AS history_digest FROM range(1,10) r(i)`)
+        'session' AS check_session_id, 'digest' AS history_digest FROM range(1,11) r(i)`)
 	writeParquet(t, db, dir, "executions", `SELECT i::BIGINT AS run_id, 0::BIGINT AS seq_num,
         i::INTEGER AS unique_id, i::INTEGER AS client_id, 'Invocation' AS kind, 'Client.Read' AS action,
         'invalid payload that a cached pass must not decode' AS payload FROM range(1,9) r(i)`)
@@ -28,11 +28,14 @@ func cacheFixture(t *testing.T) string {
         CASE WHEN i=7 THEN 'foreign' ELSE 'session' END AS session_id,
         CASE WHEN i=5 THEN 'different' ELSE 'digest' END AS history_digest,
         CASE WHEN i=6 THEN 'kv_rmw' ELSE 'kv' END AS model,
+        CASE WHEN i=10 THEN '{"Read":"sequential","Write":"sequential"}' ELSE '`+linClaim+`' END AS claim,
         CASE WHEN i=8 THEN 'future' ELSE '`+checkerVersion+`' END AS checker_version,
         '`+contractVersion+`' AS contract_version,
         CASE WHEN i=2 THEN 'unknown' WHEN i=3 THEN 'illegal' ELSE 'ok' END AS verdict,
-        2::BIGINT AS skipped_ops FROM range(1,10) r(i)
-        UNION ALL SELECT 4,0,'session','digest','kv','`+checkerVersion+`','`+contractVersion+`','illegal',2`)
+        CASE WHEN i=3 THEN 'none' ELSE 'linearizable' END AS triage,
+        CASE WHEN i=3 THEN '{"w":3}' ELSE NULL END AS witness,
+        2::BIGINT AS skipped_ops FROM range(1,11) r(i)
+        UNION ALL SELECT 4,0,'session','digest','kv','`+linClaim+`','`+checkerVersion+`','`+contractVersion+`','illegal','none','{"w":4}',2`)
 	writeManifest(t, dir, true)
 	return dir
 }
@@ -52,22 +55,23 @@ func writeManifest(t *testing.T, dir string, reusable bool) {
 
 func TestCacheRequiresMatchingHistoryAndContract(t *testing.T) {
 	dir := cacheFixture(t)
-	cache, err := LoadCheckCache(dir, "kv")
+	cache, err := LoadCheckCache(dir, "kv", linClaim)
 	if err != nil {
 		t.Fatal(err)
 	}
-	want := map[int]CachedVerdict{1: {porcupine.Ok, 2}, 3: {porcupine.Illegal, 2}, 9: {porcupine.Ok, 2}}
+	ok := CachedVerdict{Verdict: "ok", Triage: "linearizable", SkippedOps: 2}
+	want := map[int]CachedVerdict{1: ok, 3: {Verdict: "illegal", Triage: "none", Witness: `{"w":3}`, SkippedOps: 2}, 9: ok}
 	if !reflect.DeepEqual(cache.Runs, want) {
 		t.Fatalf("got %#v", cache.Runs)
 	}
 	if err := os.WriteFile(filepath.Join(dir, "checks", "incomplete.parquet.tmp"), []byte("unfinished"), 0o644); err != nil {
 		t.Fatal(err)
 	}
-	if _, err := LoadCheckCache(dir, "kv"); err != nil {
+	if _, err := LoadCheckCache(dir, "kv", linClaim); err != nil {
 		t.Fatal(err)
 	}
 	writeManifest(t, dir, false)
-	cache, err = LoadCheckCache(dir, "kv")
+	cache, err = LoadCheckCache(dir, "kv", linClaim)
 	if err != nil || len(cache.Runs) != 0 {
 		t.Fatalf("unfinished session reused: %v %v", cache, err)
 	}
@@ -77,7 +81,7 @@ func TestCachedPassesAvoidHistoryLoadingAndKeepFullRunOrder(t *testing.T) {
 	dir := cacheFixture(t)
 	for _, audit := range []bool{false, true} {
 		var ids, reused []int
-		err := ProcessRunsWithCache(dir, "kv", audit, func(id int, rows []*EventRow, cached *CachedVerdict, reuse bool) error {
+		err := ProcessRunsWithCache(dir, "kv", linClaim, audit, func(id int, rows []*EventRow, cached *CachedVerdict, reuse bool) error {
 			ids = append(ids, id)
 			if reuse {
 				reused = append(reused, id)
@@ -92,7 +96,7 @@ func TestCachedPassesAvoidHistoryLoadingAndKeepFullRunOrder(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		if !reflect.DeepEqual(ids, []int{1, 2, 3, 4, 5, 6, 7, 8, 9}) {
+		if !reflect.DeepEqual(ids, []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}) {
 			t.Fatalf("run order %v", ids)
 		}
 		if audit && len(reused) != 0 {
@@ -107,7 +111,7 @@ func TestCachedPassesAvoidHistoryLoadingAndKeepFullRunOrder(t *testing.T) {
 func TestLegacyCorpusWithoutCheckMetadataStillLoadsHistories(t *testing.T) {
 	dir := parquetOutput(t, "", "", "")
 	calls := 0
-	err := ProcessRunsWithCache(dir, "kv", false, func(id int, rows []*EventRow, cached *CachedVerdict, reuse bool) error {
+	err := ProcessRunsWithCache(dir, "kv", linClaim, false, func(id int, rows []*EventRow, cached *CachedVerdict, reuse bool) error {
 		calls++
 		if id != 0 || len(rows) != 1 || cached != nil || reuse {
 			t.Fatal("legacy history was skipped")
@@ -120,16 +124,32 @@ func TestLegacyCorpusWithoutCheckMetadataStillLoadsHistories(t *testing.T) {
 }
 
 func TestCachedViolationSurvivesDiagnosticTimeoutAndDisagreementIsError(t *testing.T) {
-	cached := &CachedVerdict{Verdict: porcupine.Illegal}
-	result, err := ReconcileVerdict(1, porcupine.Unknown, cached)
-	if err != nil || result != porcupine.Illegal {
+	cached := &CachedVerdict{Verdict: "illegal", Triage: "sequential", Witness: "w"}
+	undecided := Outcome{Verdict: "unknown", Reason: "timeout", Triage: "unknown"}
+	result, err := ReconcileVerdict(1, undecided, cached)
+	if err != nil || result != (Outcome{Verdict: "illegal", Triage: "sequential", Witness: "w"}) {
 		t.Fatal(result, err)
 	}
-	if _, err := ReconcileVerdict(1, porcupine.Ok, cached); err == nil {
+	if _, err := ReconcileVerdict(1, Outcome{Verdict: "ok", Triage: "linearizable"}, cached); err == nil {
 		t.Fatal("contradictory verdict accepted")
 	}
-	result, err = ReconcileVerdict(1, porcupine.Unknown, nil)
-	if err != nil || result != porcupine.Unknown {
+	if _, err := ReconcileVerdict(1, Outcome{Verdict: "illegal", Triage: "none", Witness: "w"}, cached); err == nil {
+		t.Fatal("contradictory triage accepted")
+	}
+	if _, err := ReconcileVerdict(1, Outcome{Verdict: "illegal", Triage: "unknown", Witness: "v"}, cached); err == nil {
+		t.Fatal("differing witness accepted")
+	}
+	agree := Outcome{Verdict: "illegal", Triage: "unknown", Witness: "w"}
+	if result, err := ReconcileVerdict(1, agree, cached); err != nil || result != agree {
+		t.Fatal(result, err)
+	}
+	pass := &CachedVerdict{Verdict: "ok", Triage: "linearizable"}
+	fresh := Outcome{Verdict: "ok", Triage: "linearizable", Witness: "order"}
+	if result, err := ReconcileVerdict(1, fresh, pass); err != nil || result != fresh {
+		t.Fatal("a pass without a cached witness must reconcile", result, err)
+	}
+	result, err = ReconcileVerdict(1, undecided, nil)
+	if err != nil || result != undecided {
 		t.Fatal(result, err)
 	}
 }
@@ -144,7 +164,7 @@ func TestPersistenceErrorsRejectTheCorpus(t *testing.T) {
 	if err := os.WriteFile(filepath.Join(dir, "checking.json"), bytes, 0o644); err != nil {
 		t.Fatal(err)
 	}
-	if _, err := LoadCheckCache(dir, "kv"); err == nil {
+	if _, err := LoadCheckCache(dir, "kv", linClaim); err == nil {
 		t.Fatal("failed persistence was accepted")
 	}
 }

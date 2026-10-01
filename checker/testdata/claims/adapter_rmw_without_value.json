@@ -1,0 +1,17 @@
+{
+  "name": "adapter_rmw_without_value",
+  "description": "A read-modify-write response that carries no prior list.",
+  "model": "kv_rmw",
+  "claim": {"RMW": "linearizable", "Read": "linearizable", "Write": "linearizable"},
+  "interrupt": null,
+  "events": [
+    {"kind": "Invocation", "id": 1, "client": 3, "action": "Client.RMW", "key": "x", "uid": 101, "step": 2, "global_time": 0},
+    {"kind": "Response", "id": 1, "client": 3, "action": "Client.RMW", "step": 5, "global_time": 0}
+  ],
+  "expect": {
+    "verdict": "unknown",
+    "reason": "adapter_error",
+    "triage": "unknown",
+    "witness": null
+  }
+}

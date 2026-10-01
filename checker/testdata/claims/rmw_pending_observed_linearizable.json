@@ -1,0 +1,20 @@
+{
+  "name": "rmw_pending_observed_linearizable",
+  "description": "A read-modify-write that never returns is observed by a read.",
+  "model": "kv_rmw",
+  "claim": {"RMW": "linearizable", "Read": "linearizable", "Write": "linearizable"},
+  "interrupt": null,
+  "events": [
+    {"kind": "Invocation", "id": 1, "client": 3, "action": "Client.Write", "key": "x", "uid": 105, "step": 2, "global_time": 0},
+    {"kind": "Response", "id": 1, "client": 3, "action": "Client.Write", "step": 5, "global_time": 0},
+    {"kind": "Invocation", "id": 2, "client": 4, "action": "Client.RMW", "key": "x", "uid": 106, "step": 8, "global_time": 0},
+    {"kind": "Invocation", "id": 3, "client": 5, "action": "Client.Read", "key": "x", "step": 11, "global_time": 0},
+    {"kind": "Response", "id": 3, "client": 5, "action": "Client.Read", "value": [105, 106], "step": 14, "global_time": 0}
+  ],
+  "expect": {
+    "verdict": "ok",
+    "reason": "",
+    "triage": "linearizable",
+    "witness": "{\"level\":\"linearizable\",\"kind\":\"order\",\"key\":null,\"order\":[1,2,3],\"cycle\":[],\"blocked\":[],\"value\":null}"
+  }
+}

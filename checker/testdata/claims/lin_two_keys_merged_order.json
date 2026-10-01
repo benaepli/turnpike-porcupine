@@ -1,0 +1,25 @@
+{
+  "name": "lin_two_keys_merged_order",
+  "description": "Two keys checked apart; the reported order merges their orders, and one key's order differs from call order.",
+  "model": "kv",
+  "claim": {"Read": "linearizable", "Write": "linearizable"},
+  "interrupt": null,
+  "events": [
+    {"kind": "Invocation", "id": 1, "client": 3, "action": "Client.Write", "key": "x", "uid": 101, "step": 2, "global_time": 0},
+    {"kind": "Invocation", "id": 2, "client": 4, "action": "Client.Write", "key": "x", "uid": 102, "step": 5, "global_time": 0},
+    {"kind": "Response", "id": 1, "client": 3, "action": "Client.Write", "step": 8, "global_time": 0},
+    {"kind": "Response", "id": 2, "client": 4, "action": "Client.Write", "step": 11, "global_time": 0},
+    {"kind": "Invocation", "id": 3, "client": 5, "action": "Client.Read", "key": "x", "step": 14, "global_time": 0},
+    {"kind": "Response", "id": 3, "client": 5, "action": "Client.Read", "value": [102, 101], "step": 17, "global_time": 0},
+    {"kind": "Invocation", "id": 4, "client": 3, "action": "Client.Write", "key": "y", "uid": 103, "step": 20, "global_time": 0},
+    {"kind": "Response", "id": 4, "client": 3, "action": "Client.Write", "step": 23, "global_time": 0},
+    {"kind": "Invocation", "id": 5, "client": 4, "action": "Client.Read", "key": "y", "step": 26, "global_time": 0},
+    {"kind": "Response", "id": 5, "client": 4, "action": "Client.Read", "value": [103], "step": 29, "global_time": 0}
+  ],
+  "expect": {
+    "verdict": "ok",
+    "reason": "",
+    "triage": "linearizable",
+    "witness": "{\"level\":\"linearizable\",\"kind\":\"order\",\"key\":null,\"order\":[2,1,3,4,5],\"cycle\":[],\"blocked\":[],\"value\":null}"
+  }
+}

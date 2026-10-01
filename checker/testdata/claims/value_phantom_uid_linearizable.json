@@ -1,0 +1,21 @@
+{
+  "name": "value_phantom_uid_linearizable",
+  "description": "A read returns a uid written to another key.",
+  "model": "kv",
+  "claim": {"Read": "linearizable", "Write": "linearizable"},
+  "interrupt": null,
+  "events": [
+    {"kind": "Invocation", "id": 1, "client": 3, "action": "Client.Write", "key": "x", "uid": 101, "step": 2, "global_time": 0},
+    {"kind": "Response", "id": 1, "client": 3, "action": "Client.Write", "step": 5, "global_time": 0},
+    {"kind": "Invocation", "id": 2, "client": 3, "action": "Client.Write", "key": "y", "uid": 107, "step": 8, "global_time": 0},
+    {"kind": "Response", "id": 2, "client": 3, "action": "Client.Write", "step": 11, "global_time": 0},
+    {"kind": "Invocation", "id": 3, "client": 4, "action": "Client.Read", "key": "x", "step": 14, "global_time": 0},
+    {"kind": "Response", "id": 3, "client": 4, "action": "Client.Read", "value": [101, 107], "step": 17, "global_time": 0}
+  ],
+  "expect": {
+    "verdict": "illegal",
+    "reason": "",
+    "triage": "none",
+    "witness": "{\"level\":\"linearizable\",\"kind\":\"value\",\"key\":null,\"order\":[],\"cycle\":[],\"blocked\":[],\"value\":{\"op\":3,\"reason\":\"phantom_uid\",\"uids\":[107],\"other\":null}}"
+  }
+}

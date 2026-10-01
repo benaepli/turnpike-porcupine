@@ -2,11 +2,14 @@ package checker
 
 import (
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	"os"
 	"path/filepath"
 	"sort"
 	"strings"
+
+	"github.com/benaepli/turnpike-porcupine/checker/engine"
 )
 
 // NodeLabel describes one deployed node: its role, its position among the
@@ -138,6 +141,127 @@ func ResolveModel(flagModel, path string) (model, warning string, err error) {
 		return "", "", fmt.Errorf("the deployments table in %s records several models (%s); pass -model",
 			path, strings.Join(models, ", "))
 	}
+}
+
+// ParseClaimJSON reads a claim in its JSON object form under model m. The
+// claim gets a mark for exactly the kinds m declares: a declared kind the
+// object leaves out is linearizable, as an unmarked operation is, and a key
+// m does not declare is ignored.
+func ParseClaimJSON(m engine.Model, s string) (engine.Claim, error) {
+	var marks map[string]string
+	if err := json.Unmarshal([]byte(s), &marks); err != nil {
+		return engine.Claim{}, fmt.Errorf("claim %q: %w", s, err)
+	}
+	declared := make(map[string]string)
+	for _, k := range []engine.Kind{engine.Write, engine.Read, engine.RMW} {
+		if !m.Declared().Has(k) {
+			continue
+		}
+		mark, ok := marks[k.String()]
+		if !ok {
+			mark = engine.Linearizable.String()
+		}
+		declared[k.String()] = mark
+	}
+	c, err := engine.ParseClaim(m, declared)
+	if err != nil {
+		return c, fmt.Errorf("claim %q: %w", s, err)
+	}
+	return c, nil
+}
+
+// DeploymentClaims returns the distinct claims recorded in the deployments
+// table, raw and sorted, and false when the output has no deployments table
+// or the table has no claim column.
+func DeploymentClaims(path string) ([]string, bool, error) {
+	db, err := openDB(path)
+	if err != nil {
+		return nil, false, fmt.Errorf("failed to open database: %w", err)
+	}
+	defer db.Close()
+
+	src, ok, err := tableSource(db, path, "deployments")
+	if err != nil || !ok {
+		return nil, false, err
+	}
+	if ok, err := hasColumns(db, src, "claim"); err != nil || !ok {
+		return nil, false, err
+	}
+	rows, err := db.Query(fmt.Sprintf(`SELECT DISTINCT claim FROM %s WHERE claim IS NOT NULL`, src))
+	if err != nil {
+		return nil, true, fmt.Errorf("failed to query deployments: %w", err)
+	}
+	defer rows.Close()
+	var claims []string
+	for rows.Next() {
+		var c string
+		if err := rows.Scan(&c); err != nil {
+			return nil, true, fmt.Errorf("failed to scan claim: %w", err)
+		}
+		claims = append(claims, c)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, true, fmt.Errorf("error iterating deployments: %w", err)
+	}
+	sort.Strings(claims)
+	return claims, true, nil
+}
+
+// ResolveClaim picks the claim to check the output at path with, under model
+// m. A non-empty flag, the claim's JSON object, always wins, with a warning
+// when it differs from what the deployments table records. Otherwise the one
+// claim the table records is used; an empty path, no deployments table, or a
+// table without a claim column means every kind is linearizable. Several
+// distinct claims are an error.
+func ResolveClaim(flagClaim string, m engine.Model, path string) (engine.Claim, string, error) {
+	var recorded []engine.Claim
+	var readErr error
+	if path != "" {
+		raw, found, err := DeploymentClaims(path)
+		readErr = err
+		if err == nil && found {
+			seen := make(map[string]bool)
+			for _, r := range raw {
+				c, err := ParseClaimJSON(m, r)
+				if err != nil {
+					readErr = fmt.Errorf("the deployments table in %s: %w", path, err)
+					break
+				}
+				if !seen[c.JSON()] {
+					seen[c.JSON()] = true
+					recorded = append(recorded, c)
+				}
+			}
+		}
+	}
+	names := func() string {
+		var parts []string
+		for _, c := range recorded {
+			parts = append(parts, c.JSON())
+		}
+		return strings.Join(parts, ", ")
+	}
+	if flagClaim != "" {
+		c, err := ParseClaimJSON(m, flagClaim)
+		if err != nil {
+			return c, "", err
+		}
+		if readErr == nil && len(recorded) > 0 && (len(recorded) != 1 || recorded[0].JSON() != c.JSON()) {
+			return c, fmt.Sprintf("-claim %s differs from the claim recorded in the deployments table (%s); using %s",
+				c.JSON(), names(), c.JSON()), nil
+		}
+		return c, "", nil
+	}
+	if readErr != nil {
+		return engine.Claim{}, "", fmt.Errorf("cannot read the claim from the deployments table: %w", readErr)
+	}
+	switch len(recorded) {
+	case 0:
+		return engine.ClaimWith(m, m.Declared()), "", nil
+	case 1:
+		return recorded[0], "", nil
+	}
+	return engine.Claim{}, "", fmt.Errorf("the deployments table in %s records several claims (%s); pass -claim", path, names())
 }
 
 // ReadTopology reads the deployment_nodes table and the run-to-deployment

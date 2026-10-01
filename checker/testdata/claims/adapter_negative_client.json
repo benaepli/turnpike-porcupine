@@ -1,0 +1,17 @@
+{
+  "name": "adapter_negative_client",
+  "description": "A client operation with a negative client id.",
+  "model": "kv",
+  "claim": {"Read": "linearizable", "Write": "linearizable"},
+  "interrupt": null,
+  "events": [
+    {"kind": "Invocation", "id": 1, "client": -1, "action": "Client.Write", "key": "x", "uid": 101, "step": 2, "global_time": 0},
+    {"kind": "Response", "id": 1, "client": -1, "action": "Client.Write", "step": 5, "global_time": 0}
+  ],
+  "expect": {
+    "verdict": "unknown",
+    "reason": "adapter_error",
+    "triage": "unknown",
+    "witness": null
+  }
+}

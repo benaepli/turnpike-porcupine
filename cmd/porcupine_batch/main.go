@@ -1,14 +1,15 @@
-// Fast Porcupine batch checker: no HTML visualization, machine-readable JSON
-// output, per-run timeouts, and Unknown-vs-Illegal separation.
+// Fast batch checker: no HTML, machine-readable JSON output, per-stage
+// timeouts, and Unknown-vs-Illegal separation. Every history is checked
+// against the specification's consistency claim.
 //
 // JSON goes to stdout (and optionally to -json <path>); human-readable
 // progress goes to stderr.
 //
 // Exit codes:
 //
-//	0 - all runs linearizable
+//	0 - every history satisfies the claim
 //	1 - usage / IO / query error
-//	2 - at least one run is NOT linearizable
+//	2 - at least one history violates the claim
 //	3 - no runs found in the input
 //	4 - no violations, but at least one run was Unknown (timeout / check failure)
 package main
@@ -17,14 +18,13 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
-	"hash/fnv"
 	"log"
 	"os"
-	"sort"
 	"time"
 
-	"github.com/anishathalye/porcupine"
 	"github.com/benaepli/turnpike-porcupine/checker"
+	"github.com/benaepli/turnpike-porcupine/checker/engine"
+	"github.com/benaepli/turnpike-porcupine/checker/view"
 )
 
 // Result is the machine-readable summary consumed by the research harness.
@@ -33,26 +33,33 @@ type Result struct {
 	NewlyCheckedRuns int    `json:"newly_checked_runs"`
 	Input            string `json:"input"`
 	Model            string `json:"model"`
-	TotalRuns        int    `json:"total_runs"`
-	Ok               int    `json:"ok"`
-	Violations       int    `json:"violations"`
-	Unknown          int    `json:"unknown"`
-	SkippedOps       int    `json:"skipped_ops"`
-	ViolatingRunIDs  []int  `json:"violating_run_ids"`
-	UnknownRunIDs    []int  `json:"unknown_run_ids"`
-	WallMs           int64  `json:"wall_ms"`
+	// Claim is the claim's marks, and ClaimName its display name.
+	Claim     map[string]string `json:"claim"`
+	ClaimName string            `json:"claim_name"`
+	TotalRuns int               `json:"total_runs"`
+	Ok        int               `json:"ok"`
+	// Violations counts histories that violate the claim.
+	Violations int `json:"violations"`
+	Unknown    int `json:"unknown"`
+	// Triage counts histories by the strongest consistency level each
+	// satisfies: linearizable, ordered_sequential, sequential, none, or
+	// unknown.
+	Triage          map[string]int `json:"triage"`
+	SkippedOps      int            `json:"skipped_ops"`
+	ViolatingRunIDs []int          `json:"violating_run_ids"`
+	UnknownRunIDs   []int          `json:"unknown_run_ids"`
+	WallMs          int64          `json:"wall_ms"`
 	// Position of the first violating run in run_id order (1-based) and its
 	// id, so a consumer can measure time to the first violation from the
 	// runs table. Absent when nothing violated.
 	FirstViolationOrdinal int  `json:"first_violation_ordinal,omitempty"`
 	FirstViolationRunID   *int `json:"first_violation_run_id,omitempty"`
-	// A structural fingerprint per violating run, capped, so distinct
+	// A fingerprint of each violating run's witness, capped, so distinct
 	// violations can be told apart from repeats of one.
 	ViolationSignatures []Signature `json:"violation_signatures,omitempty"`
 }
 
-// Signature identifies the shape of one violation: the operations the
-// longest partial linearization of each partition could not place.
+// Signature identifies the shape of one violation.
 type Signature struct {
 	RunID     int    `json:"run_id"`
 	Ordinal   int    `json:"ordinal"`
@@ -63,61 +70,11 @@ type Signature struct {
 // not turn the summary into a dump.
 const maxSignatures = 200
 
-// violationSignature hashes what the checker could not linearize: per
-// partition, the size of the partition, the length of the longest partial
-// linearization, and the client and input of every operation outside it.
-// Two histories with the same unplaceable operations hash alike whatever
-// their run ids and timestamps.
-func violationSignature(modelName string, model porcupine.Model, ops []porcupine.Operation, info porcupine.LinearizationInfo) string {
-	h := fnv.New64a()
-	fmt.Fprintf(h, "%s|%d", modelName, len(ops))
-	parts := [][]porcupine.Operation{ops}
-	if model.Partition != nil {
-		parts = model.Partition(ops)
-	}
-	partials := info.PartialLinearizations()
-	for pi, part := range parts {
-		longest := []int{}
-		if pi < len(partials) {
-			for _, lin := range partials[pi] {
-				if len(lin) > len(longest) {
-					longest = lin
-				}
-			}
-		}
-		placed := make(map[int]bool, len(longest))
-		for _, id := range longest {
-			placed[id] = true
-		}
-		var outside []string
-		for id, op := range part {
-			if placed[id] {
-				continue
-			}
-			outside = append(outside, fmt.Sprintf("%d:%v", op.ClientId, op.Input))
-		}
-		sort.Strings(outside)
-		fmt.Fprintf(h, "|p%d:%d/%d:", pi, len(longest), len(part))
-		for _, o := range outside {
-			fmt.Fprintf(h, "%s;", o)
-		}
-	}
-	return fmt.Sprintf("%016x", h.Sum64())
-}
-
-func knownAction(a checker.ActionType) bool {
-	switch a {
-	case checker.Read, checker.Write, checker.Rmw, checker.Delete,
-		checker.Crash, checker.Recover, checker.Timeout:
-		return true
-	}
-	return false
-}
-
 func main() {
 	inputPath := flag.String("input", "", "Path to DuckDB file or Parquet output directory (required)")
-	modelName := flag.String("model", "", "Model to check: kv|kv_rmw|queue (default: the model recorded in the deployments table)")
-	timeoutMs := flag.Int("timeout", 10000, "Per-run check timeout in milliseconds (0 = no timeout)")
+	modelName := flag.String("model", "", "Model to check: kv|kv_rmw (default: the model recorded in the deployments table)")
+	claimFlag := flag.String("claim", "", `Claim to check, as its JSON object (default: the claim recorded in the deployments table, else every operation linearizable)`)
+	timeoutMs := flag.Int("timeout", 10000, "Per-stage check timeout in milliseconds (0 = no timeout)")
 	jsonPath := flag.String("json", "", "Also write the JSON result to this file (optional)")
 	recheckAll := flag.Bool("recheck-all", false, "Recheck every history independently, bypassing cached verdicts")
 	flag.Parse()
@@ -130,10 +87,13 @@ func main() {
 		flag.Usage()
 		log.Fatalln("Error: -input is required.")
 	}
-	resolved, warning, err := checker.ResolveModel(*modelName, *inputPath)
-	if err != nil {
+	fail := func(err error) {
 		fmt.Fprintf(os.Stderr, "error: %v\n", err)
 		os.Exit(1)
+	}
+	resolved, warning, err := checker.ResolveModel(*modelName, *inputPath)
+	if err != nil {
+		fail(err)
 	}
 	if warning != "" {
 		fmt.Fprintf(os.Stderr, "warning: %s\n", warning)
@@ -141,56 +101,51 @@ func main() {
 	if warning := checker.SymbolicWarning(*inputPath); warning != "" {
 		fmt.Fprintf(os.Stderr, "warning: %s\n", warning)
 	}
-	*modelName = resolved
-
-	var model porcupine.Model
-	switch *modelName {
-	case "kv":
-		model = checker.KVModel()
-	case "kv_rmw":
-		model = checker.KVRMWModel()
-	case "queue":
-		model = checker.QueueModel()
-	default:
-		log.Fatalf("unknown model %q (use kv|kv_rmw|queue)", *modelName)
+	model, err := engine.ParseModel(resolved)
+	if err != nil {
+		fail(fmt.Errorf("unknown model %q (use kv|kv_rmw)", resolved))
 	}
+	claim, warning, err := checker.ResolveClaim(*claimFlag, model, *inputPath)
+	if err != nil {
+		fail(err)
+	}
+	if warning != "" {
+		fmt.Fprintf(os.Stderr, "warning: %s\n", warning)
+	}
+	timeout := time.Duration(*timeoutMs) * time.Millisecond
 
 	res := Result{
 		Input:           *inputPath,
-		Model:           *modelName,
+		Model:           model.String(),
+		Claim:           checker.ClaimMarks(claim),
+		ClaimName:       claim.Name(),
+		Triage:          map[string]int{},
 		ViolatingRunIDs: []int{},
 		UnknownRunIDs:   []int{},
 	}
 	start := time.Now()
 
-	err = checker.ProcessRunsWithCache(*inputPath, *modelName, *recheckAll, func(runID int, events []*checker.EventRow, cached *checker.CachedVerdict, reuse bool) error {
+	err = checker.ProcessRunsWithCache(*inputPath, model.String(), claim.JSON(), *recheckAll, func(runID int, events []*checker.EventRow, cached *checker.CachedVerdict, reuse bool) error {
 		res.TotalRuns++
 		if reuse {
 			res.ReusedRuns++
 			res.Ok++
+			res.Triage[cached.Triage]++
 			res.SkippedOps += cached.SkippedOps
 			return nil
 		}
 		res.NewlyCheckedRuns++
-		kept := events[:0:0]
-		for _, row := range events {
-			if knownAction(row.Action) {
-				kept = append(kept, row)
-			} else {
-				res.SkippedOps++
-			}
+		res.SkippedOps += checker.SkippedOps(events)
+		rows := checker.EngineRows(events)
+		outcome, err := checker.ReconcileVerdict(runID, checker.CheckHistory(rows, claim, timeout, false), cached)
+		if err != nil {
+			return err
 		}
-		ops, _ := checker.BuildOperationsWithAnnotations(kept)
-		verdict, info := porcupine.CheckOperationsVerbose(model, ops, time.Duration(*timeoutMs)*time.Millisecond)
-		var reconcileErr error
-		verdict, reconcileErr = checker.ReconcileVerdict(runID, verdict, cached)
-		if reconcileErr != nil {
-			return reconcileErr
-		}
-		switch verdict {
-		case porcupine.Ok:
+		res.Triage[outcome.Triage]++
+		switch outcome.Verdict {
+		case engine.VerdictOK:
 			res.Ok++
-		case porcupine.Illegal:
+		case engine.VerdictIllegal:
 			res.Violations++
 			res.ViolatingRunIDs = append(res.ViolatingRunIDs, runID)
 			if res.FirstViolationRunID == nil {
@@ -199,29 +154,31 @@ func main() {
 				res.FirstViolationOrdinal = res.TotalRuns
 			}
 			if len(res.ViolationSignatures) < maxSignatures {
-				res.ViolationSignatures = append(res.ViolationSignatures, Signature{
-					RunID: runID, Ordinal: res.TotalRuns, Signature: violationSignature(*modelName, model, ops, info),
-				})
+				if w, err := view.ParseWitness(outcome.Witness); err == nil && w != nil {
+					res.ViolationSignatures = append(res.ViolationSignatures, Signature{
+						RunID: runID, Ordinal: res.TotalRuns,
+						Signature: checker.WitnessSignature(model.String(), w, checker.ViewEvents(events, rows)),
+					})
+				}
 			}
 			if res.Violations <= 20 {
-				fmt.Fprintf(os.Stderr, "run %d: NOT linearizable\n", runID)
+				fmt.Fprintf(os.Stderr, "run %d: claim %s VIOLATED, triage %s\n", runID, claim.Name(), outcome.Triage)
 			}
-		default: // porcupine.Unknown: timeout or aborted check
+		default:
 			res.Unknown++
 			res.UnknownRunIDs = append(res.UnknownRunIDs, runID)
-			fmt.Fprintf(os.Stderr, "run %d: UNKNOWN (timeout or check failure)\n", runID)
+			fmt.Fprintf(os.Stderr, "run %d: UNKNOWN (%s)\n", runID, outcome.Reason)
 		}
 		return nil
 	})
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "error: %v\n", err)
-		os.Exit(1)
+		fail(err)
 	}
 	res.WallMs = time.Since(start).Milliseconds()
 
-	fmt.Fprintf(os.Stderr, "\n=== %s (model=%s) ===\n", *inputPath, *modelName)
-	fmt.Fprintf(os.Stderr, "total=%d ok=%d violations=%d unknown=%d skipped_ops=%d wall_ms=%d\n",
-		res.TotalRuns, res.Ok, res.Violations, res.Unknown, res.SkippedOps, res.WallMs)
+	fmt.Fprintf(os.Stderr, "\n=== %s (model=%s claim=%s) ===\n", *inputPath, res.Model, res.ClaimName)
+	fmt.Fprintf(os.Stderr, "total=%d ok=%d violations=%d unknown=%d skipped_ops=%d wall_ms=%d triage=%v\n",
+		res.TotalRuns, res.Ok, res.Violations, res.Unknown, res.SkippedOps, res.WallMs, res.Triage)
 
 	enc := json.NewEncoder(os.Stdout)
 	enc.SetIndent("", "  ")

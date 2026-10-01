@@ -1,0 +1,21 @@
+{
+  "name": "rmw_same_prior_sequential",
+  "description": "Two read-modify-writes return the same prior list.",
+  "model": "kv_rmw",
+  "claim": {"RMW": "sequential", "Read": "sequential", "Write": "sequential"},
+  "interrupt": null,
+  "events": [
+    {"kind": "Invocation", "id": 1, "client": 3, "action": "Client.Write", "key": "x", "uid": 105, "step": 2, "global_time": 0},
+    {"kind": "Response", "id": 1, "client": 3, "action": "Client.Write", "step": 5, "global_time": 0},
+    {"kind": "Invocation", "id": 2, "client": 4, "action": "Client.RMW", "key": "x", "uid": 106, "step": 8, "global_time": 0},
+    {"kind": "Invocation", "id": 3, "client": 5, "action": "Client.RMW", "key": "x", "uid": 107, "step": 11, "global_time": 0},
+    {"kind": "Response", "id": 2, "client": 4, "action": "Client.RMW", "value": [105], "step": 14, "global_time": 0},
+    {"kind": "Response", "id": 3, "client": 5, "action": "Client.RMW", "value": [105], "step": 17, "global_time": 0}
+  ],
+  "expect": {
+    "verdict": "illegal",
+    "reason": "",
+    "triage": "none",
+    "witness": "{\"level\":\"sequential\",\"kind\":\"value\",\"key\":null,\"order\":[],\"cycle\":[],\"blocked\":[],\"value\":{\"op\":3,\"reason\":\"same_prior\",\"uids\":[105],\"other\":2}}"
+  }
+}

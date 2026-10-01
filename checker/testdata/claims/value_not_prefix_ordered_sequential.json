@@ -1,0 +1,23 @@
+{
+  "name": "value_not_prefix_ordered_sequential",
+  "description": "Two reads of one key return lists neither of which is a prefix of the other.",
+  "model": "kv",
+  "claim": {"Read": "sequential", "Write": "linearizable"},
+  "interrupt": null,
+  "events": [
+    {"kind": "Invocation", "id": 1, "client": 3, "action": "Client.Write", "key": "x", "uid": 101, "step": 2, "global_time": 0},
+    {"kind": "Invocation", "id": 2, "client": 4, "action": "Client.Write", "key": "x", "uid": 102, "step": 5, "global_time": 0},
+    {"kind": "Response", "id": 1, "client": 3, "action": "Client.Write", "step": 8, "global_time": 0},
+    {"kind": "Response", "id": 2, "client": 4, "action": "Client.Write", "step": 11, "global_time": 0},
+    {"kind": "Invocation", "id": 3, "client": 5, "action": "Client.Read", "key": "x", "step": 14, "global_time": 0},
+    {"kind": "Invocation", "id": 4, "client": 6, "action": "Client.Read", "key": "x", "step": 17, "global_time": 0},
+    {"kind": "Response", "id": 3, "client": 5, "action": "Client.Read", "value": [101, 102], "step": 20, "global_time": 0},
+    {"kind": "Response", "id": 4, "client": 6, "action": "Client.Read", "value": [102, 101], "step": 23, "global_time": 0}
+  ],
+  "expect": {
+    "verdict": "illegal",
+    "reason": "",
+    "triage": "none",
+    "witness": "{\"level\":\"ordered_sequential\",\"kind\":\"value\",\"key\":null,\"order\":[],\"cycle\":[],\"blocked\":[],\"value\":{\"op\":4,\"reason\":\"not_prefix\",\"uids\":[102,101],\"other\":3}}"
+  }
+}

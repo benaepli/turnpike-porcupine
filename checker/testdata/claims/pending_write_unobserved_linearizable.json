@@ -1,0 +1,21 @@
+{
+  "name": "pending_write_unobserved_linearizable",
+  "description": "A write that never returns and that no read observes is placed last; a read that never returns is dropped.",
+  "model": "kv",
+  "claim": {"Read": "linearizable", "Write": "linearizable"},
+  "interrupt": null,
+  "events": [
+    {"kind": "Invocation", "id": 1, "client": 3, "action": "Client.Write", "key": "x", "uid": 101, "step": 2, "global_time": 0},
+    {"kind": "Response", "id": 1, "client": 3, "action": "Client.Write", "step": 5, "global_time": 0},
+    {"kind": "Invocation", "id": 2, "client": 4, "action": "Client.Write", "key": "x", "uid": 102, "step": 8, "global_time": 0},
+    {"kind": "Invocation", "id": 3, "client": 5, "action": "Client.Read", "key": "x", "step": 11, "global_time": 0},
+    {"kind": "Response", "id": 3, "client": 5, "action": "Client.Read", "value": [101], "step": 14, "global_time": 0},
+    {"kind": "Invocation", "id": 4, "client": 6, "action": "Client.Read", "key": "x", "step": 17, "global_time": 0}
+  ],
+  "expect": {
+    "verdict": "ok",
+    "reason": "",
+    "triage": "linearizable",
+    "witness": "{\"level\":\"linearizable\",\"kind\":\"order\",\"key\":null,\"order\":[1,3,2],\"cycle\":[],\"blocked\":[],\"value\":null}"
+  }
+}
