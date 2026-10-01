@@ -55,20 +55,22 @@ func ActionKind(action string) (Kind, bool) {
 // "Response" or a system kind, and payload is the row's JSON array of
 // values. An invocation's payload is [destination, key, uid] for a write or
 // read-modify-write and [destination, key] for a read; a read or
-// read-modify-write response's payload holds the list.
+// read-modify-write response's payload holds the list. A row of another
+// kind, or whose action names no client operation, is a system row.
 func RowFromEvent(uniqueID, clientID, kind, action, payload string) Row {
-	var r Row
+	r := Row{Kind: System, Action: action}
+	k, ok := ActionKind(action)
+	if !ok {
+		return r
+	}
 	switch kind {
 	case "Invocation":
 		r.Kind = Invocation
 	case "Response":
 		r.Kind = Response
 	default:
-		r.Kind = System
-		r.Action = action
 		return r
 	}
-	r.Action = action
 	var err error
 	if r.ID, err = strconv.ParseInt(strings.TrimSpace(uniqueID), 10, 64); err != nil {
 		r.Malformed = fmt.Sprintf("unique id %q", uniqueID)
@@ -76,10 +78,6 @@ func RowFromEvent(uniqueID, clientID, kind, action, payload string) Row {
 	}
 	if r.Client, err = strconv.ParseInt(strings.TrimSpace(clientID), 10, 64); err != nil {
 		r.Malformed = fmt.Sprintf("client id %q", clientID)
-		return r
-	}
-	k, ok := ActionKind(action)
-	if !ok {
 		return r
 	}
 	if scanPayload(&r, k, payload) {
@@ -94,6 +92,9 @@ func decodePayload(r Row, k Kind, payload string) Row {
 	items, err := payloadItems(payload)
 	if err != nil {
 		r.Malformed = err.Error()
+		return r
+	}
+	if !payloadLength(&r, k, len(items)) {
 		return r
 	}
 	if r.Kind == Invocation {
@@ -124,6 +125,25 @@ func decodePayload(r Row, k Kind, payload string) Row {
 		r.Value, r.HasValue = l, true
 	}
 	return r
+}
+
+// payloadLength marks r malformed when a payload of n items is not the
+// shape its kind and operation take. A write response's payload is not read.
+func payloadLength(r *Row, k Kind, n int) bool {
+	want := -1
+	switch {
+	case r.Kind == Invocation && k == Read:
+		want = 2
+	case r.Kind == Invocation:
+		want = 3
+	case k != Write:
+		want = 1
+	}
+	if want >= 0 && n != want {
+		r.Malformed = fmt.Sprintf("payload of %d items, want %d", n, want)
+		return false
+	}
+	return true
 }
 
 type rawValue struct {
@@ -283,16 +303,19 @@ func (h *History) convert(rows []Row) string {
 		if r.Kind == System {
 			continue
 		}
-		t++
 		k, ok := ActionKind(r.Action)
 		if !ok {
-			return fmt.Sprintf("action %q is not a client operation", r.Action)
+			continue
 		}
+		t++
 		if k == RMW && h.model == KV {
 			return fmt.Sprintf("operation %d is a read-modify-write under model kv", r.ID)
 		}
 		if r.Malformed != "" {
 			return fmt.Sprintf("operation %d: malformed %s", r.ID, r.Malformed)
+		}
+		if r.Client < 0 {
+			return fmt.Sprintf("operation %d has negative client id %d", r.ID, r.Client)
 		}
 		if r.Kind == Invocation {
 			if _, dup := open[r.ID]; dup {

@@ -1,0 +1,24 @@
+{
+  "name": "system_actions_ignored",
+  "description": "Invocations and responses whose action names no client operation are system rows: they break no session, id or field rule.",
+  "model": "kv",
+  "claim": {"Read": "linearizable", "Write": "linearizable"},
+  "interrupt": null,
+  "events": [
+    {"kind": "Invocation", "id": 1, "client": 3, "action": "Client.Write", "key": "x", "uid": 101, "step": 2, "global_time": 0},
+    {"kind": "Invocation", "id": 2, "client": 3, "action": "Client.SimulateTimeout", "step": 5, "global_time": 0},
+    {"kind": "Invocation", "id": 5, "client": 4, "action": "Client.Delete", "key": "x", "step": 8, "global_time": 0},
+    {"kind": "Invocation", "id": 1, "client": 6, "action": "Client.Delete", "key": "y", "uid": 101, "step": 11, "global_time": 0},
+    {"kind": "Response", "id": 1, "client": 3, "action": "Client.Write", "step": 14, "global_time": 0},
+    {"kind": "Invocation", "id": 3, "client": 4, "action": "Client.Read", "key": "x", "step": 17, "global_time": 0},
+    {"kind": "Response", "id": 3, "client": 4, "action": "Client.Read", "value": [101], "step": 20, "global_time": 0},
+    {"kind": "Response", "id": 2, "client": 3, "action": "Client.SimulateTimeout", "step": 23, "global_time": 0},
+    {"kind": "Response", "id": 9, "client": 7, "action": "Client.SimulateTimeout", "value": [], "step": 26, "global_time": 0}
+  ],
+  "expect": {
+    "verdict": "ok",
+    "reason": "",
+    "triage": "linearizable",
+    "witness": "{\"level\":\"linearizable\",\"kind\":\"order\",\"key\":null,\"order\":[1,3],\"cycle\":[],\"blocked\":[],\"value\":null}"
+  }
+}

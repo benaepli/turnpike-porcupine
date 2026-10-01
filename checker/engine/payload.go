@@ -376,6 +376,7 @@ func (p *scanner) listValue() []int64 {
 func scanPayload(r *Row, k Kind, payload string) bool {
 	p := &scanner{s: payload}
 	if p.peek() == 0 {
+		payloadLength(r, k, 0)
 		return true
 	}
 	if !p.eat('[') {
@@ -385,10 +386,12 @@ func scanPayload(r *Row, k Kind, payload string) bool {
 	var uid int64
 	var list []int64
 	hasKey, hasUID, hasList := false, false, false
+	items := 0
 	for n := 0; ; n++ {
 		if n == 0 && p.eat(']') {
 			break
 		}
+		items++
 		switch {
 		case p.peek() == '"':
 			return false
@@ -414,6 +417,9 @@ func scanPayload(r *Row, k Kind, payload string) bool {
 	p.ws()
 	if p.i != len(p.s) {
 		return false
+	}
+	if !payloadLength(r, k, items) {
+		return true
 	}
 	r.Key, r.HasKey = key, hasKey
 	r.UID, r.HasUID = uid, hasUID

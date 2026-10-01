@@ -71,7 +71,7 @@ func TestScannerMatchesDecoder(t *testing.T) {
 				}
 				accepted++
 				slow := decodePayload(Row{Kind: rk}, k, p)
-				if slow.Malformed != "" || fast.Key != slow.Key || fast.HasKey != slow.HasKey || fast.UID != slow.UID ||
+				if fast.Key != slow.Key || fast.Malformed != slow.Malformed || fast.HasKey != slow.HasKey || fast.UID != slow.UID ||
 					fast.HasUID != slow.HasUID || fast.HasValue != slow.HasValue || !slices.Equal(fast.Value, slow.Value) {
 					t.Fatalf("payload %q kind %v row %v: scanner %+v, decoder %+v", p, k, rk, fast, slow)
 				}

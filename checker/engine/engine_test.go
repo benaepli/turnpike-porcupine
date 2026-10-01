@@ -170,4 +170,38 @@ func TestRowFromEvent(t *testing.T) {
 	if sys.Kind != System {
 		t.Fatalf("crash row: %+v", sys)
 	}
+	for _, action := range []string{"Client.SimulateTimeout", "Client.Delete", "System.Crash"} {
+		other := RowFromEvent("x", "y", "Invocation", action, `not json`)
+		if other.Kind != System || other.Malformed != "" {
+			t.Fatalf("%s invocation must be a system row: %+v", action, other)
+		}
+	}
+	timer := RowFromEvent("4", "1", "TimerFired", "Client.Write", `[]`)
+	if timer.Kind != System {
+		t.Fatalf("a TimerFired row is a system row whatever its action: %+v", timer)
+	}
+	extraItems := []struct{ kind, action, payload string }{
+		{"Invocation", "Client.Read", `[{"type":"VUnit","value":null},{"type":"VString","value":"k"},{"type":"VInt","value":1}]`},
+		{"Invocation", "Client.Write", `[{"type":"VUnit","value":null},{"type":"VString","value":"k"}]`},
+		{"Response", "Client.Read", `[{"type":"VList","value":[]},{"type":"VUnit","value":null}]`},
+		{"Response", "Client.Read", `["{\"type\":\"VList\",\"value\":[]}","{\"type\":\"VUnit\",\"value\":null}"]`},
+		{"Response", "Client.RMW", `[]`},
+	}
+	for _, c := range extraItems {
+		if r := RowFromEvent("1", "1", c.kind, c.action, c.payload); r.Malformed == "" {
+			t.Fatalf("%s %s %s must be malformed: %+v", c.kind, c.action, c.payload, r)
+		}
+	}
+	if r := RowFromEvent("1", "1", "Response", "Client.Write", `[{"type":"VUnit","value":null},{"type":"VUnit","value":null}]`); r.Malformed != "" {
+		t.Fatalf("a write response's payload is not read: %+v", r)
+	}
+	none := RowFromEvent("1", "1", "Response", "Client.Read", `[{"type":"VOption","value":null}]`)
+	if none.Malformed == "" || none.HasValue {
+		t.Fatalf("an empty option is no value: %+v", none)
+	}
+	some := RowFromEvent("1", "1", "Response", "Client.Read",
+		`[{"type":"VOption","value":{"type":"VList","value":[{"type":"VInt","value":5}]}}]`)
+	if some.Malformed != "" || !some.HasValue || len(some.Value) != 1 || some.Value[0] != 5 {
+		t.Fatalf("an option holding a list is read through: %+v", some)
+	}
 }

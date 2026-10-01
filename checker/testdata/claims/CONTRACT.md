@@ -21,19 +21,34 @@ triage or a witness.
 
 ### 1.1 Rows
 
-A history is a sequence of rows. A row is an `Invocation` or a `Response` of
-a client operation, or a system row (`Crash`, `Recover`). System rows carry
-a node and are kept for display only; the check ignores them.
+A history is a sequence of rows. Every row has a kind and an action. A row
+is a client operation row when both hold:
 
-A client operation row has an action, `Client.Write`, `Client.Read` or
-`Client.RMW`; in the executions table the action may carry a prefix, and the
-kind is taken from the suffix. Its kind is `W`, `R` or `M` respectively.
+- its kind is `Invocation` or `Response`;
+- its action ends in `Client.Write`, `Client.Read` or `Client.RMW`. In the
+  executions table the action may carry a prefix; the kind of operation is
+  taken from the suffix, `W`, `R` or `M` respectively.
+
+Every other row is a system row: a row of any other kind (`Crash`,
+`Recover`, `Partition`, `TimerFired` and so on), whatever its action, and an
+`Invocation` or `Response` whose action has none of the three suffixes
+(`Client.SimulateTimeout`, `Client.Delete`, `System.Crash` and so on). A row
+is classified by its own kind and action alone. System rows are kept for
+display only; the check ignores them, so they take no part in time (1.2),
+sessions (1.3) or the adapter checks (1.4).
 
 - An invocation of `W` or `M` carries a key (string) and a uid (integer).
 - An invocation of `R` carries a key.
 - A response of `R` carries the observed list; a response of `M` carries the
   prior list. A list is a sequence of integers.
-- A response of `W` carries no value.
+- A response of `W` carries no value; anything it carries is ignored.
+- A client id is a non-negative integer.
+
+In the executions table an invocation's payload is `[destination, key]` for
+`R` and `[destination, key, uid]` for `W` and `M`; the destination is not
+read. A response of `R` or `M` has the payload `[list]`. An option holding a
+list is read as that list; an empty option is no value. A payload of any
+other length, or with an item of the wrong type, is malformed.
 
 ### 1.2 Time
 
@@ -58,12 +73,14 @@ The following make the check report verdict `unknown`, reason
 `adapter_error` (an engine may append `: ` and a detail), triage `unknown`,
 and no witness. They are checked before anything else.
 
-- An action that is neither a client operation nor a system row.
 - A `M` row when the model is `kv`.
 - Two invocations with one operation id.
 - A response with no open invocation of that id, or whose client or action
-  differs from its invocation's.
-- A missing or malformed key, uid or value (1.1).
+  differs from its invocation's. Actions are compared as whole strings,
+  prefix included: `raft::Client.Write` and `Client.Write` differ.
+- A missing or malformed key, uid or value (1.1). A response of `R` or `M`
+  with no value is one.
+- A negative client id.
 - Two `W` or `M` operations with one uid.
 - Within one session, an operation invoked before the previous operation of
   the session returned. A pending operation that is not the last of its
@@ -256,11 +273,15 @@ then recomputed with the exact memo, and the witness comes from that pass.
 
 ### 6.4 The `kv` path
 
-Under `kv` the search stops at its first visit with no candidate and
-operations left, and reports `illegal` there. With the edges of 4.3 this
-visit is unique as a set of placed operations: it is every operation no
-cycle reaches. A head that is enabled under `kv` but whose step is
-rejected is a checker defect: verdict `unknown`, reason `claim_internal`.
+Under `kv` the search never backtracks. At each visit it takes the first
+enabled head in candidate order (6.1), without testing any step, and only
+then tests that head's step. If the step is legal the head is placed and the
+search continues; if it is rejected, that is a checker defect, since with
+the edges of 4.3 every enabled head is legal: verdict `unknown`, reason
+`claim_internal`. No other head is tested. The search stops with `illegal`
+at its first visit with operations left and no enabled head. With the edges
+of 4.3 this visit is unique as a set of placed operations: it is every
+operation no cycle reaches.
 
 ### 6.5 Interrupts
 
@@ -405,10 +426,16 @@ An event is one of:
 {"kind": "Invocation", "id", "client", "action", "key", "uid", "step", "global_time"}
 {"kind": "Response", "id", "client", "action", "value", "step", "global_time"}
 {"kind": "Crash" | "Recover", "node", "step", "global_time"}
+{"kind": <any other kind>, "node", "step", "global_time"}
 ```
 
-`uid` appears only on `Client.Write` and `Client.RMW` invocations, `value`
-only on `Client.Read` and `Client.RMW` responses. `step` and `global_time`
+A system event of any kind may also carry `action`, after `node`.
+
+An `Invocation` or `Response` event whose action is a system action (1.1)
+carries `id`, `client` and `action`, and `key`, `uid` or `value` only where
+the case needs them. Otherwise `uid` appears only on `Client.Write` and
+`Client.RMW` invocations, `value` only on `Client.Read` and `Client.RMW`
+responses, and a case that shows a missing field leaves it out. `step` and `global_time`
 are carried for display and do not enter the check.
 
 `expect.reason` is the reason code of section 7, empty when definitive. An

@@ -1,0 +1,19 @@
+{
+  "name": "adapter_read_without_value",
+  "description": "A read response that carries no list.",
+  "model": "kv",
+  "claim": {"Read": "linearizable", "Write": "linearizable"},
+  "interrupt": null,
+  "events": [
+    {"kind": "Invocation", "id": 1, "client": 3, "action": "Client.Write", "key": "x", "uid": 101, "step": 2, "global_time": 0},
+    {"kind": "Response", "id": 1, "client": 3, "action": "Client.Write", "step": 5, "global_time": 0},
+    {"kind": "Invocation", "id": 2, "client": 4, "action": "Client.Read", "key": "x", "step": 8, "global_time": 0},
+    {"kind": "Response", "id": 2, "client": 4, "action": "Client.Read", "step": 11, "global_time": 0}
+  ],
+  "expect": {
+    "verdict": "unknown",
+    "reason": "adapter_error",
+    "triage": "unknown",
+    "witness": null
+  }
+}

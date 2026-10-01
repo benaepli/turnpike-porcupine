@@ -1,0 +1,25 @@
+{
+  "name": "system_row_kinds_ignored",
+  "description": "Rows of a kind other than Invocation and Response are system rows, whatever their action.",
+  "model": "kv_rmw",
+  "claim": {"RMW": "linearizable", "Read": "linearizable", "Write": "linearizable"},
+  "interrupt": null,
+  "events": [
+    {"kind": "Invocation", "id": 1, "client": 3, "action": "Client.RMW", "key": "x", "uid": 101, "step": 2, "global_time": 0},
+    {"kind": "TimerFired", "node": 0, "action": "Client.Write", "step": 5, "global_time": 0},
+    {"kind": "Partition", "node": -1, "step": 8, "global_time": 0},
+    {"kind": "Response", "id": 1, "client": 3, "action": "Client.RMW", "value": [], "step": 11, "global_time": 0},
+    {"kind": "ClockAdvance", "node": -1, "action": "System.ClockAdvance/plan", "step": 14, "global_time": 0},
+    {"kind": "Pause", "node": 1, "action": "Client.Read", "step": 17, "global_time": 0},
+    {"kind": "Invocation", "id": 2, "client": 4, "action": "Client.Read", "key": "x", "step": 20, "global_time": 0},
+    {"kind": "Resume", "node": 1, "action": "Client.Read", "step": 23, "global_time": 0},
+    {"kind": "Response", "id": 2, "client": 4, "action": "Client.Read", "value": [101], "step": 26, "global_time": 0},
+    {"kind": "Heal", "node": -1, "step": 29, "global_time": 0}
+  ],
+  "expect": {
+    "verdict": "ok",
+    "reason": "",
+    "triage": "linearizable",
+    "witness": "{\"level\":\"linearizable\",\"kind\":\"order\",\"key\":null,\"order\":[1,2],\"cycle\":[],\"blocked\":[],\"value\":null}"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "name": "adapter_action_prefix_differs",
+  "description": "A response whose action differs from its invocation's only in the prefix does not match it.",
+  "model": "kv",
+  "claim": {"Read": "linearizable", "Write": "linearizable"},
+  "interrupt": null,
+  "events": [
+    {"kind": "Invocation", "id": 1, "client": 3, "action": "raft::Client.Write", "key": "x", "uid": 101, "step": 2, "global_time": 0},
+    {"kind": "Response", "id": 1, "client": 3, "action": "Client.Write", "step": 5, "global_time": 0}
+  ],
+  "expect": {
+    "verdict": "unknown",
+    "reason": "adapter_error",
+    "triage": "unknown",
+    "witness": null
+  }
+}
